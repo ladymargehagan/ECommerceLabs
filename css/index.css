@@ -1,0 +1,35 @@
+.menu-tray {
+	position: fixed;
+	top: 16px;
+	right: 16px;
+	background: rgba(255,255,255,0.95);
+	border: 1px solid #e6e6e6;
+	border-radius: 8px;
+	padding: 6px 10px;
+	box-shadow: 0 4px 10px rgba(0,0,0,0.06);
+	z-index: 1000;
+}
+.menu-tray a { margin-left: 8px; }
+.welcome-card {
+	background: linear-gradient(135deg, #D19C97, #b77a7a);
+	color: white;
+	border-radius: 15px;
+	padding: 40px;
+	margin: 20px 0;
+	box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+}
+.user-info {
+	background: rgba(255,255,255,0.1);
+	border-radius: 10px;
+	padding: 20px;
+	margin: 20px 0;
+}
+.btn-custom {
+	background-color: #D19C97;
+	border-color: #D19C97;
+	color: #fff;
+}
+.btn-custom:hover {
+	background-color: #b77a7a;
+	border-color: #b77a7a;
+}
