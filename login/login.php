@@ -62,7 +62,7 @@
         }
 
         .login-container {
-            margin-top: 100px;
+            margin-top: 50px;
         }
 
         .card {
@@ -114,6 +114,85 @@
                 opacity: 1;
             }
         }
+
+        /* Loading Animation Styles */
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+        }
+
+        .loading-spinner {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #D19C97;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 15px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Form Enhancement Styles */
+        .form-control:focus {
+            border-color: #D19C97;
+            box-shadow: 0 0 0 0.2rem rgba(209, 156, 151, 0.25);
+        }
+
+        .btn-custom:disabled {
+            background-color: #ccc;
+            border-color: #ccc;
+            cursor: not-allowed;
+        }
+
+        /* Success/Error Message Styles */
+        .alert {
+            border-radius: 8px;
+            border: none;
+        }
+
+        .alert-success {
+            background-color: #d4edda;
+            color: #155724;
+            border-left: 4px solid #28a745;
+        }
+
+        .alert-danger {
+            background-color: #f8d7da;
+            color: #721c24;
+            border-left: 4px solid #dc3545;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .login-container {
+                margin-top: 50px;
+                padding: 0 15px;
+            }
+            
+            .card {
+                margin: 0 10px;
+            }
+        }
     </style>
 </head>
 
@@ -131,7 +210,7 @@
                         <div class="alert alert-info text-center">Login successful!</div>
                         -->
 
-                        <form method="POST" action="" class="mt-4" id="login-form">
+                        <form method="POST" action="../actions/login_customer_action.php" class="mt-4" id="login-form">
                             <div class="mb-3">
                                 <label for="email" class="form-label">Email <i class="fa fa-envelope"></i></label>
                                 <input type="email" class="form-control animate__animated animate__fadeInUp" id="email" name="email" required>

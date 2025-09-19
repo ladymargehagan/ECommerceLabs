@@ -40,7 +40,12 @@ $city         = trim($_POST['city']);
 // Optional image upload (set null if not provided)
 $image = null;
 if (isset($_FILES['image']) && $_FILES['image']['error'] === UPLOAD_ERR_OK) {
-    $image = basename($_FILES['image']['name']);
+    // Sanitize filename to prevent encoding issues
+    $originalName = $_FILES['image']['name'];
+    $extension = pathinfo($originalName, PATHINFO_EXTENSION);
+    $sanitizedName = preg_replace('/[^a-zA-Z0-9._-]/', '_', pathinfo($originalName, PATHINFO_FILENAME));
+    $image = $sanitizedName . '_' . time() . '.' . $extension;
+    
     $targetDir = "../uploads/";
     if (!is_dir($targetDir)) {
         mkdir($targetDir, 0777, true);

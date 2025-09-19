@@ -22,6 +22,10 @@ if (!class_exists('db_connection')) {
             if (mysqli_connect_errno()) {
                 return false;
             }
+            
+            // Set character encoding to UTF-8
+            mysqli_set_charset($this->db, "utf8mb4");
+            
             return true;
         }
 
@@ -35,6 +39,10 @@ if (!class_exists('db_connection')) {
             if (mysqli_connect_errno()) {
                 return false;
             }
+            
+            // Set character encoding to UTF-8
+            mysqli_set_charset($this->db, "utf8mb4");
+            
             return $this->db;
         }
 
