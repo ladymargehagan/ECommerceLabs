@@ -2,7 +2,7 @@
 
 require_once '../classes/user_class.php';
 
-
+//Controller functions for user operations
 function register_user_ctr($name, $email, $password, $phone_number, $role, $country, $city, $image = null)
 {
     $user = new User();
@@ -12,7 +12,7 @@ function register_user_ctr($name, $email, $password, $phone_number, $role, $coun
     }
     return false;
 }
-
+//Controller function to get user by email
 function get_user_by_email_ctr($email)
 {
     $user = new User();

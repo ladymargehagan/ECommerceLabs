@@ -2,9 +2,9 @@
 
 require_once '../settings/db_class.php';
 
-/**
- * User class for handling customer accounts
- */
+
+// User class for handling customer accounts
+ 
 class User extends db_connection
 {
     private $user_id;
@@ -53,9 +53,9 @@ class User extends db_connection
         }
     }
 
-    /**
-     * Register a new user (customer)
-     */
+    
+    // Register a new user (customer)
+   
     public function addUser($name, $email, $hashed_password, $phone_number, $role, $country, $city, $image = null)
     {
         $stmt = $this->db->prepare(
@@ -70,9 +70,9 @@ class User extends db_connection
         return false;
     }
 
-    /**
-     * Check if email already exists
-     */
+    
+    // Check if email already exists
+     
     public function emailExists($email)
     {
         $stmt = $this->db->prepare("SELECT customer_id FROM customer WHERE customer_email = ?");
@@ -82,9 +82,9 @@ class User extends db_connection
         return $result->num_rows > 0;
     }
 
-    /**
-     * Get user by email
-     */
+    
+    // Get user by email
+    
     public function getUserByEmail($email)
     {
         $stmt = $this->db->prepare("SELECT * FROM customer WHERE customer_email = ?");

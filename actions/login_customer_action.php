@@ -1,14 +1,10 @@
 <?php
-// Start session
 session_start();
 
-// Include required files
 require_once '../controllers/customer_controller.php';
 
-// Set content type for JSON response
 header('Content-Type: application/json');
-
-// Check if request method is POST
+// Ensure the request method is POST
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     echo json_encode([
         'success' => false,
@@ -18,7 +14,6 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     exit;
 }
 
-// Get form data
 $email = isset($_POST['email']) ? trim($_POST['email']) : '';
 $password = isset($_POST['password']) ? trim($_POST['password']) : '';
 

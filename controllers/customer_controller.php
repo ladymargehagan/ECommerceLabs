@@ -8,11 +8,7 @@ class CustomerController {
         $this->customer = new Customer();
     }
     
-    /**
-     * Login customer controller method that accepts keyword arguments
-     * @param array $kwargs Array containing 'email' and 'password' keys
-     * @return array
-     */
+    // Login customer controller method that accepts keyword arguments
     public function login_customer_ctr($kwargs) {
         try {
             // Validate input parameters
@@ -24,11 +20,11 @@ class CustomerController {
                 ];
             }
             
-            // Extract email and password from kwargs
+            // Extract email and password from kwargs array
             $email = isset($kwargs['email']) ? trim($kwargs['email']) : '';
             $password = isset($kwargs['password']) ? trim($kwargs['password']) : '';
             
-            // Validate required parameters
+            // Validating required fields
             if (empty($email) || empty($password)) {
                 return [
                     'success' => false,
@@ -37,7 +33,7 @@ class CustomerController {
                 ];
             }
             
-            // Use the customer class get method
+            // Use the customer class get method to attempt login
             $result = $this->customer->get($email, $password);
             
             return $result;
