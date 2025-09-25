@@ -1,11 +1,16 @@
-session_start();
+// Settings/core.php
+<?php
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
 
 // for header redirection
 ob_start();
 
-// Returns true if a user session exists
-function isLoggedIn() {
-    return isset($_SESSION['user_id']) && !empty($_SESSION['user_id']);
+// check if user is logged in
+if (!isLoggedIn()) {   
+    header("Location: ../login/login.php");
+    exit;
 }
 
 // Get current logged-in user ID
@@ -18,11 +23,21 @@ function getUserRole() {
     return isset($_SESSION['role']) ? $_SESSION['role'] : null;
 }
 
+// Returns true if a session is active for a logged-in user
+function isLoggedIn() {
+    return isset($_SESSION['user_id']) && !empty($_SESSION['user_id']);
+}
+
 // Returns true if the current user has administrative privileges
 function isAdmin() {
-    if (!isset($_SESSION['role'])) {
-        return false;
-    }
-    $role = $_SESSION['role'];
-    return ($role === 1 || $role === '1' || $role === 'admin');
+    return isset($_SESSION['role']) && $_SESSION['role'] === 'admin';
 }
+
+// Check if user has a specific role
+function checkRole($requiredRole) {
+    if (!isset($_SESSION['role']) || $_SESSION['role'] != $requiredRole) {
+        header("Location: ../login/login.php");
+        exit;
+    }
+}
+?>
