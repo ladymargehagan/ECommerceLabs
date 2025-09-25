@@ -1,7 +1,9 @@
 <?php
 
+// Ensure clean JSON output (log errors instead of displaying them)
 error_reporting(E_ALL);
-ini_set('display_errors', 1);
+ini_set('display_errors', 0);
+ini_set('log_errors', 1);
 
 header('Content-Type: application/json');
 
@@ -35,17 +37,26 @@ $city         = trim($_POST['city']);
 
 // Handle image upload if provided
 $image = null;
-if (isset($_FILES['image']) && $_FILES['image']['error'] === UPLOAD_ERR_OK) {
+if (isset($_FILES['image']) && is_array($_FILES['image']) && $_FILES['image']['error'] === UPLOAD_ERR_OK) {
     $originalName = $_FILES['image']['name'];
-    $extension = pathinfo($originalName, PATHINFO_EXTENSION);
-    $sanitizedName = preg_replace('/[^a-zA-Z0-9._-]/', '_', pathinfo($originalName, PATHINFO_FILENAME));
-    $image = $sanitizedName . '_' . time() . '.' . $extension;
-    
-    $targetDir = "../uploads/";
-    if (!is_dir($targetDir)) {
-        mkdir($targetDir, 0777, true);
+    $extension = strtolower(pathinfo($originalName, PATHINFO_EXTENSION));
+
+    // Allow only jpg and png
+    $allowed = ['jpg', 'jpeg', 'png'];
+    if (in_array($extension, $allowed, true)) {
+        $sanitizedName = preg_replace('/[^a-zA-Z0-9._-]/', '_', pathinfo($originalName, PATHINFO_FILENAME));
+        $image = $sanitizedName . '_' . time() . '.' . $extension;
+
+        $targetDir = dirname(__DIR__) . "/uploads/"; // absolute path within project
+        if (!is_dir($targetDir)) {
+            @mkdir($targetDir, 0777, true);
+        }
+        $moved = @move_uploaded_file($_FILES['image']['tmp_name'], $targetDir . $image);
+        if (!$moved) {
+            // If move fails, do not block registration; just drop the image
+            $image = null;
+        }
     }
-    move_uploaded_file($_FILES['image']['tmp_name'], $targetDir . $image);
 }
 // Input validations
 if (empty($name) || empty($email) || empty($password) || empty($phone_number) || empty($country) || empty($city)) {

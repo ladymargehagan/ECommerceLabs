@@ -130,6 +130,7 @@ $(document).ready(function() {
             data: formData,
             processData: false, // required for file upload
             contentType: false, // required for file upload
+            dataType: 'json',
             success: function(response) {
                 if (response.status === 'success') {
                     Swal.fire({
