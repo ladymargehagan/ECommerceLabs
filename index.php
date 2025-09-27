@@ -17,6 +17,11 @@ session_start();
 	<div class="menu-tray">
 		<?php if (isset($_SESSION['user_id'])): ?>
 			<span class="me-2">Welcome, <?php echo htmlspecialchars($_SESSION['name']); ?>!</span>
+			<?php if (isset($_SESSION['role']) && $_SESSION['role'] == 1): ?>
+				<a href="admin/category.php" class="btn btn-sm btn-outline-info me-2">
+					<i class="fa fa-tags me-1"></i>Category
+				</a>
+			<?php endif; ?>
 			<a href="login/logout.php" class="btn btn-sm btn-outline-danger">
 				<i class="fa fa-sign-out-alt me-1"></i>Logout
 			</a>
