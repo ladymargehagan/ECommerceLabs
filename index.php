@@ -1,5 +1,10 @@
 <?php
-// Start session to check if user is logged in
+// Fix session permission issues by setting custom session path
+$sessionPath = dirname(__DIR__) . '/sessions';
+if (!is_dir($sessionPath)) {
+    mkdir($sessionPath, 0755, true);
+}
+ini_set('session.save_path', $sessionPath);
 session_start();
 ?>
 <!DOCTYPE html>
