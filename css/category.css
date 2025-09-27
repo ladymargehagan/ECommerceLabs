@@ -1,49 +1,38 @@
-/* Category Management Styles for Taste of Africa */
-
 .admin-header {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    color: white;
-    padding: 2rem 0;
-    margin-bottom: 2rem;
+    background: var(--primary-color);
+    color: var(--text-white);
+    padding: var(--spacing-xl) 0;
+    margin-bottom: var(--spacing-xl);
+    border-radius: var(--border-radius-lg);
 }
 
 .category-card {
     border: none;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    border-radius: 10px;
+    box-shadow: var(--shadow-md);
+    border-radius: var(--border-radius-lg);
+    transition: box-shadow var(--transition-normal);
 }
 
-.btn-custom {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    border: none;
-    color: white;
-    transition: all 0.3s ease;
-}
-
-.btn-custom:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-    color: white;
-}
-
-.table-hover tbody tr:hover {
-    background-color: #f8f9fa;
-}
-
-.form-control:focus {
-    border-color: #667eea;
-    box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+.category-card:hover {
+    box-shadow: var(--shadow-lg);
 }
 
 /* Additional category-specific styles */
 .category-badge {
     cursor: pointer;
-    transition: all 0.2s ease;
+    transition: all var(--transition-fast);
+    background-color: var(--bg-tertiary);
+    color: var(--text-primary);
+    padding: var(--spacing-xs) var(--spacing-sm);
+    border-radius: var(--border-radius-sm);
+    border: 1px solid var(--bg-tertiary);
 }
 
 .category-badge:hover {
     transform: scale(1.05);
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    box-shadow: var(--shadow-sm);
+    background-color: var(--accent-color);
+    color: var(--text-white);
 }
 
 .category-actions {
@@ -51,7 +40,7 @@
 }
 
 .category-actions .btn {
-    margin-right: 0.25rem;
+    margin-right: var(--spacing-xs);
 }
 
 /* Loading states */
@@ -60,62 +49,13 @@
     opacity: 0.7;
 }
 
-/* Alert styles */
-.alert {
-    border-radius: 8px;
-    border: none;
-}
-
-.alert-success {
-    background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
-    color: #155724;
-}
-
-.alert-danger {
-    background: linear-gradient(135deg, #f8d7da 0%, #f5c6cb 100%);
-    color: #721c24;
-}
-
-.alert-warning {
-    background: linear-gradient(135deg, #fff3cd 0%, #ffeaa7 100%);
-    color: #856404;
-}
-
-/* Form validation styles */
-.is-invalid {
-    border-color: #dc3545;
-}
-
-.invalid-feedback {
-    display: block;
-    color: #dc3545;
-    font-size: 0.875rem;
-    margin-top: 0.25rem;
-}
-
-/* Responsive adjustments */
-@media (max-width: 768px) {
-    .admin-header {
-        padding: 1rem 0;
-    }
-    
-    .admin-header h1 {
-        font-size: 1.5rem;
-    }
-    
-    .category-actions .btn {
-        font-size: 0.8rem;
-        padding: 0.25rem 0.5rem;
-    }
-}
-
 /* Animation for form transitions */
 #updateCategoryForm {
-    transition: all 0.3s ease;
+    transition: all var(--transition-normal);
 }
 
 .fade-in {
-    animation: fadeIn 0.3s ease-in;
+    animation: fadeIn var(--transition-normal) ease-in;
 }
 
 @keyframes fadeIn {

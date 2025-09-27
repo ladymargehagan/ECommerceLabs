@@ -66,11 +66,11 @@ if ($result['success']) {
     $redirectUrl = '../index.php'; // Default redirect
     
     if ($customerData['user_role'] == 1) {
-        // Admin user - redirect to dashboard
+        // Admin user - redirect to admin dashboard
         $redirectUrl = '../admin/dashboard.php';
     } elseif ($customerData['user_role'] == 2) {
-        // Regular customer
-        $redirectUrl = '../index.php';
+        // Regular customer - redirect to customer dashboard
+        $redirectUrl = '../customer/dashboard.php';
     }
     
     echo json_encode([
