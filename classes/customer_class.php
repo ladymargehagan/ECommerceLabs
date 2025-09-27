@@ -45,14 +45,37 @@ class Customer {
             ];
         }
         
-        // Query database for customer by email
+        // Query database for customer by email using prepared statement
         $sql = "SELECT customer_id, customer_name, customer_email, customer_pass, 
                        customer_country, customer_city, customer_contact, 
                        customer_image, user_role 
                 FROM customer 
-                WHERE customer_email = '$email'";
+                WHERE customer_email = ?";
         
-        $customer = $this->db->db_fetch_one($sql);
+        // Get database connection
+        $db_conn = $this->db->db_conn();
+        if (!$db_conn) {
+            return [
+                'success' => false,
+                'message' => 'Database connection failed.',
+                'data' => null
+            ];
+        }
+        
+        $stmt = $db_conn->prepare($sql);
+        if (!$stmt) {
+            return [
+                'success' => false,
+                'message' => 'Database query preparation failed.',
+                'data' => null
+            ];
+        }
+        
+        $stmt->bind_param("s", $email);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $customer = $result->fetch_assoc();
+        $stmt->close();
         
         if (!$customer) {
             return [
