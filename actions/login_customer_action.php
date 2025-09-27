@@ -60,8 +60,8 @@ if ($result['success']) {
     $redirectUrl = '../index.php'; // Default redirect
     
     if ($customerData['user_role'] == 1) {
-        // Admin user
-        $redirectUrl = '../admin/category.php';
+        // Admin user - redirect to dashboard
+        $redirectUrl = '../admin/dashboard.php';
     } elseif ($customerData['user_role'] == 2) {
         // Regular customer
         $redirectUrl = '../index.php';

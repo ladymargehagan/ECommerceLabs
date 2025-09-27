@@ -18,8 +18,8 @@ session_start();
 		<?php if (isset($_SESSION['user_id'])): ?>
 			<span class="me-2">Welcome, <?php echo htmlspecialchars($_SESSION['name']); ?>!</span>
 			<?php if (isset($_SESSION['role']) && $_SESSION['role'] == 1): ?>
-				<a href="admin/category.php" class="btn btn-sm btn-outline-info me-2">
-					<i class="fa fa-tags me-1"></i>Category
+				<a href="admin/dashboard.php" class="btn btn-sm btn-outline-info me-2">
+					<i class="fa fa-tachometer-alt me-1"></i>Admin Dashboard
 				</a>
 			<?php endif; ?>
 			<a href="login/logout.php" class="btn btn-sm btn-outline-danger">
@@ -98,10 +98,8 @@ session_start();
 	
 	<script>
 		$(document).ready(function() {
-			// Show welcome message if just logged in
 			const urlParams = new URLSearchParams(window.location.search);
 			if (urlParams.get('login') === 'success') {
-				// You can add a success notification here if needed
 				console.log('Login successful!');
 			}
 		});
