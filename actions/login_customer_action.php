@@ -61,7 +61,7 @@ if ($result['success']) {
     
     if ($customerData['user_role'] == 1) {
         // Admin user
-        $redirectUrl = '../admin/dashboard.php';
+        $redirectUrl = '../admin/category.php';
     } elseif ($customerData['user_role'] == 2) {
         // Regular customer
         $redirectUrl = '../index.php';
