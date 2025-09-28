@@ -1,55 +1,35 @@
 .menu-tray {
 	position: fixed;
-	top: var(--spacing-md);
-	right: var(--spacing-md);
-	background: rgba(255, 255, 255, 0.95);
-	border: 1px solid var(--bg-tertiary);
-	border-radius: var(--border-radius-md);
-	padding: var(--spacing-sm) var(--spacing-md);
-	box-shadow: var(--shadow-md);
+	top: 16px;
+	right: 16px;
+	background: rgba(255,255,255,0.95);
+	border: 1px solid #e6e6e6;
+	border-radius: 8px;
+	padding: 6px 10px;
+	box-shadow: 0 4px 10px rgba(0,0,0,0.06);
 	z-index: 1000;
-	backdrop-filter: blur(10px);
 }
-
-.menu-tray a { 
-	margin-left: var(--spacing-sm);
-	color: var(--text-primary);
-	text-decoration: none;
-	transition: color var(--transition-fast);
-}
-
-.menu-tray a:hover {
-	color: var(--accent-color);
-}
-
+.menu-tray a { margin-left: 8px; }
 .welcome-card {
-	background: var(--primary-color);
-	color: var(--text-white);
-	border-radius: var(--border-radius-xl);
-	padding: var(--spacing-xxl);
-	margin: var(--spacing-xl) 0;
-	box-shadow: var(--shadow-xl);
-	position: relative;
-	overflow: hidden;
+	background: linear-gradient(135deg, #D19C97, #b77a7a);
+	color: white;
+	border-radius: 15px;
+	padding: 40px;
+	margin: 20px 0;
+	box-shadow: 0 8px 25px rgba(0,0,0,0.1);
 }
-
-.welcome-card::before {
-	content: '';
-	position: absolute;
-	top: 0;
-	left: 0;
-	right: 0;
-	bottom: 0;
-	background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-light) 100%);
-	opacity: 0.9;
-	z-index: -1;
-}
-
 .user-info {
-	background: rgba(255, 255, 255, 0.1);
-	border-radius: var(--border-radius-lg);
-	padding: var(--spacing-lg);
-	margin: var(--spacing-lg) 0;
-	backdrop-filter: blur(10px);
-	border: 1px solid rgba(255, 255, 255, 0.2);
+	background: rgba(255,255,255,0.1);
+	border-radius: 10px;
+	padding: 20px;
+	margin: 20px 0;
+}
+.btn-custom {
+	background-color: #D19C97;
+	border-color: #D19C97;
+	color: #fff;
+}
+.btn-custom:hover {
+	background-color: #b77a7a;
+	border-color: #b77a7a;
 }

@@ -1,76 +1,39 @@
 <?php
-session_start();
-
-header('Content-Type: application/json');
-
-if (!isset($_SESSION['user_id'])) {
-    echo json_encode([
-        'success' => false,
-        'message' => 'User not logged in.',
-        'data' => null
-    ]);
-    exit;
-}
-
-// Check if user is admin
-if (!isset($_SESSION['role']) || $_SESSION['role'] != 1) {
-    echo json_encode([
-        'success' => false,
-        'message' => 'Access denied. Admin privileges required.',
-        'data' => null
-    ]);
-    exit;
-}
-
-//Checking if request method is POST
-if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-    echo json_encode([
-        'success' => false,
-        'message' => 'Invalid request method. Only POST requests are allowed.',
-        'data' => null
-    ]);
-    exit;
-}
-
-//Required files
+require_once '../settings/core.php';
 require_once '../controllers/category_controller.php';
 
-try {
-    // Get JSON input
-    $input = json_decode(file_get_contents('php://input'), true);
-    
-    //Input validation
-    if (!isset($input['cat_id'])) {
-        echo json_encode([
-            'success' => false,
-            'message' => 'Category ID is required.',
-            'data' => null
-        ]);
-        exit;
-    }
-    
-    if (!is_numeric($input['cat_id']) || $input['cat_id'] <= 0) {
-        echo json_encode([
-            'success' => false,
-            'message' => 'Invalid category ID.',
-            'data' => null
-        ]);
-        exit;
-    }
-    
-    //Category controller instance
-    $categoryController = new CategoryController();
-    
-    //Deleting category
-    $result = $categoryController->delete_category_ctr((int)$input['cat_id']);
-    
-    echo json_encode($result);
-    
-} catch (Exception $e) {
-    echo json_encode([
-        'success' => false,
-        'message' => 'An error occurred while deleting category: ' . $e->getMessage(),
-        'data' => null
-    ]);
+if (!isset($_SESSION['user_id'])) {
+    echo json_encode(array('success' => false, 'message' => 'User not logged in'));
+    exit;
 }
+
+if ($_SESSION['role'] != 1) {
+    echo json_encode(array('success' => false, 'message' => 'Access denied. Admin privileges required.'));
+    exit;
+}
+
+if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+    echo json_encode(array('success' => false, 'message' => 'Invalid request method'));
+    exit;
+}
+
+$user_id = $_SESSION['user_id'];
+$category_id = trim($_POST['categoryId'] ?? '');
+
+if (empty($category_id)) {
+    echo json_encode(array('success' => false, 'message' => 'Category ID is required'));
+    exit;
+}
+
+if (!is_numeric($category_id)) {
+    echo json_encode(array('success' => false, 'message' => 'Invalid category ID'));
+    exit;
+}
+
+$category_id = (int)$category_id;
+$category_controller = new category_controller();
+$result = $category_controller->delete_category_ctr($category_id, $user_id);
+
+header('Content-Type: application/json');
+echo json_encode($result);
 ?>

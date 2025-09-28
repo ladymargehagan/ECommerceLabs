@@ -1,10 +1,5 @@
 <?php
-// Fix session permission issues by setting custom session path
-$sessionPath = dirname(__DIR__) . '/sessions';
-if (!is_dir($sessionPath)) {
-    mkdir($sessionPath, 0755, true);
-}
-ini_set('session.save_path', $sessionPath);
+// Start session to check if user is logged in
 session_start();
 ?>
 <!DOCTYPE html>
@@ -20,14 +15,17 @@ session_start();
 </head>
 <body>
 
+	<?php if (isset($_SESSION['user_id']) && $_SESSION['role'] == 1): // Admin users ?>
+		<?php 
+		// Redirect admin users directly to dashboard
+		header("Location: admin/dashboard.php");
+		exit;
+		?>
+	<?php endif; ?>
+
 	<div class="menu-tray">
 		<?php if (isset($_SESSION['user_id'])): ?>
 			<span class="me-2">Welcome, <?php echo htmlspecialchars($_SESSION['name']); ?>!</span>
-			<?php if (isset($_SESSION['role']) && $_SESSION['role'] == 1): ?>
-				<a href="admin/dashboard.php" class="btn btn-sm btn-outline-info me-2">
-					<i class="fa fa-tachometer-alt me-1"></i>Admin Dashboard
-				</a>
-			<?php endif; ?>
 			<a href="login/logout.php" class="btn btn-sm btn-outline-danger">
 				<i class="fa fa-sign-out-alt me-1"></i>Logout
 			</a>
@@ -104,8 +102,10 @@ session_start();
 	
 	<script>
 		$(document).ready(function() {
+			// Show welcome message if just logged in
 			const urlParams = new URLSearchParams(window.location.search);
 			if (urlParams.get('login') === 'success') {
+				// You can add a success notification here if needed
 				console.log('Login successful!');
 			}
 		});

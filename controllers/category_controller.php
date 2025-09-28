@@ -1,75 +1,92 @@
 <?php
 require_once '../classes/category_class.php';
 
-class CategoryController {
-    private $category;
-    
-    public function __construct() {
-        $this->category = new Category();
+class category_controller
+{
+    private $category_class;
+
+    public function __construct()
+    {
+        $this->category_class = new category_class();
     }
-    
-    /**
-     * Add category controller method
-     * @param array $kwargs Array containing cat_name and user_id
-     * @return array Returns array with success status, message, and data
-     */
-    public function add_category_ctr($kwargs) {
-        // Validate required parameters
-        if (!isset($kwargs['cat_name']) || !isset($kwargs['user_id'])) {
-            return [
-                'success' => false,
-                'message' => 'Missing required parameters: cat_name and user_id.',
-                'data' => null
-            ];
+
+    public function add_category_ctr($kwargs)
+    {
+        $cat_name = $kwargs['cat_name'];
+        $created_by = $kwargs['created_by'];
+
+        if (empty($cat_name)) {
+            return array('success' => false, 'message' => 'Category name is required');
+        }
+
+        if (strlen($cat_name) > 100) {
+            return array('success' => false, 'message' => 'Category name must be less than 100 characters');
+        }
+
+        if ($this->category_class->category_name_exists($cat_name)) {
+            return array('success' => false, 'message' => 'Category name already exists');
+        }
+
+        $result = $this->category_class->add_category($cat_name, $created_by);
+        
+        if ($result) {
+            return array('success' => true, 'message' => 'Category added successfully');
+        } else {
+            return array('success' => false, 'message' => 'Failed to add category');
+        }
+    }
+
+    public function get_categories_ctr($user_id)
+    {
+        $categories = $this->category_class->get_categories_by_user($user_id);
+        
+        if ($categories === false) {
+            return array('success' => false, 'message' => 'Failed to fetch categories');
         }
         
-        //Calling the category class add method
-        return $this->category->add($kwargs['cat_name'], $kwargs['user_id']);
+        return array('success' => true, 'data' => $categories);
     }
-    
-    /**
-     * Get all categories controller method
-     * @return array Returns array with success status, message, and data
-     */
-    public function get_all_categories_ctr() {
-        return $this->category->get_all();
-    }
-    
-    /**
-     * Get category by ID controller method
-     * @param int $cat_id Category ID
-     * @return array Returns array with success status, message, and data
-     */
-    public function get_category_by_id_ctr($cat_id) {
-        return $this->category->get_by_id($cat_id);
-    }
-    
-    /**
-     * Update category controller method
-     * @param array $kwargs Array containing cat_id and cat_name
-     * @return array Returns array with success status, message, and data
-     */
-    public function update_category_ctr($kwargs) {
-        //Validating required parameters
-        if (!isset($kwargs['cat_id']) || !isset($kwargs['cat_name'])) {
-            return [
-                'success' => false,
-                'message' => 'Missing required parameters: cat_id and cat_name.',
-                'data' => null
-            ];
+
+    public function update_category_ctr($kwargs)
+    {
+        $cat_id = $kwargs['cat_id'];
+        $cat_name = $kwargs['cat_name'];
+        $user_id = $kwargs['user_id'];
+
+        if (empty($cat_id) || empty($cat_name)) {
+            return array('success' => false, 'message' => 'Category ID and name are required');
         }
+
+        if (strlen($cat_name) > 100) {
+            return array('success' => false, 'message' => 'Category name must be less than 100 characters');
+        }
+
+        if ($this->category_class->category_name_exists($cat_name, $cat_id)) {
+            return array('success' => false, 'message' => 'Category name already exists');
+        }
+
+        $result = $this->category_class->update_category($cat_id, $cat_name, $user_id);
         
-        //Calling the category class update method
-        return $this->category->update($kwargs['cat_id'], $kwargs['cat_name']);
+        if ($result) {
+            return array('success' => true, 'message' => 'Category updated successfully');
+        } else {
+            return array('success' => false, 'message' => 'Failed to update category or category not found');
+        }
     }
-    
-    /**
-     * Delete category controller method
-     * @param int $cat_id Category ID
-     * @return array Returns array with success status, message, and data
-     */
-    public function delete_category_ctr($cat_id) {
-        return $this->category->delete($cat_id);
+
+    public function delete_category_ctr($cat_id, $user_id)
+    {
+        if (empty($cat_id)) {
+            return array('success' => false, 'message' => 'Category ID is required');
+        }
+
+        $result = $this->category_class->delete_category($cat_id, $user_id);
+        
+        if ($result) {
+            return array('success' => true, 'message' => 'Category deleted successfully');
+        } else {
+            return array('success' => false, 'message' => 'Failed to delete category, category not found, or category is being used by products');
+        }
     }
 }
 ?>

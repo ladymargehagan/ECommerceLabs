@@ -68,12 +68,6 @@ $(document).ready(function() {
         return isFormValid;
     }
     
-    // Function to reset form state
-    function resetForm(submitBtn, originalText) {
-        submitBtn.html(originalText).prop('disabled', false);
-        $('input').prop('disabled', false);
-    }
-
     // Handle login form submission
     $('#login-form').on('submit', function(e) {
         e.preventDefault(); // Prevent default form submission
@@ -125,7 +119,7 @@ $(document).ready(function() {
                 } else {
                     // Login failed
                     showAlert(response.message, 'error');
-                    resetForm(submitBtn, originalText);
+                    resetForm();
                 }
             },
             error: function(xhr, status, error) {
@@ -144,13 +138,19 @@ $(document).ready(function() {
                 
                 console.error('Login error:', error, 'Status:', status, 'Response:', xhr.responseText);
                 showAlert(errorMessage, 'error');
-                resetForm(submitBtn, originalText);
+                resetForm();
             },
             complete: function() {
                 // Re-enable form elements
                 $('input').prop('disabled', false);
             }
         });
+        
+        // Function to reset form state
+        function resetForm() {
+            submitBtn.html(originalText).prop('disabled', false);
+            $('input').prop('disabled', false);
+        }
     });
     
     // Function to show alert messages
@@ -166,6 +166,7 @@ $(document).ready(function() {
                        '<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>' +
                        '</div>';
         
+        // Insert alert before the form
         $('#login-form').before(alertHtml);
         
         // Auto-hide success messages after 3 seconds

@@ -20,6 +20,10 @@
                         <h4>Login</h4>
                     </div>
                     <div class="card-body">
+                        <!-- Alert Messages (To be handled by backend) -->
+                        <!-- Example:
+                        <div class="alert alert-info text-center">Login successful!</div>
+                        -->
 
                         <form method="POST" action="../actions/login_customer_action.php" class="mt-4" id="login-form">
                             <div class="mb-3">

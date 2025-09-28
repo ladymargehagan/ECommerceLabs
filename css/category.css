@@ -1,70 +1,14 @@
-.admin-header {
-    background: var(--primary-color);
-    color: var(--text-white);
-    padding: var(--spacing-xl) 0;
-    margin-bottom: var(--spacing-xl);
-    border-radius: var(--border-radius-lg);
-}
-
 .category-card {
-    border: none;
-    box-shadow: var(--shadow-md);
-    border-radius: var(--border-radius-lg);
-    transition: box-shadow var(--transition-normal);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
-
 .category-card:hover {
-    box-shadow: var(--shadow-lg);
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
 }
-
-/* Additional category-specific styles */
-.category-badge {
-    cursor: pointer;
-    transition: all var(--transition-fast);
-    background-color: var(--bg-tertiary);
-    color: var(--text-primary);
-    padding: var(--spacing-xs) var(--spacing-sm);
-    border-radius: var(--border-radius-sm);
-    border: 1px solid var(--bg-tertiary);
+.action-buttons {
+    opacity: 0;
+    transition: opacity 0.3s ease;
 }
-
-.category-badge:hover {
-    transform: scale(1.05);
-    box-shadow: var(--shadow-sm);
-    background-color: var(--accent-color);
-    color: var(--text-white);
-}
-
-.category-actions {
-    white-space: nowrap;
-}
-
-.category-actions .btn {
-    margin-right: var(--spacing-xs);
-}
-
-/* Loading states */
-.btn.loading {
-    pointer-events: none;
-    opacity: 0.7;
-}
-
-/* Animation for form transitions */
-#updateCategoryForm {
-    transition: all var(--transition-normal);
-}
-
-.fade-in {
-    animation: fadeIn var(--transition-normal) ease-in;
-}
-
-@keyframes fadeIn {
-    from {
-        opacity: 0;
-        transform: translateY(-10px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
+.category-card:hover .action-buttons {
+    opacity: 1;
 }

@@ -1,10 +1,4 @@
 <?php
-// Fix session permission issues by setting custom session path
-$sessionPath = dirname(__DIR__) . '/sessions';
-if (!is_dir($sessionPath)) {
-    mkdir($sessionPath, 0755, true);
-}
-ini_set('session.save_path', $sessionPath);
 session_start();
 
 require_once '../controllers/customer_controller.php';
@@ -66,11 +60,11 @@ if ($result['success']) {
     $redirectUrl = '../index.php'; // Default redirect
     
     if ($customerData['user_role'] == 1) {
-        // Admin user - redirect to admin dashboard
+        // Admin user
         $redirectUrl = '../admin/dashboard.php';
     } elseif ($customerData['user_role'] == 2) {
-        // Regular customer - redirect to customer dashboard
-        $redirectUrl = '../customer/dashboard.php';
+        // Regular customer
+        $redirectUrl = '../index.php';
     }
     
     echo json_encode([

@@ -1,267 +1,270 @@
-// Category Management JavaScript Functions
 $(document).ready(function() {
-    // Load categories on page load
     loadCategories();
-    
-    // Add category form submission event
+
     $('#addCategoryForm').on('submit', function(e) {
         e.preventDefault();
         addCategory();
     });
-    
-    // Update category form submission event
-    $('#updateCategoryForm').on('submit', function(e) {
+
+    $('#editCategoryForm').on('submit', function(e) {
         e.preventDefault();
         updateCategory();
     });
-    
-    // Delete category button click event
-    $(document).on('click', '.delete-category-btn', function() {
-        const catId = $(this).data('cat-id');
-        const catName = $(this).data('cat-name');
-        deleteCategory(catId, catName);
+
+    $('#confirmDelete').on('click', function() {
+        deleteCategory();
     });
-    
-    // Edit category button click event
-    $(document).on('click', '.edit-category-btn', function() {
-        const catId = $(this).data('cat-id');
-        const catName = $(this).data('cat-name');
-        editCategory(catId, catName);
+
+    $('#addCategoryModal').on('hidden.bs.modal', function() {
+        $('#addCategoryForm')[0].reset();
+        clearValidationErrors('#addCategoryForm');
     });
-    
-    // Cancel edit button click event
-    $('#cancelEditBtn').on('click', function() {
-        hideUpdateForm();
+
+    $('#editCategoryModal').on('hidden.bs.modal', function() {
+        $('#editCategoryForm')[0].reset();
+        clearValidationErrors('#editCategoryForm');
     });
 });
 
-// Load all categories from database
 function loadCategories() {
+    showLoading();
+    
     $.ajax({
-        url: 'actions/fetch_category_action.php',
-        method: 'GET',
+        url: '../actions/fetch_category_action.php',
+        type: 'GET',
         dataType: 'json',
         success: function(response) {
+            hideLoading();
             if (response.success) {
                 displayCategories(response.data);
             } else {
-                showAlert('Error', response.message, 'danger');
+                displayCategories([]);
             }
         },
         error: function(xhr, status, error) {
-            showAlert('Error', 'Failed to load categories. Please try again.', 'danger');
+            hideLoading();
+            displayCategories([]);
         }
     });
 }
 
-// Display categories in the table function
 function displayCategories(categories) {
-    const tbody = $('#categoriesTable tbody');
-    tbody.empty();
+    const container = $('#categoriesContainer');
     
-    if (categories && categories.length > 0) {
-        categories.forEach(function(category) {
-            const row = `
-                <tr>
-                    <td>${category.cat_id}</td>
-                    <td>${escapeHtml(category.cat_name)}</td>
-                    <td>
-                        <button class="btn btn-sm btn-primary edit-category-btn me-2" 
-                                data-cat-id="${category.cat_id}" 
-                                data-cat-name="${escapeHtml(category.cat_name)}">
-                            <i class="fa fa-edit"></i> Edit
-                        </button>
-                        <button class="btn btn-sm btn-danger delete-category-btn" 
-                                data-cat-id="${category.cat_id}" 
-                                data-cat-name="${escapeHtml(category.cat_name)}">
-                            <i class="fa fa-trash"></i> Delete
-                        </button>
-                    </td>
-                </tr>
-            `;
-            tbody.append(row);
-        });
-    } else {
-        tbody.append('<tr><td colspan="3" class="text-center">No categories found.</td></tr>');
+    if (categories.length === 0) {
+        container.html(`
+            <div class="col-12 text-center py-5">
+                <i class="fa fa-tags fa-3x text-muted mb-3"></i>
+                <h4 class="text-muted">No Categories Found</h4>
+                <p class="text-muted">Start by adding your first category!</p>
+                <button class="btn btn-custom" data-bs-toggle="modal" data-bs-target="#addCategoryModal">
+                    <i class="fa fa-plus me-1"></i>Add Category
+                </button>
+            </div>
+        `);
+        return;
     }
+
+    let html = '';
+    categories.forEach(function(category) {
+        html += `
+            <div class="col-md-4 col-lg-3 mb-4">
+                <div class="card category-card h-100">
+                    <div class="card-body d-flex flex-column">
+                        <div class="d-flex justify-content-between align-items-start mb-3">
+                            <h5 class="card-title mb-0">
+                                <i class="fa fa-tag me-2 text-primary"></i>
+                                ${escapeHtml(category.cat_name)}
+                            </h5>
+                            <div class="action-buttons">
+                                <button class="btn btn-sm btn-outline-primary me-1" onclick="editCategory(${category.cat_id}, '${escapeHtml(category.cat_name)}')" title="Edit">
+                                    <i class="fa fa-edit"></i>
+                                </button>
+                                <button class="btn btn-sm btn-outline-danger" onclick="confirmDelete(${category.cat_id}, '${escapeHtml(category.cat_name)}')" title="Delete">
+                                    <i class="fa fa-trash"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="mt-auto">
+                            <small class="text-muted">
+                                <i class="fa fa-calendar me-1"></i>
+                                Created: ${formatDate(category.created_at || new Date())}
+                            </small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+    });
+    
+    container.html(html);
 }
 
-// Add new category function
 function addCategory() {
-    const catName = $('#addCatName').val().trim();
+    const form = $('#addCategoryForm');
+    const formData = new FormData(form[0]);
     
-    // Validating input
-    if (!validateCategoryName(catName)) {
+    if (!validateCategoryForm(form)) {
         return;
     }
-    
-    // Showing loading state
-    const submitBtn = $('#addCategoryBtn');
-    const originalText = submitBtn.html();
-    submitBtn.html('<i class="fa fa-spinner fa-spin"></i> Adding...').prop('disabled', true);
+
+    showLoading();
     
     $.ajax({
-        url: 'actions/add_category_action.php',
-        method: 'POST',
+        url: '../actions/add_category_action.php',
+        type: 'POST',
+        data: formData,
+        processData: false,
+        contentType: false,
         dataType: 'json',
-        contentType: 'application/json',
-        data: JSON.stringify({
-            cat_name: catName
-        }),
         success: function(response) {
+            hideLoading();
             if (response.success) {
-                showAlert('Success', response.message, 'success');
-                $('#addCategoryForm')[0].reset();
-                loadCategories(); // Reload categories
+                showAlert('success', 'Success', response.message);
+                $('#addCategoryModal').modal('hide');
+                loadCategories();
             } else {
-                showAlert('Error', response.message, 'danger');
+                showAlert('error', 'Error', response.message);
             }
         },
         error: function(xhr, status, error) {
-            showAlert('Error', 'Failed to add category. Please try again.', 'danger');
-        },
-        complete: function() {
-            // Reset button state
-            submitBtn.html(originalText).prop('disabled', false);
+            hideLoading();
+            showAlert('error', 'Error', 'Failed to add category. Please try again.');
         }
     });
 }
 
-// Update category function
 function updateCategory() {
-    const catId = $('#updateCatId').val();
-    const catName = $('#updateCatName').val().trim();
+    const form = $('#editCategoryForm');
+    const formData = new FormData(form[0]);
     
-    // Validate input
-    if (!validateCategoryName(catName)) {
+    if (!validateCategoryForm(form)) {
         return;
     }
-    
-    // Show loading state after clicking the update button
-    const submitBtn = $('#updateCategoryBtn');
-    const originalText = submitBtn.html();
-    submitBtn.html('<i class="fa fa-spinner fa-spin"></i> Updating...').prop('disabled', true);
+
+    showLoading();
     
     $.ajax({
-        url: 'actions/update_category_action.php',
-        method: 'POST',
+        url: '../actions/update_category_action.php',
+        type: 'POST',
+        data: formData,
+        processData: false,
+        contentType: false,
         dataType: 'json',
-        contentType: 'application/json',
-        data: JSON.stringify({
-            cat_id: catId,
-            cat_name: catName
-        }),
         success: function(response) {
+            hideLoading();
             if (response.success) {
-                showAlert('Success', response.message, 'success');
-                hideUpdateForm();
-                loadCategories(); // Reload categories
+                showAlert('success', 'Success', response.message);
+                $('#editCategoryModal').modal('hide');
+                loadCategories();
             } else {
-                showAlert('Error', response.message, 'danger');
+                showAlert('error', 'Error', response.message);
             }
         },
         error: function(xhr, status, error) {
-            showAlert('Error', 'Failed to update category. Please try again.', 'danger');
-        },
-        complete: function() {
-            // Reset button state
-            submitBtn.html(originalText).prop('disabled', false);
+            hideLoading();
+            showAlert('error', 'Error', 'Failed to update category. Please try again.');
         }
     });
 }
 
-// Delete category function
-function deleteCategory(catId, catName) {
-    if (confirm(`Are you sure you want to delete the category "${catName}"? This action cannot be undone.`)) {
-        $.ajax({
-            url: 'actions/delete_category_action.php',
-            method: 'POST',
-            dataType: 'json',
-            contentType: 'application/json',
-            data: JSON.stringify({
-                cat_id: catId
-            }),
-            success: function(response) {
-                if (response.success) {
-                    showAlert('Success', response.message, 'success');
-                    loadCategories(); // Reload categories
-                } else {
-                    showAlert('Error', response.message, 'danger');
-                }
-            },
-            error: function(xhr, status, error) {
-                showAlert('Error', 'Failed to delete category. Please try again.', 'danger');
+function deleteCategory() {
+    const categoryId = $('#deleteCategoryId').val();
+    
+    if (!categoryId) {
+        showAlert('error', 'Error', 'Category ID not found.');
+        return;
+    }
+
+    showLoading();
+    
+    $.ajax({
+        url: '../actions/delete_category_action.php',
+        type: 'POST',
+        data: { categoryId: categoryId },
+        dataType: 'json',
+        success: function(response) {
+            hideLoading();
+            if (response.success) {
+                showAlert('success', 'Success', response.message);
+                $('#deleteCategoryModal').modal('hide');
+                loadCategories();
+            } else {
+                showAlert('error', 'Error', response.message);
             }
-        });
-    }
+        },
+        error: function(xhr, status, error) {
+            hideLoading();
+            showAlert('error', 'Error', 'Failed to delete category. Please try again.');
+        }
+    });
 }
 
-// Edit category (populate update form) function
-function editCategory(catId, catName) {
-    $('#updateCatId').val(catId);
-    $('#updateCatName').val(catName);
-    $('#updateCategoryForm').show();
-    $('#addCategoryForm').hide();
-    
-    // Scroll to update form
-    $('html, body').animate({
-        scrollTop: $('#updateCategoryForm').offset().top - 100
-    }, 500);
+function editCategory(categoryId, categoryName) {
+    $('#editCategoryId').val(categoryId);
+    $('#editCategoryName').val(categoryName);
+    $('#editCategoryModal').modal('show');
 }
 
-// Hide update form function
-function hideUpdateForm() {
-    $('#updateCategoryForm').hide();
-    $('#addCategoryForm').show();
-    $('#updateCategoryForm')[0].reset();
+function confirmDelete(categoryId, categoryName) {
+    $('#deleteCategoryId').val(categoryId);
+    $('#deleteCategoryModal .modal-body p').html(`Are you sure you want to delete the category "<strong>${escapeHtml(categoryName)}</strong>"?`);
+    $('#deleteCategoryModal').modal('show');
 }
 
-// Validate category name function
-function validateCategoryName(catName) {
-    if (!catName) {
-        showAlert('Validation Error', 'Category name is required.', 'warning');
-        return false;
+function validateCategoryForm(form) {
+    let isValid = true;
+    const categoryName = form.find('input[name="categoryName"]');
+    
+    clearValidationErrors(form);
+    
+    if (!categoryName.val().trim()) {
+        showFieldError(categoryName, 'Category name is required');
+        isValid = false;
+    } else if (categoryName.val().trim().length < 2) {
+        showFieldError(categoryName, 'Category name must be at least 2 characters');
+        isValid = false;
+    } else if (categoryName.val().trim().length > 100) {
+        showFieldError(categoryName, 'Category name must be less than 100 characters');
+        isValid = false;
     }
     
-    if (catName.length > 100) {
-        showAlert('Validation Error', 'Category name must be 100 characters or less.', 'warning');
-        return false;
-    }
-    
-    // Checking for valid characters (letters, numbers, spaces, hyphens, underscores)
-    const validPattern = /^[a-zA-Z0-9\s\-_]+$/;
-    if (!validPattern.test(catName)) {
-        showAlert('Validation Error', 'Category name can only contain letters, numbers, spaces, hyphens, and underscores.', 'warning');
-        return false;
-    }
-    
-    return true;
+    return isValid;
 }
 
-// Show alert message function
-function showAlert(title, message, type) {
-    const alertHtml = `
-        <div class="alert alert-${type} alert-dismissible fade show" role="alert">
-            <strong>${title}:</strong> ${message}
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-        </div>
-    `;
-    
-    // Removing existing alerts
-    $('.alert').remove();
-    
-    // Add new alert
-    $('#alertContainer').html(alertHtml);
-    
-    // Auto-hide success messages after 5 seconds
-    if (type === 'success') {
-        setTimeout(function() {
-            $('.alert').fadeOut();
-        }, 5000);
-    }
+function showFieldError(field, message) {
+    field.addClass('is-invalid');
+    field.siblings('.invalid-feedback').text(message);
 }
 
-// Escape HTML to prevent XSS
+function clearValidationErrors(form) {
+    const $form = typeof form === 'string' ? $(form) : form;
+    $form.find('.is-invalid').removeClass('is-invalid');
+    $form.find('.invalid-feedback').text('');
+}
+
+function showLoading() {
+    $('#loadingOverlay').show();
+}
+
+function hideLoading() {
+    $('#loadingOverlay').hide();
+}
+
+function showAlert(type, title, message) {
+    const icon = type === 'success' ? 'success' : 'error';
+    const color = type === 'success' ? '#28a745' : '#dc3545';
+    
+    Swal.fire({
+        icon: icon,
+        title: title,
+        text: message,
+        confirmButtonColor: color,
+        timer: type === 'success' ? 3000 : null,
+        timerProgressBar: type === 'success'
+    });
+}
+
 function escapeHtml(text) {
     const map = {
         '&': '&amp;',
@@ -271,4 +274,13 @@ function escapeHtml(text) {
         "'": '&#039;'
     };
     return text.replace(/[&<>"']/g, function(m) { return map[m]; });
+}
+
+function formatDate(dateString) {
+    const date = new Date(dateString);
+    return date.toLocaleDateString('en-US', {
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric'
+    });
 }
