@@ -16,7 +16,7 @@ if ($_SESSION['role'] != 1) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Category Management - Taste of Africa</title>
+    <title>Category Management - Flavo Spice Store</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <link href="../css/main.css" rel="stylesheet">
@@ -38,34 +38,40 @@ if ($_SESSION['role'] != 1) {
     </style>
 </head>
 <body>
-    <div class="container-fluid">
-        <!-- Header -->
-        <div class="row">
-            <div class="col-12">
-                <div class="d-flex justify-content-between align-items-center py-3">
-                    <h2><i class="fa fa-tags me-2"></i>Category Management</h2>
-                    <div>
-                        <a href="dashboard.php" class="btn btn-outline-secondary me-2">
-                            <i class="fa fa-tachometer-alt me-1"></i>Dashboard
-                        </a>
-                        <button class="btn btn-custom" data-bs-toggle="modal" data-bs-target="#addCategoryModal">
-                            <i class="fa fa-plus me-1"></i>Add Category
-                        </button>
-                    </div>
-                </div>
-            </div>
+    <!-- Navigation Header -->
+    <div class="nav-header">
+        <div class="nav-links">
+            <span class="brand">flavo</span>
+            <a href="../index.php">HOME</a>
+            <a href="dashboard.php">DASHBOARD</a>
+            <a href="#shop">SHOP</a>
+            <a href="#story">OUR STORY</a>
+            <a href="#contact">CONTACT US</a>
+            <button class="btn btn-custom btn-sm" data-bs-toggle="modal" data-bs-target="#addCategoryModal">
+                <i class="fa fa-plus me-1"></i>ADD CATEGORY
+            </button>
         </div>
+    </div>
 
-        <!-- Categories Display -->
-        <div class="row" id="categoriesContainer">
-            <!-- Categories will be loaded here via AJAX -->
-            <div class="col-12 text-center py-5">
-                <div class="spinner-border text-primary" role="status">
-                    <span class="visually-hidden">Loading...</span>
+    <div class="container" style="padding-top: 160px;">
+        <div class="main-container">
+            <div class="hero-section">
+                <h1><i class="fa fa-tags me-3"></i>CATEGORY MANAGEMENT</h1>
+                <p class="subtitle">Organize your spice blends and product categories</p>
+            </div>
+
+            <!-- Categories Display -->
+            <div class="row mt-4" id="categoriesContainer">
+                <!-- Categories will be loaded here via AJAX -->
+                <div class="col-12 text-center py-5">
+                    <div class="spinner-border" style="color: var(--primary-green);" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                    <p class="mt-2" style="color: var(--text-light);">Loading spice categories...</p>
                 </div>
-                <p class="mt-2">Loading categories...</p>
             </div>
         </div>
+    </div>
 
         <!-- Add Category Modal -->
         <div class="modal fade" id="addCategoryModal" tabindex="-1">
