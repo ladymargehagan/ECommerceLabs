@@ -3,8 +3,18 @@
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
+// Determine the correct path based on where this file is being called from
+$controller_path = '';
+if (file_exists(__DIR__ . '/../controllers/product_controller.php')) {
+    $controller_path = __DIR__ . '/../controllers/product_controller.php';
+} elseif (file_exists(__DIR__ . '/controllers/product_controller.php')) {
+    $controller_path = __DIR__ . '/controllers/product_controller.php';
+} else {
+    die("Error: Product controller file not found");
+}
+
 try {
-    require_once '../controllers/product_controller.php';
+    require_once $controller_path;
 } catch (Exception $e) {
     echo "Error loading product controller: " . $e->getMessage();
     exit;
