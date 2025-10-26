@@ -4,7 +4,12 @@ ob_start();
 
 // Redirect unauthenticated users to login
 if (!isset($_SESSION['user_id'])) {
-    header("Location: ../login/login.php");
+    // Determine the correct path based on current directory
+    $login_path = (strpos($_SERVER['REQUEST_URI'], '/admin/') !== false || 
+                   strpos($_SERVER['REQUEST_URI'], '/customer/') !== false || 
+                   strpos($_SERVER['REQUEST_URI'], '/actions/') !== false) 
+                   ? '../login/login.php' : 'login/login.php';
+    header("Location: $login_path");
     exit;
 }
 
@@ -19,7 +24,12 @@ function getUserRole() {
 // Enforce role-based access control
 function checkRole($requiredRole) {
     if (!isset($_SESSION['role']) || $_SESSION['role'] != $requiredRole) {
-        header("Location: ../login/login.php");
+        // Determine the correct path based on current directory
+        $login_path = (strpos($_SERVER['REQUEST_URI'], '/admin/') !== false || 
+                       strpos($_SERVER['REQUEST_URI'], '/customer/') !== false || 
+                       strpos($_SERVER['REQUEST_URI'], '/actions/') !== false) 
+                       ? '../login/login.php' : 'login/login.php';
+        header("Location: $login_path");
         exit;
     }
 }
