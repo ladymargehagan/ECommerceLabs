@@ -1,13 +1,24 @@
 <?php
 session_start();
-require_once 'controllers/product_controller.php';
 
 $search_query = $_GET['query'] ?? '';
-$product_controller = new product_controller();
-$result = $product_controller->search_products_ctr($search_query);
-$products = $result['success'] ? $result['data'] : array();
-$categories = $product_controller->get_categories_ctr()['data'];
-$brands = $product_controller->get_brands_ctr()['data'];
+$products = array();
+$categories = array();
+$brands = array();
+
+try {
+    require_once 'classes/product_class.php';
+    $product_class = new product_class();
+    
+    $products = $product_class->search_products($search_query);
+    $categories = $product_class->get_categories();
+    $brands = $product_class->get_brands();
+    
+} catch (Exception $e) {
+    $products = array();
+    $categories = array();
+    $brands = array();
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">

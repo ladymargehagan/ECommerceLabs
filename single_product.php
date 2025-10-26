@@ -1,11 +1,16 @@
 <?php
 session_start();
-require_once 'controllers/product_controller.php';
 
 $product_id = $_GET['id'] ?? '';
-$product_controller = new product_controller();
-$result = $product_controller->view_single_product_ctr($product_id);
-$product = $result['success'] ? $result['data'] : null;
+$product = null;
+
+try {
+    require_once 'classes/product_class.php';
+    $product_class = new product_class();
+    $product = $product_class->view_single_product($product_id);
+} catch (Exception $e) {
+    $product = null;
+}
 
 if (!$product) {
     echo "Product not found";

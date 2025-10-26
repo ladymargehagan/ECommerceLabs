@@ -17,7 +17,7 @@ if (!defined("USERNAME")) {
 }
 
 if (!defined("PASSWD")) {
-    define("PASSWD", "");
+    define("PASSWD", "password"); 
 }
 
 if (!defined("DATABASE")) {

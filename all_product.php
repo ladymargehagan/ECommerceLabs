@@ -1,12 +1,25 @@
 <?php
 session_start();
-require_once 'controllers/product_controller.php';
 
-$product_controller = new product_controller();
-$result = $product_controller->view_all_products_ctr();
-$products = $result['success'] ? $result['data'] : array();
-$categories = $product_controller->get_categories_ctr()['data'];
-$brands = $product_controller->get_brands_ctr()['data'];
+// Initialize variables with defaults
+$products = array();
+$categories = array();
+$brands = array();
+
+try {
+    require_once 'classes/product_class.php';
+    $product_class = new product_class();
+    
+    $products = $product_class->view_all_products();
+    $categories = $product_class->get_categories();
+    $brands = $product_class->get_brands();
+    
+} catch (Exception $e) {
+    // If there's an error, continue with empty arrays
+    $products = array();
+    $categories = array();
+    $brands = array();
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
