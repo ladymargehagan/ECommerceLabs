@@ -47,6 +47,17 @@ class category_controller
         
         return array('success' => true, 'data' => $categories);
     }
+    
+    public function get_category_by_id_ctr($cat_id, $user_id)
+    {
+        $category = $this->category_class->get_category_by_id($cat_id, $user_id);
+        
+        if ($category) {
+            return array('success' => true, 'data' => $category);
+        } else {
+            return array('success' => false, 'message' => 'Category not found');
+        }
+    }
 
     public function update_category_ctr($kwargs)
     {

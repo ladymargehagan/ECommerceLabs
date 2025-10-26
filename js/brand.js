@@ -422,7 +422,8 @@ function validateBrandForm(formData) {
         showFieldError('#brandName', 'Brand name is required');
         isValid = false;
     } else {
-        clearFieldError('#brandName');
+        $('#brandName').removeClass('is-invalid');
+        $('#brandName').siblings('.invalid-feedback').text('');
     }
     
     // Check edit form required fields
@@ -431,7 +432,8 @@ function validateBrandForm(formData) {
         showFieldError('#editBrandName', 'Brand name is required');
         isValid = false;
     } else if ($('#editBrandId').length) {
-        clearFieldError('#editBrandName');
+        $('#editBrandName').removeClass('is-invalid');
+        $('#editBrandName').siblings('.invalid-feedback').text('');
     }
     
     return isValid;

@@ -36,15 +36,10 @@ $category_name = htmlspecialchars($category_name, ENT_QUOTES, 'UTF-8');
 $category_controller = new category_controller();
 
 // Get current category to preserve existing image if no new image uploaded
-$current_category = $category_controller->get_categories_ctr($user_id);
+$current_category = $category_controller->get_category_by_id_ctr($category_id, $user_id);
 $category_image = '';
 if ($current_category['success']) {
-    foreach ($current_category['data'] as $cat) {
-        if ($cat['cat_id'] == $category_id) {
-            $category_image = $cat['cat_image'] ?? '';
-            break;
-        }
-    }
+    $category_image = $current_category['data']['cat_image'] ?? '';
 }
 
 // Handle new image upload
