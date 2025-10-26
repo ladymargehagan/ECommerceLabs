@@ -53,15 +53,12 @@ $originalName = $file['name'];
 $extension = pathinfo($originalName, PATHINFO_EXTENSION);
 $sanitizedName = preg_replace('/[^a-zA-Z0-9._-]/', '_', pathinfo($originalName, PATHINFO_FILENAME));
 
-// Construct file path - MUST be inside uploads/ folder only
+// Create directory structure: uploads/u{user_id}/p{product_id}/
 $upload_dir = "../uploads/u{$user_id}/p{$product_id}/";
 
-// Ensure directory exists
+// Create directory if it doesn't exist
 if (!is_dir($upload_dir)) {
-    if (!mkdir($upload_dir, 0777, true)) {
-        echo json_encode(array('success' => false, 'message' => 'Failed to create upload directory'));
-        exit;
-    }
+    mkdir($upload_dir, 0777, true);
 }
 
 // Generate filename with timestamp
