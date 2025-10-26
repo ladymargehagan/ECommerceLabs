@@ -18,16 +18,12 @@ $(document).ready(function() {
         e.preventDefault();
         
         const formData = new FormData(this);
-        const imageFile = formData.get('brandImage');
 
         if (!validateBrandForm(formData)) {
             return;
         }
 
         showLoading();
-        
-        // Remove image from form data for brand creation
-        formData.delete('brandImage');
         
         $.ajax({
             url: '../actions/add_brand_action.php',
@@ -37,21 +33,15 @@ $(document).ready(function() {
             contentType: false,
             dataType: 'json',
             success: function(response) {
+                hideLoading();
                 if (response.success) {
-                    // If brand created successfully and image was selected, upload image
-                    if (imageFile && imageFile.size > 0) {
-                        uploadBrandImage(response.brand_id, imageFile);
-                    } else {
-                        hideLoading();
-                        showSuccessMessage(response.message);
-                        $('#addBrandModal').modal('hide');
-                        $('#addBrandForm')[0].reset();
-                        clearFieldErrors();
-                        $('#brandImagePreview').hide();
-                        loadBrands();
-                    }
+                    showSuccessMessage(response.message);
+                    $('#addBrandModal').modal('hide');
+                    $('#addBrandForm')[0].reset();
+                    clearFieldErrors();
+                    $('#brandImagePreview').hide();
+                    loadBrands();
                 } else {
-                    hideLoading();
                     Swal.fire({
                         icon: 'error',
                         title: 'Error!',
@@ -75,17 +65,12 @@ $(document).ready(function() {
         e.preventDefault();
         
         const formData = new FormData(this);
-        const imageFile = formData.get('brandImage');
-        const brandId = formData.get('brandId');
 
         if (!validateBrandForm(formData)) {
             return;
         }
 
         showLoading();
-        
-        // Remove image from form data for brand update
-        formData.delete('brandImage');
         
         $.ajax({
             url: '../actions/update_brand_action.php',
@@ -95,19 +80,13 @@ $(document).ready(function() {
             contentType: false,
             dataType: 'json',
             success: function(response) {
+                hideLoading();
                 if (response.success) {
-                    // If brand updated successfully and new image was selected, upload image
-                    if (imageFile && imageFile.size > 0) {
-                        uploadBrandImage(brandId, imageFile);
-                    } else {
-                        hideLoading();
-                        showSuccessMessage(response.message);
-                        $('#editBrandModal').modal('hide');
-                        clearFieldErrors();
-                        loadBrands();
-                    }
+                    showSuccessMessage(response.message);
+                    $('#editBrandModal').modal('hide');
+                    clearFieldErrors();
+                    loadBrands();
                 } else {
-                    hideLoading();
                     Swal.fire({
                         icon: 'error',
                         title: 'Error!',
@@ -459,45 +438,3 @@ function showSuccessMessage(message) {
     });
 }
 
-function uploadBrandImage(brandId, imageFile) {
-    const formData = new FormData();
-    formData.append('brandImage', imageFile);
-    formData.append('brand_id', brandId);
-    
-    $.ajax({
-        url: '../actions/upload_brand_image_action.php',
-        method: 'POST',
-        data: formData,
-        processData: false,
-        contentType: false,
-        dataType: 'json',
-        success: function(response) {
-            hideLoading();
-            if (response.success) {
-                showSuccessMessage('Brand and image uploaded successfully!');
-                $('#addBrandModal').modal('hide');
-                $('#editBrandModal').modal('hide');
-                $('#addBrandForm')[0].reset();
-                $('#editBrandForm')[0].reset();
-                clearFieldErrors();
-                $('#brandImagePreview').hide();
-                $('#editBrandImagePreview').hide();
-                loadBrands();
-            } else {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Error!',
-                    text: response.message
-                });
-            }
-        },
-        error: function() {
-            hideLoading();
-            Swal.fire({
-                icon: 'error',
-                title: 'Error!',
-                text: 'An error occurred while uploading the image'
-            });
-        }
-    });
-}
