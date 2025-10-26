@@ -1,5 +1,12 @@
 <?php
 session_start();
+require_once 'controllers/product_controller.php';
+
+$product_controller = new product_controller();
+$result = $product_controller->view_all_products_ctr();
+$products = $result['success'] ? $result['data'] : array();
+$categories = $product_controller->get_categories_ctr()['data'];
+$brands = $product_controller->get_brands_ctr()['data'];
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -10,6 +17,7 @@ session_start();
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <link href="css/main.css" rel="stylesheet">
+    <link href="css/product_display.css" rel="stylesheet">
 </head>
 <body>
     <!-- Navigation -->
@@ -78,9 +86,9 @@ session_start();
             <?php if (!empty($products)): ?>
                 <?php foreach ($products as $product): ?>
                     <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
-                        <div class="card h-100">
+                        <div class="card product-card h-100">
                             <img src="uploads/<?php echo htmlspecialchars($product['product_image'] ?: 'placeholder.png'); ?>" 
-                                 class="card-img-top" style="height: 200px; object-fit: cover;" 
+                                 class="card-img-top product-image" 
                                  alt="<?php echo htmlspecialchars($product['product_title']); ?>">
                             <div class="card-body d-flex flex-column">
                                 <h5 class="card-title"><?php echo htmlspecialchars($product['product_title']); ?></h5>
@@ -89,13 +97,13 @@ session_start();
                                     <strong>Brand:</strong> <?php echo htmlspecialchars($product['brand_name']); ?>
                                 </p>
                                 <div class="mt-auto">
-                                    <div class="h4 text-danger mb-3">$<?php echo number_format($product['product_price'], 2); ?></div>
+                                    <div class="product-price mb-3">$<?php echo number_format($product['product_price'], 2); ?></div>
                                     <div class="d-grid gap-2">
                                         <a href="actions/product_actions.php?action=view_single_product&id=<?php echo $product['product_id']; ?>" 
                                            class="btn btn-outline-primary">
                                             <i class="fa fa-eye me-1"></i>View Details
                                         </a>
-                                        <button class="btn btn-success" onclick="addToCart(<?php echo $product['product_id']; ?>)">
+                                        <button class="btn btn-add-cart" onclick="addToCart(<?php echo $product['product_id']; ?>)">
                                             <i class="fa fa-cart-plus me-1"></i>Add to Cart
                                         </button>
                                     </div>

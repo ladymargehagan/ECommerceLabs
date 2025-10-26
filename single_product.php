@@ -1,5 +1,16 @@
 <?php
 session_start();
+require_once 'controllers/product_controller.php';
+
+$product_id = $_GET['id'] ?? '';
+$product_controller = new product_controller();
+$result = $product_controller->view_single_product_ctr($product_id);
+$product = $result['success'] ? $result['data'] : null;
+
+if (!$product) {
+    echo "Product not found";
+    exit;
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -10,6 +21,7 @@ session_start();
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <link href="css/main.css" rel="stylesheet">
+    <link href="css/single_product.css" rel="stylesheet">
 </head>
 <body>
     <!-- Navigation -->

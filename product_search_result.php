@@ -1,5 +1,13 @@
 <?php
 session_start();
+require_once 'controllers/product_controller.php';
+
+$search_query = $_GET['query'] ?? '';
+$product_controller = new product_controller();
+$result = $product_controller->search_products_ctr($search_query);
+$products = $result['success'] ? $result['data'] : array();
+$categories = $product_controller->get_categories_ctr()['data'];
+$brands = $product_controller->get_brands_ctr()['data'];
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -10,6 +18,8 @@ session_start();
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <link href="css/main.css" rel="stylesheet">
+    <link href="css/product_display.css" rel="stylesheet">
+    <link href="css/search_results.css" rel="stylesheet">
 </head>
 <body>
     <!-- Navigation -->
