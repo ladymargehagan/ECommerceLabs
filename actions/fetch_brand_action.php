@@ -1,6 +1,9 @@
 <?php
-require_once '../settings/core.php';
+require_once '../settings/db_class.php';
+require_once '../classes/brand_class.php';
 require_once '../controllers/brand_controller.php';
+
+session_start();
 
 if (!isset($_SESSION['user_id'])) {
     echo json_encode(array('success' => false, 'message' => 'User not logged in'));
