@@ -439,3 +439,50 @@ function clearFieldErrors() {
     $('.form-control').removeClass('is-invalid');
     $('.invalid-feedback').text('');
 }
+
+// Upload product image function
+function uploadProductImage(productId, imageFile) {
+    const formData = new FormData();
+    formData.append('productId', productId);
+    formData.append('productImage', imageFile);
+    
+    $.ajax({
+        url: '../actions/upload_product_image_action.php',
+        method: 'POST',
+        data: formData,
+        processData: false,
+        contentType: false,
+        dataType: 'json',
+        success: function(response) {
+            hideLoading();
+            if (response.success) {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Success!',
+                    text: 'Product and image saved successfully',
+                    timer: 2000,
+                    showConfirmButton: false
+                });
+                $('#addProductModal, #editProductModal').modal('hide');
+                $('#addProductForm')[0].reset();
+                clearFieldErrors();
+                $('#imagePreview, #editImagePreview').hide();
+                loadProducts();
+            } else {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error!',
+                    text: response.message
+                });
+            }
+        },
+        error: function() {
+            hideLoading();
+            Swal.fire({
+                icon: 'error',
+                title: 'Error!',
+                text: 'An error occurred while uploading the image'
+            });
+        }
+    });
+}
