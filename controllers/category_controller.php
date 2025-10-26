@@ -3,10 +3,6 @@ require_once '../classes/category_class.php';
 
 class category_controller extends category_class
 {
-    public function __construct()
-    {
-        parent::__construct();
-    }
 
     public function add_category_ctr($kwargs)
     {
