@@ -53,7 +53,7 @@ $product_controller = new product_controller();
 // Handle image upload
 $product_image = '';
 if (isset($_FILES['productImage']) && $_FILES['productImage']['error'] === UPLOAD_ERR_OK) {
-    $upload_result = $product_controller->upload_image_ctr($_FILES['productImage'], 'temp');
+    $upload_result = $product_controller->upload_image_ctr($_FILES['productImage'], 'temp', $user_id);
     if ($upload_result['success']) {
         $product_image = $upload_result['data'];
     } else {

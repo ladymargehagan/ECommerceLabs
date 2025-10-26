@@ -288,6 +288,34 @@ function validateProductForm(formData) {
     return isValid;
 }
 
+// Validate bulk upload form
+function validateBulkUploadForm(formData) {
+    let isValid = true;
+    
+    // Check if CSV file is selected
+    const csvFile = formData.get('csvFile');
+    if (!csvFile || csvFile.size === 0) {
+        showFieldError('#csvFile', 'Please select a CSV file');
+        isValid = false;
+    } else {
+        clearFieldError('#csvFile');
+        
+        // Validate file type
+        if (!csvFile.name.toLowerCase().endsWith('.csv')) {
+            showFieldError('#csvFile', 'Only CSV files are allowed');
+            isValid = false;
+        }
+        
+        // Validate file size (5MB max)
+        if (csvFile.size > 5 * 1024 * 1024) {
+            showFieldError('#csvFile', 'File size must be less than 5MB');
+            isValid = false;
+        }
+    }
+    
+    return isValid;
+}
+
 // Utility functions
 function showLoading() {
     $('#loadingOverlay').show();
