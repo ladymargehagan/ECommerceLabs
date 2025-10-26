@@ -20,8 +20,22 @@ if ($_SESSION['role'] != 1) {
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <link href="../css/main.css" rel="stylesheet">
-    <link href="../css/category.css" rel="stylesheet">
-    <link href="../css/common.css" rel="stylesheet">
+    <style>
+        .category-card {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .category-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+        }
+        .action-buttons {
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        .category-card:hover .action-buttons {
+            opacity: 1;
+        }
+    </style>
 </head>
 <body>
     <div class="container-fluid">
@@ -76,10 +90,10 @@ if ($_SESSION['role'] != 1) {
                                 <div class="invalid-feedback"></div>
                             </div>
 
-                            <div id="categoryImagePreview" class="mb-3 image-preview-container">
+                            <div id="categoryImagePreview" class="mb-3" style="display: none;">
                                 <label class="form-label">Image Preview</label>
                                 <div class="text-center">
-                                    <img id="previewCategoryImg" src="" alt="Preview" class="img-thumbnail image-preview-thumbnail">
+                                    <img id="previewCategoryImg" src="" alt="Preview" class="img-thumbnail" style="max-width: 200px; max-height: 200px;">
                                 </div>
                             </div>
                         </div>
@@ -121,7 +135,7 @@ if ($_SESSION['role'] != 1) {
                             <div id="editCategoryImagePreview" class="mb-3">
                                 <label class="form-label">Current Image</label>
                                 <div class="text-center">
-                                    <img id="editPreviewCategoryImg" src="" alt="Current Image" class="img-thumbnail image-preview-thumbnail">
+                                    <img id="editPreviewCategoryImg" src="" alt="Current Image" class="img-thumbnail" style="max-width: 200px; max-height: 200px;">
                                 </div>
                             </div>
                         </div>

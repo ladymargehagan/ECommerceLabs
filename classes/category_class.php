@@ -18,36 +18,20 @@ class category_class extends db_connection
             $result = $this->db_write_query($sql);
         }
         
-        if ($result) {
-            // Return the ID of the inserted category
-            return $this->db->insert_id;
-        }
-        
-        return false;
+        return true;
     }
 
     public function get_categories_by_user($user_id)
     {
-        try {
-            $sql = "SELECT * FROM categories WHERE created_by = '$user_id' ORDER BY cat_name ASC";
+        $sql = "SELECT * FROM categories WHERE created_by = '$user_id' ORDER BY cat_name ASC";
+        $result = $this->db_fetch_all($sql);
+        
+        if ($result === false || empty($result)) {
+            $sql = "SELECT * FROM categories ORDER BY cat_name ASC";
             $result = $this->db_fetch_all($sql);
-            
-            if ($result === false || empty($result)) {
-                $sql = "SELECT * FROM categories ORDER BY cat_name ASC";
-                $result = $this->db_fetch_all($sql);
-            }
-            
-            return $result ? $result : array();
-        } catch (Exception $e) {
-            // If there's an error, try to get all categories
-            try {
-                $sql = "SELECT * FROM categories ORDER BY cat_name ASC";
-                $result = $this->db_fetch_all($sql);
-                return $result ? $result : array();
-            } catch (Exception $e2) {
-                return array();
-            }
         }
+        
+        return $result;
     }
 
     public function get_category_by_id($cat_id, $user_id)

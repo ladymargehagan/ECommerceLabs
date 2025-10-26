@@ -117,174 +117,95 @@ class product_class extends db_connection
         return $result ? $result : array();
     }
 
-    public function get_all_products_count()
+    public function product_title_exists($product_title, $exclude_id = null)
     {
-        $sql = "SELECT COUNT(*) as total FROM products";
-        $result = $this->db_fetch_one($sql);
-        return $result ? $result['total'] : 0;
-    }
-    
-    public function get_products_paginated($limit, $offset)
-    {
-        $sql = "SELECT p.*, c.cat_name, b.brand_name 
-                FROM products p 
-                LEFT JOIN categories c ON p.product_cat = c.cat_id 
-                LEFT JOIN brands b ON p.product_brand = b.brand_id 
-                ORDER BY p.product_title ASC
-                LIMIT $limit OFFSET $offset";
-        $result = $this->db_fetch_all($sql);
-        
-        return $result ? $result : array();
-    }
-    
-    public function filter_products($category, $brand, $sort)
-    {
-        $sql = "SELECT p.*, c.cat_name, b.brand_name 
-                FROM products p 
-                LEFT JOIN categories c ON p.product_cat = c.cat_id 
-                LEFT JOIN brands b ON p.product_brand = b.brand_id 
-                WHERE 1=1";
-        
-        // Add category filter
-        if ($category !== 'all' && is_numeric($category)) {
-            $sql .= " AND p.product_cat = '$category'";
+        $sql = "SELECT product_id FROM products WHERE product_title = '$product_title'";
+        if ($exclude_id) {
+            $sql .= " AND product_id != '$exclude_id'";
         }
-        
-        // Add brand filter
-        if ($brand !== 'all' && is_numeric($brand)) {
-            $sql .= " AND p.product_brand = '$brand'";
-        }
-        
-        // Add sorting
-        switch ($sort) {
-            case 'name_asc':
-                $sql .= " ORDER BY p.product_title ASC";
-                break;
-            case 'name_desc':
-                $sql .= " ORDER BY p.product_title DESC";
-                break;
-            case 'price_asc':
-                $sql .= " ORDER BY p.product_price ASC";
-                break;
-            case 'price_desc':
-                $sql .= " ORDER BY p.product_price DESC";
-                break;
-            case 'newest':
-                $sql .= " ORDER BY p.product_id DESC";
-                break;
-            default:
-                $sql .= " ORDER BY p.product_title ASC";
-                break;
-        }
-        
-        $result = $this->db_fetch_all($sql);
-        
-        return $result ? $result : array();
+        return $this->db_fetch_one($sql) ? true : false;
     }
 
-    // ===== CUSTOMER-FACING METHODS =====
+    // Enhanced methods for customer-facing functionality
     
-    /**
-     * View all products with full details for customer display
-     * @return array Array of products with category and brand information
-     */
-    public function view_all_products()
+    public function view_all_products($limit = null, $offset = 0)
     {
-        $sql = "SELECT p.*, c.cat_name, b.brand_name, c.cat_image, b.brand_image
+        $sql = "SELECT p.*, c.cat_name, b.brand_name 
                 FROM products p 
                 LEFT JOIN categories c ON p.product_cat = c.cat_id 
                 LEFT JOIN brands b ON p.product_brand = b.brand_id 
-                WHERE p.product_id IS NOT NULL
                 ORDER BY p.product_title ASC";
-        $result = $this->db_fetch_all($sql);
         
+        if ($limit) {
+            $sql .= " LIMIT $limit OFFSET $offset";
+        }
+        
+        $result = $this->db_fetch_all($sql);
         return $result ? $result : array();
     }
 
-    /**
-     * Search products by query string
-     * @param string $query Search term
-     * @return array Array of matching products
-     */
-    public function search_products($query)
+    public function search_products($query, $limit = null, $offset = 0)
     {
-        $query = $this->db->real_escape_string($query);
-        
-        $sql = "SELECT p.*, c.cat_name, b.brand_name, c.cat_image, b.brand_image
+        $search_query = $this->db->real_escape_string($query);
+        $sql = "SELECT p.*, c.cat_name, b.brand_name 
                 FROM products p 
                 LEFT JOIN categories c ON p.product_cat = c.cat_id 
                 LEFT JOIN brands b ON p.product_brand = b.brand_id 
-                WHERE (p.product_title LIKE '%$query%' 
-                OR p.product_desc LIKE '%$query%' 
-                OR p.product_keywords LIKE '%$query%'
-                OR c.cat_name LIKE '%$query%'
-                OR b.brand_name LIKE '%$query%')
-                AND p.product_id IS NOT NULL
-                ORDER BY 
-                    CASE 
-                        WHEN p.product_title LIKE '%$query%' THEN 1
-                        WHEN c.cat_name LIKE '%$query%' THEN 2
-                        WHEN b.brand_name LIKE '%$query%' THEN 3
-                        ELSE 4
-                    END,
-                    p.product_title ASC";
-        $result = $this->db_fetch_all($sql);
+                WHERE p.product_title LIKE '%$search_query%' 
+                OR p.product_desc LIKE '%$search_query%' 
+                OR p.product_keywords LIKE '%$search_query%'
+                OR c.cat_name LIKE '%$search_query%'
+                OR b.brand_name LIKE '%$search_query%'
+                ORDER BY p.product_title ASC";
         
+        if ($limit) {
+            $sql .= " LIMIT $limit OFFSET $offset";
+        }
+        
+        $result = $this->db_fetch_all($sql);
         return $result ? $result : array();
     }
 
-    /**
-     * Filter products by category ID
-     * @param int $cat_id Category ID
-     * @return array Array of products in the specified category
-     */
-    public function filter_products_by_category($cat_id)
+    public function filter_products_by_category($cat_id, $limit = null, $offset = 0)
     {
         $cat_id = $this->db->real_escape_string($cat_id);
-        
-        $sql = "SELECT p.*, c.cat_name, b.brand_name, c.cat_image, b.brand_image
+        $sql = "SELECT p.*, c.cat_name, b.brand_name 
                 FROM products p 
                 LEFT JOIN categories c ON p.product_cat = c.cat_id 
                 LEFT JOIN brands b ON p.product_brand = b.brand_id 
                 WHERE p.product_cat = '$cat_id'
-                AND p.product_id IS NOT NULL
                 ORDER BY p.product_title ASC";
-        $result = $this->db_fetch_all($sql);
         
+        if ($limit) {
+            $sql .= " LIMIT $limit OFFSET $offset";
+        }
+        
+        $result = $this->db_fetch_all($sql);
         return $result ? $result : array();
     }
 
-    /**
-     * Filter products by brand ID
-     * @param int $brand_id Brand ID
-     * @return array Array of products from the specified brand
-     */
-    public function filter_products_by_brand($brand_id)
+    public function filter_products_by_brand($brand_id, $limit = null, $offset = 0)
     {
         $brand_id = $this->db->real_escape_string($brand_id);
-        
-        $sql = "SELECT p.*, c.cat_name, b.brand_name, c.cat_image, b.brand_image
+        $sql = "SELECT p.*, c.cat_name, b.brand_name 
                 FROM products p 
                 LEFT JOIN categories c ON p.product_cat = c.cat_id 
                 LEFT JOIN brands b ON p.product_brand = b.brand_id 
                 WHERE p.product_brand = '$brand_id'
-                AND p.product_id IS NOT NULL
                 ORDER BY p.product_title ASC";
-        $result = $this->db_fetch_all($sql);
         
+        if ($limit) {
+            $sql .= " LIMIT $limit OFFSET $offset";
+        }
+        
+        $result = $this->db_fetch_all($sql);
         return $result ? $result : array();
     }
 
-    /**
-     * View single product with full details
-     * @param int $id Product ID
-     * @return array|null Product details or null if not found
-     */
     public function view_single_product($id)
     {
         $id = $this->db->real_escape_string($id);
-        
-        $sql = "SELECT p.*, c.cat_name, b.brand_name, c.cat_image, b.brand_image
+        $sql = "SELECT p.*, c.cat_name, b.brand_name 
                 FROM products p 
                 LEFT JOIN categories c ON p.product_cat = c.cat_id 
                 LEFT JOIN brands b ON p.product_brand = b.brand_id 
@@ -294,227 +215,112 @@ class product_class extends db_connection
         return $result;
     }
 
-    // ===== ADDITIONAL USEFUL METHODS =====
-
-    /**
-     * Get featured products (newest products)
-     * @param int $limit Number of products to return
-     * @return array Array of featured products
-     */
-    public function get_featured_products($limit = 8)
+    public function get_products_count()
     {
-        $limit = (int)$limit;
-        
-        $sql = "SELECT p.*, c.cat_name, b.brand_name, c.cat_image, b.brand_image
-                FROM products p 
-                LEFT JOIN categories c ON p.product_cat = c.cat_id 
-                LEFT JOIN brands b ON p.product_brand = b.brand_id 
-                WHERE p.product_id IS NOT NULL
-                ORDER BY p.product_id DESC
-                LIMIT $limit";
-        $result = $this->db_fetch_all($sql);
-        
-        return $result ? $result : array();
+        $sql = "SELECT COUNT(*) as total FROM products";
+        $result = $this->db_fetch_one($sql);
+        return $result ? $result['total'] : 0;
     }
 
-    /**
-     * Get products by price range
-     * @param float $min_price Minimum price
-     * @param float $max_price Maximum price
-     * @return array Array of products in price range
-     */
-    public function get_products_by_price_range($min_price, $max_price)
+    public function get_search_count($query)
     {
-        $min_price = (float)$min_price;
-        $max_price = (float)$max_price;
-        
-        $sql = "SELECT p.*, c.cat_name, b.brand_name, c.cat_image, b.brand_image
+        $search_query = $this->db->real_escape_string($query);
+        $sql = "SELECT COUNT(*) as total 
                 FROM products p 
                 LEFT JOIN categories c ON p.product_cat = c.cat_id 
                 LEFT JOIN brands b ON p.product_brand = b.brand_id 
-                WHERE p.product_price >= $min_price 
-                AND p.product_price <= $max_price
-                AND p.product_id IS NOT NULL
-                ORDER BY p.product_price ASC";
-        $result = $this->db_fetch_all($sql);
-        
-        return $result ? $result : array();
+                WHERE p.product_title LIKE '%$search_query%' 
+                OR p.product_desc LIKE '%$search_query%' 
+                OR p.product_keywords LIKE '%$search_query%'
+                OR c.cat_name LIKE '%$search_query%'
+                OR b.brand_name LIKE '%$search_query%'";
+        $result = $this->db_fetch_one($sql);
+        return $result ? $result['total'] : 0;
     }
 
-    /**
-     * Get related products (same category, different products)
-     * @param int $product_id Current product ID
-     * @param int $category_id Category ID
-     * @param int $limit Number of related products to return
-     * @return array Array of related products
-     */
-    public function get_related_products($product_id, $category_id, $limit = 4)
+    public function get_category_count($cat_id)
     {
-        $product_id = (int)$product_id;
-        $category_id = (int)$category_id;
-        $limit = (int)$limit;
-        
-        $sql = "SELECT p.*, c.cat_name, b.brand_name, c.cat_image, b.brand_image
-                FROM products p 
-                LEFT JOIN categories c ON p.product_cat = c.cat_id 
-                LEFT JOIN brands b ON p.product_brand = b.brand_id 
-                WHERE p.product_cat = $category_id 
-                AND p.product_id != $product_id
-                AND p.product_id IS NOT NULL
-                ORDER BY RAND()
-                LIMIT $limit";
-        $result = $this->db_fetch_all($sql);
-        
-        return $result ? $result : array();
+        $cat_id = $this->db->real_escape_string($cat_id);
+        $sql = "SELECT COUNT(*) as total FROM products WHERE product_cat = '$cat_id'";
+        $result = $this->db_fetch_one($sql);
+        return $result ? $result['total'] : 0;
     }
 
-    /**
-     * Get products with pagination for customer display
-     * @param int $limit Number of products per page
-     * @param int $offset Offset for pagination
-     * @param string $sort Sort order (name_asc, name_desc, price_asc, price_desc, newest)
-     * @return array Array of products with pagination
-     */
-    public function get_products_paginated_customer($limit, $offset, $sort = 'name_asc')
+    public function get_brand_count($brand_id)
     {
-        $limit = (int)$limit;
-        $offset = (int)$offset;
-        
-        $sql = "SELECT p.*, c.cat_name, b.brand_name, c.cat_image, b.brand_image
+        $brand_id = $this->db->real_escape_string($brand_id);
+        $sql = "SELECT COUNT(*) as total FROM products WHERE product_brand = '$brand_id'";
+        $result = $this->db_fetch_one($sql);
+        return $result ? $result['total'] : 0;
+    }
+
+    public function get_products_with_filters($category_id = null, $brand_id = null, $search_query = null, $limit = null, $offset = 0)
+    {
+        $sql = "SELECT p.*, c.cat_name, b.brand_name 
                 FROM products p 
                 LEFT JOIN categories c ON p.product_cat = c.cat_id 
                 LEFT JOIN brands b ON p.product_brand = b.brand_id 
-                WHERE p.product_id IS NOT NULL";
+                WHERE 1=1";
         
-        // Add sorting
-        switch ($sort) {
-            case 'name_asc':
-                $sql .= " ORDER BY p.product_title ASC";
-                break;
-            case 'name_desc':
-                $sql .= " ORDER BY p.product_title DESC";
-                break;
-            case 'price_asc':
-                $sql .= " ORDER BY p.product_price ASC";
-                break;
-            case 'price_desc':
-                $sql .= " ORDER BY p.product_price DESC";
-                break;
-            case 'newest':
-                $sql .= " ORDER BY p.product_id DESC";
-                break;
-            default:
-                $sql .= " ORDER BY p.product_title ASC";
-                break;
+        if ($category_id) {
+            $category_id = $this->db->real_escape_string($category_id);
+            $sql .= " AND p.product_cat = '$category_id'";
         }
         
-        $sql .= " LIMIT $limit OFFSET $offset";
+        if ($brand_id) {
+            $brand_id = $this->db->real_escape_string($brand_id);
+            $sql .= " AND p.product_brand = '$brand_id'";
+        }
+        
+        if ($search_query) {
+            $search_query = $this->db->real_escape_string($search_query);
+            $sql .= " AND (p.product_title LIKE '%$search_query%' 
+                    OR p.product_desc LIKE '%$search_query%' 
+                    OR p.product_keywords LIKE '%$search_query%'
+                    OR c.cat_name LIKE '%$search_query%'
+                    OR b.brand_name LIKE '%$search_query%')";
+        }
+        
+        $sql .= " ORDER BY p.product_title ASC";
+        
+        if ($limit) {
+            $sql .= " LIMIT $limit OFFSET $offset";
+        }
         
         $result = $this->db_fetch_all($sql);
-        
         return $result ? $result : array();
     }
 
-    /**
-     * Get total count of products for pagination
-     * @return int Total number of products
-     */
-    public function get_total_products_count()
+    public function get_filtered_count($category_id = null, $brand_id = null, $search_query = null)
     {
-        $sql = "SELECT COUNT(*) as total FROM products WHERE product_id IS NOT NULL";
-        $result = $this->db_fetch_one($sql);
-        return $result ? (int)$result['total'] : 0;
-    }
-
-    /**
-     * Get products by multiple categories
-     * @param array $category_ids Array of category IDs
-     * @return array Array of products from specified categories
-     */
-    public function get_products_by_categories($category_ids)
-    {
-        if (empty($category_ids) || !is_array($category_ids)) {
-            return array();
-        }
-        
-        $category_ids = array_map('intval', $category_ids);
-        $category_list = implode(',', $category_ids);
-        
-        $sql = "SELECT p.*, c.cat_name, b.brand_name, c.cat_image, b.brand_image
+        $sql = "SELECT COUNT(*) as total 
                 FROM products p 
                 LEFT JOIN categories c ON p.product_cat = c.cat_id 
                 LEFT JOIN brands b ON p.product_brand = b.brand_id 
-                WHERE p.product_cat IN ($category_list)
-                AND p.product_id IS NOT NULL
-                ORDER BY c.cat_name ASC, p.product_title ASC";
-        $result = $this->db_fetch_all($sql);
+                WHERE 1=1";
         
-        return $result ? $result : array();
-    }
-
-    /**
-     * Get products by multiple brands
-     * @param array $brand_ids Array of brand IDs
-     * @return array Array of products from specified brands
-     */
-    public function get_products_by_brands($brand_ids)
-    {
-        if (empty($brand_ids) || !is_array($brand_ids)) {
-            return array();
+        if ($category_id) {
+            $category_id = $this->db->real_escape_string($category_id);
+            $sql .= " AND p.product_cat = '$category_id'";
         }
         
-        $brand_ids = array_map('intval', $brand_ids);
-        $brand_list = implode(',', $brand_ids);
+        if ($brand_id) {
+            $brand_id = $this->db->real_escape_string($brand_id);
+            $sql .= " AND p.product_brand = '$brand_id'";
+        }
         
-        $sql = "SELECT p.*, c.cat_name, b.brand_name, c.cat_image, b.brand_image
-                FROM products p 
-                LEFT JOIN categories c ON p.product_cat = c.cat_id 
-                LEFT JOIN brands b ON p.product_brand = b.brand_id 
-                WHERE p.product_brand IN ($brand_list)
-                AND p.product_id IS NOT NULL
-                ORDER BY b.brand_name ASC, p.product_title ASC";
-        $result = $this->db_fetch_all($sql);
+        if ($search_query) {
+            $search_query = $this->db->real_escape_string($search_query);
+            $sql .= " AND (p.product_title LIKE '%$search_query%' 
+                    OR p.product_desc LIKE '%$search_query%' 
+                    OR p.product_keywords LIKE '%$search_query%'
+                    OR c.cat_name LIKE '%$search_query%'
+                    OR b.brand_name LIKE '%$search_query%')";
+        }
         
-        return $result ? $result : array();
+        $result = $this->db_fetch_one($sql);
+        return $result ? $result['total'] : 0;
     }
 
-    /**
-     * Get product statistics for dashboard
-     * @return array Array of product statistics
-     */
-    public function get_product_statistics()
-    {
-        $stats = array();
-        
-        // Total products
-        $sql = "SELECT COUNT(*) as total FROM products WHERE product_id IS NOT NULL";
-        $result = $this->db_fetch_one($sql);
-        $stats['total_products'] = $result ? (int)$result['total'] : 0;
-        
-        // Products by category
-        $sql = "SELECT c.cat_name, COUNT(p.product_id) as count 
-                FROM categories c 
-                LEFT JOIN products p ON c.cat_id = p.product_cat 
-                GROUP BY c.cat_id, c.cat_name 
-                ORDER BY count DESC";
-        $result = $this->db_fetch_all($sql);
-        $stats['by_category'] = $result ? $result : array();
-        
-        // Products by brand
-        $sql = "SELECT b.brand_name, COUNT(p.product_id) as count 
-                FROM brands b 
-                LEFT JOIN products p ON b.brand_id = p.product_brand 
-                GROUP BY b.brand_id, b.brand_name 
-                ORDER BY count DESC";
-        $result = $this->db_fetch_all($sql);
-        $stats['by_brand'] = $result ? $result : array();
-        
-        // Price range
-        $sql = "SELECT MIN(product_price) as min_price, MAX(product_price) as max_price, AVG(product_price) as avg_price 
-                FROM products WHERE product_id IS NOT NULL";
-        $result = $this->db_fetch_one($sql);
-        $stats['price_range'] = $result ? $result : array();
-        
-        return $stats;
 }
 ?>

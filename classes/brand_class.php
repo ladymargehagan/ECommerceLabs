@@ -14,12 +14,7 @@ class brand_class extends db_connection
         $sql = "INSERT INTO brands (brand_name, brand_image) VALUES ('$brand_name', '$brand_image')";
         $result = $this->db_write_query($sql);
         
-        if ($result) {
-            // Return the ID of the inserted brand
-            return $this->db->insert_id;
-        }
-        
-        return false;
+        return $result;
     }
 
     public function get_brands_by_user($user_id)
@@ -32,14 +27,10 @@ class brand_class extends db_connection
 
     public function get_all_brands()
     {
-        try {
-            $sql = "SELECT * FROM brands ORDER BY brand_name ASC";
-            $result = $this->db_fetch_all($sql);
-            
-            return $result ? $result : array();
-        } catch (Exception $e) {
-            return array();
-        }
+        $sql = "SELECT * FROM brands ORDER BY brand_name ASC";
+        $result = $this->db_fetch_all($sql);
+        
+        return $result ? $result : array();
     }
 
     public function get_brand_by_id($brand_id)

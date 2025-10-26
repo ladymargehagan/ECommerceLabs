@@ -46,9 +46,6 @@ if (!class_exists('db_connection')) {
                 return false;
             }
             $this->results = mysqli_query($this->db, $sqlQuery);
-            if ($this->results === false) {
-                error_log("Database query failed: " . mysqli_error($this->db) . " SQL: " . $sqlQuery);
-            }
             return $this->results !== false;
         }
 
@@ -77,8 +74,7 @@ if (!class_exists('db_connection')) {
             if (!$this->db_query($sql)) {
                 return false;
             }
-            $result = mysqli_fetch_all($this->results, MYSQLI_ASSOC);
-            return $result !== false ? $result : array();
+            return mysqli_fetch_all($this->results, MYSQLI_ASSOC);
         }
 
     // Get count of rows in last result

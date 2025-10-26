@@ -1,144 +1,124 @@
 <?php
-require_once 'settings/core.php';
+// Fix session permission issues by setting custom session path
+$sessionPath = dirname(__DIR__) . '/sessions';
+if (!is_dir($sessionPath)) {
+    mkdir($sessionPath, 0755, true);
+}
+ini_set('session.save_path', $sessionPath);
+session_start();
+
+// Check if user is logged in
+if (!isset($_SESSION['user_id'])) {
+    header('Location: ../login/login.php');
+    exit;
+}
+
+// Check if user is a regular customer (not admin)
+if (isset($_SESSION['role']) && $_SESSION['role'] == 1) {
+    header('Location: ../admin/dashboard.php');
+    exit;
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard - Taste of Africa</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Customer Dashboard - Taste of Africa</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-    <link href="css/main.css" rel="stylesheet">
-    <link href="css/common.css" rel="stylesheet">
+    <link href="../css/main.css" rel="stylesheet">
+    <link href="../css/index.css" rel="stylesheet">
 </head>
 <body>
-    <!-- Navigation -->
-    <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm">
-        <div class="container">
-            <a class="navbar-brand fw-bold" href="index.php">
-                <i class="fa fa-star text-warning me-2"></i>Taste of Africa
-            </a>
-            
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav me-auto">
-                    <li class="nav-item">
-                        <a class="nav-link" href="index.php">
-                            <i class="fa fa-home me-1"></i>Home
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="all_product.php">
-                            <i class="fa fa-box me-1"></i>All Products
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="product.php">
-                            <i class="fa fa-search me-1"></i>Search Products
-                        </a>
-                    </li>
-                </ul>
-                
-                <!-- User Menu -->
-                <ul class="navbar-nav">
-                    <?php if (isset($_SESSION['user_id'])): ?>
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown">
-                                <i class="fa fa-user me-1"></i><?php echo htmlspecialchars($_SESSION['name']); ?>
-                            </a>
-                            <ul class="dropdown-menu">
-                                <li><a class="dropdown-item active" href="customer/dashboard.php">
-                                    <i class="fa fa-tachometer-alt me-2"></i>Dashboard
-                                </a></li>
-                                <li><hr class="dropdown-divider"></li>
-                                <li><a class="dropdown-item" href="login/logout.php">
-                                    <i class="fa fa-sign-out-alt me-2"></i>Logout
-                                </a></li>
-                            </ul>
-                        </li>
-                    <?php else: ?>
-                        <li class="nav-item">
-                            <a class="nav-link" href="login/register.php">
-                                <i class="fa fa-user-plus me-1"></i>Register
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="login/login.php">
-                                <i class="fa fa-sign-in-alt me-1"></i>Login
-                            </a>
-                        </li>
-                    <?php endif; ?>
-                </ul>
+    <div class="container" style="padding-top: 120px;">
+        <!-- Customer Navigation -->
+        <div class="card mb-4">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <div>
+                    <h4><i class="fa fa-user me-2"></i>Customer Dashboard</h4>
+                    <p class="mb-0">Welcome back, <?php echo htmlspecialchars($_SESSION['name']); ?>!</p>
+                </div>
+                <div>
+                    <a href="../index.php" class="btn btn-outline-primary me-2">
+                        <i class="fa fa-home me-1"></i>Home
+                    </a>
+                    <a href="../login/logout.php" class="btn btn-outline-danger">
+                        <i class="fa fa-sign-out-alt me-1"></i>Logout
+                    </a>
+                </div>
             </div>
         </div>
-    </nav>
 
-    <div class="container container-padding-top">
+        <!-- Customer Information -->
         <div class="row">
-            <div class="col-12">
+            <div class="col-lg-8">
                 <div class="card">
-                    <div class="card-header bg-primary text-white">
-                        <h4 class="mb-0">
-                            <i class="fa fa-tachometer-alt me-2"></i>User Dashboard
-                        </h4>
+                    <div class="card-header">
+                        <h5><i class="fa fa-user-circle me-2"></i>Your Account Information</h5>
                     </div>
-                    <div class="card-body text-center py-5">
-                        <i class="fa fa-tools fa-4x text-muted mb-4"></i>
-                        <h3 class="text-muted">Dashboard Coming Soon</h3>
-                        <p class="lead text-muted mb-4">
-                            We're working hard to bring you an amazing dashboard experience. 
-                            Soon you'll be able to manage your account, view your orders, 
-                            and track your shopping history.
-                        </p>
-                        
-                        <div class="row mt-4">
-                            <div class="col-md-4 mb-3">
-                                <div class="card border-primary">
-                                    <div class="card-body">
-                                        <i class="fa fa-user fa-2x text-primary mb-3"></i>
-                                        <h6>Account Management</h6>
-                                        <small class="text-muted">Update your profile and preferences</small>
-                                    </div>
-                                </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <p><strong>Name:</strong> <?php echo htmlspecialchars($_SESSION['name']); ?></p>
+                                <p><strong>Email:</strong> <?php echo htmlspecialchars($_SESSION['email']); ?></p>
+                                <p><strong>Contact:</strong> <?php echo htmlspecialchars($_SESSION['contact']); ?></p>
                             </div>
-                            <div class="col-md-4 mb-3">
-                                <div class="card border-success">
-                                    <div class="card-body">
-                                        <i class="fa fa-shopping-bag fa-2x text-success mb-3"></i>
-                                        <h6>Order History</h6>
-                                        <small class="text-muted">View and track your orders</small>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-4 mb-3">
-                                <div class="card border-info">
-                                    <div class="card-body">
-                                        <i class="fa fa-heart fa-2x text-info mb-3"></i>
-                                        <h6>Wishlist</h6>
-                                        <small class="text-muted">Save your favorite products</small>
-                                    </div>
-                                </div>
+                            <div class="col-md-6">
+                                <p><strong>Location:</strong> <?php echo htmlspecialchars($_SESSION['city'] . ', ' . $_SESSION['country']); ?></p>
+                                <p><strong>Member Since:</strong> <?php echo date('F Y', $_SESSION['login_time']); ?></p>
+                                <p><strong>Account Type:</strong> <span class="badge bg-info">Customer</span></p>
                             </div>
                         </div>
-                        
-                        <div class="mt-4">
-                            <a href="index.php" class="btn btn-primary me-3">
-                                <i class="fa fa-home me-2"></i>Go to Home
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-lg-4">
+                <div class="card">
+                    <div class="card-header">
+                        <h5><i class="fa fa-shopping-cart me-2"></i>Quick Actions</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="d-grid gap-2">
+                            <a href="../index.php" class="btn btn-primary">
+                                <i class="fa fa-shopping-bag me-2"></i>Start Shopping
                             </a>
-                            <a href="all_product.php" class="btn btn-outline-primary">
-                                <i class="fa fa-box me-2"></i>Browse Products
+                            <a href="#" class="btn btn-outline-secondary">
+                                <i class="fa fa-box me-2"></i>My Orders
+                            </a>
+                            <a href="#" class="btn btn-outline-info">
+                                <i class="fa fa-heart me-2"></i>Wishlist
+                            </a>
+                            <a href="#" class="btn btn-outline-warning">
+                                <i class="fa fa-cog me-2"></i>Account Settings
                             </a>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
+
+        <!-- Recent Activity -->
+        <div class="row mt-4">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h5><i class="fa fa-clock me-2"></i>Recent Activity</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="alert alert-info">
+                            <i class="fa fa-info-circle me-2"></i>
+                            Welcome to your customer dashboard! This is where you can manage your account, view orders, and access your shopping features.
+                        </div>
+                        <p class="text-muted">More features coming soon...</p>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 
+    <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </body>

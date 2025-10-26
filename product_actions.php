@@ -1,333 +1,125 @@
 <?php
 require_once 'settings/core.php';
 require_once 'controllers/product_controller.php';
-require_once 'controllers/category_controller.php';
-require_once 'controllers/brand_controller.php';
 
-// Set JSON header
+// Initialize product controller
+$product_controller = new product_controller();
+
+// Set content type to JSON for AJAX responses
 header('Content-Type: application/json');
 
-// Get action parameter
-$action = $_GET['action'] ?? '';
+// Get the action from the request
+$action = isset($_GET['action']) ? $_GET['action'] : (isset($_POST['action']) ? $_POST['action'] : '');
 
 try {
     switch ($action) {
-        case 'get_products':
-            getProducts();
-            break;
+        case 'get_all_products':
+            $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
+            $limit = isset($_GET['limit']) ? (int)$_GET['limit'] : 10;
+            $offset = ($page - 1) * $limit;
             
-        case 'get_products_paginated':
-            getProductsPaginated();
+            $result = $product_controller->view_all_products_ctr($limit, $offset);
+            echo json_encode($result);
             break;
-            
-        case 'get_product_detail':
-            getProductDetail();
-            break;
-            
+
         case 'search_products':
-            searchProducts();
-            break;
+            $query = isset($_GET['query']) ? trim($_GET['query']) : '';
+            $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
+            $limit = isset($_GET['limit']) ? (int)$_GET['limit'] : 10;
+            $offset = ($page - 1) * $limit;
             
-        case 'filter_products':
-            filterProducts();
+            $result = $product_controller->search_products_ctr($query, $limit, $offset);
+            echo json_encode($result);
             break;
+
+        case 'filter_by_category':
+            $category_id = isset($_GET['category_id']) ? (int)$_GET['category_id'] : null;
+            $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
+            $limit = isset($_GET['limit']) ? (int)$_GET['limit'] : 10;
+            $offset = ($page - 1) * $limit;
             
+            $result = $product_controller->filter_products_by_category_ctr($category_id, $limit, $offset);
+            echo json_encode($result);
+            break;
+
+        case 'filter_by_brand':
+            $brand_id = isset($_GET['brand_id']) ? (int)$_GET['brand_id'] : null;
+            $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
+            $limit = isset($_GET['limit']) ? (int)$_GET['limit'] : 10;
+            $offset = ($page - 1) * $limit;
+            
+            $result = $product_controller->filter_products_by_brand_ctr($brand_id, $limit, $offset);
+            echo json_encode($result);
+            break;
+
+        case 'get_single_product':
+            $product_id = isset($_GET['product_id']) ? (int)$_GET['product_id'] : null;
+            
+            $result = $product_controller->view_single_product_ctr($product_id);
+            echo json_encode($result);
+            break;
+
+        case 'get_products_with_filters':
+            $category_id = isset($_GET['category_id']) ? (int)$_GET['category_id'] : null;
+            $brand_id = isset($_GET['brand_id']) ? (int)$_GET['brand_id'] : null;
+            $search_query = isset($_GET['search_query']) ? trim($_GET['search_query']) : null;
+            $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
+            $limit = isset($_GET['limit']) ? (int)$_GET['limit'] : 10;
+            $offset = ($page - 1) * $limit;
+            
+            $result = $product_controller->get_products_with_filters_ctr($category_id, $brand_id, $search_query, $limit, $offset);
+            echo json_encode($result);
+            break;
+
         case 'get_categories':
-            getCategories();
+            $result = $product_controller->get_categories_ctr();
+            echo json_encode($result);
             break;
-            
+
         case 'get_brands':
-            getBrands();
+            $result = $product_controller->get_brands_ctr();
+            echo json_encode($result);
             break;
+
+        case 'get_product_count':
+            $category_id = isset($_GET['category_id']) ? (int)$_GET['category_id'] : null;
+            $brand_id = isset($_GET['brand_id']) ? (int)$_GET['brand_id'] : null;
+            $search_query = isset($_GET['search_query']) ? trim($_GET['search_query']) : null;
             
-        case 'debug_products':
-            debugProducts();
+            if ($category_id && $brand_id && $search_query) {
+                $result = $product_controller->get_products_with_filters_ctr($category_id, $brand_id, $search_query, null, 0);
+                $count = $result['total_count'];
+            } elseif ($category_id && $brand_id) {
+                $result = $product_controller->get_products_with_filters_ctr($category_id, $brand_id, null, null, 0);
+                $count = $result['total_count'];
+            } elseif ($category_id && $search_query) {
+                $result = $product_controller->get_products_with_filters_ctr($category_id, null, $search_query, null, 0);
+                $count = $result['total_count'];
+            } elseif ($brand_id && $search_query) {
+                $result = $product_controller->get_products_with_filters_ctr(null, $brand_id, $search_query, null, 0);
+                $count = $result['total_count'];
+            } elseif ($category_id) {
+                $result = $product_controller->filter_products_by_category_ctr($category_id, null, 0);
+                $count = $result['total_count'];
+            } elseif ($brand_id) {
+                $result = $product_controller->filter_products_by_brand_ctr($brand_id, null, 0);
+                $count = $result['total_count'];
+            } elseif ($search_query) {
+                $result = $product_controller->search_products_ctr($search_query, null, 0);
+                $count = $result['total_count'];
+            } else {
+                $result = $product_controller->view_all_products_ctr(null, 0);
+                $count = $result['total_count'];
+            }
+            
+            echo json_encode(array('success' => true, 'count' => $count));
             break;
-            
+
         default:
             echo json_encode(array('success' => false, 'message' => 'Invalid action'));
             break;
     }
 } catch (Exception $e) {
-    echo json_encode(array('success' => false, 'message' => 'Server error: ' . $e->getMessage()));
-}
-
-function getProducts() {
-    $page = intval($_GET['page'] ?? 1);
-    $limit = 12; // Products per page
-    $offset = ($page - 1) * $limit;
-    
-    $product_controller = new product_controller();
-    
-    // Get total count
-    $total_result = $product_controller->get_all_products_count_ctr();
-    if (!$total_result['success']) {
-        echo json_encode($total_result);
-        return;
-    }
-    
-    $total = $total_result['data'];
-    
-    // Get products for current page
-    $result = $product_controller->get_products_paginated_ctr($limit, $offset);
-    
-    if ($result['success']) {
-        $pagination = array(
-            'current_page' => $page,
-            'total_pages' => ceil($total / $limit),
-            'total_items' => $total,
-            'items_per_page' => $limit
-        );
-        
-        echo json_encode(array(
-            'success' => true,
-            'data' => array(
-                'products' => $result['data'],
-                'pagination' => $pagination,
-                'total' => $total,
-                'page' => $page
-            )
-        ));
-    } else {
-        echo json_encode($result);
-    }
-}
-
-function getProductsPaginated() {
-    $page = intval($_GET['page'] ?? 1);
-    $limit = intval($_GET['limit'] ?? 10);
-    $offset = ($page - 1) * $limit;
-    
-    $product_controller = new product_controller();
-    
-    // Get total count first
-    $total_result = $product_controller->get_all_products_count_ctr();
-    if (!$total_result['success']) {
-        echo json_encode($total_result);
-        return;
-    }
-    
-    $total = $total_result['data'];
-    
-    // Get products for current page using pagination
-    $products_result = $product_controller->get_products_paginated_ctr($limit, $offset);
-    
-    if (!$products_result['success']) {
-        echo json_encode($products_result);
-        return;
-    }
-    
-    $products = $products_result['data'];
-    
-    $pagination = array(
-        'current_page' => $page,
-        'total_pages' => ceil($total / $limit),
-        'total_items' => $total,
-        'items_per_page' => $limit
-    );
-    
-    echo json_encode(array(
-        'success' => true,
-        'data' => array(
-            'products' => $products,
-            'pagination' => $pagination,
-            'total' => $total,
-            'page' => $page
-        )
-    ));
-}
-
-function getProductDetail() {
-    $product_id = intval($_GET['product_id'] ?? 0);
-    
-    if (!$product_id) {
-        echo json_encode(array('success' => false, 'message' => 'Product ID is required'));
-        return;
-    }
-    
-    $product_controller = new product_controller();
-    
-    // Get all products first
-    $all_products_result = $product_controller->get_all_products_ctr();
-    
-    if (!$all_products_result['success']) {
-        echo json_encode($all_products_result);
-        return;
-    }
-    
-    $all_products = $all_products_result['data'];
-    
-    // Find the specific product
-    $product = null;
-    foreach ($all_products as $p) {
-        if ($p['product_id'] == $product_id) {
-            $product = $p;
-            break;
-        }
-    }
-    
-    if ($product) {
-        echo json_encode(array('success' => true, 'data' => $product));
-    } else {
-        echo json_encode(array('success' => false, 'message' => 'Product not found'));
-    }
-}
-
-function searchProducts() {
-    $search_term = trim($_GET['search'] ?? '');
-    $page = intval($_GET['page'] ?? 1);
-    $limit = intval($_GET['limit'] ?? 10);
-    $offset = ($page - 1) * $limit;
-    
-    if (empty($search_term)) {
-        echo json_encode(array('success' => false, 'message' => 'Search term is required'));
-        return;
-    }
-    
-    $product_controller = new product_controller();
-    
-    // Get all products first
-    $all_products_result = $product_controller->get_all_products_ctr();
-    
-    if (!$all_products_result['success']) {
-        echo json_encode($all_products_result);
-        return;
-    }
-    
-    $all_products = $all_products_result['data'];
-    $search_term_lower = strtolower($search_term);
-    
-    // Filter products by search term
-    $filtered_products = array_filter($all_products, function($product) use ($search_term_lower) {
-        return strpos(strtolower($product['product_title']), $search_term_lower) !== false ||
-               strpos(strtolower($product['product_desc']), $search_term_lower) !== false ||
-               strpos(strtolower($product['product_keywords']), $search_term_lower) !== false ||
-               strpos(strtolower($product['cat_name']), $search_term_lower) !== false ||
-               strpos(strtolower($product['brand_name']), $search_term_lower) !== false;
-    });
-    
-    $total = count($filtered_products);
-    $products = array_slice($filtered_products, $offset, $limit);
-    
-    $pagination = array(
-        'current_page' => $page,
-        'total_pages' => ceil($total / $limit),
-        'total_items' => $total,
-        'items_per_page' => $limit
-    );
-    
-    echo json_encode(array(
-        'success' => true,
-        'data' => array(
-            'products' => array_values($products),
-            'pagination' => $pagination,
-            'total' => $total,
-            'search_term' => $search_term,
-            'page' => $page
-        )
-    ));
-}
-
-function filterProducts() {
-    $category = $_GET['category'] ?? 'all';
-    $brand = $_GET['brand'] ?? 'all';
-    $sort = $_GET['sort'] ?? 'name_asc';
-    
-    $product_controller = new product_controller();
-    
-    // Get all products first
-    $all_products_result = $product_controller->get_all_products_ctr();
-    
-    if (!$all_products_result['success']) {
-        echo json_encode($all_products_result);
-        return;
-    }
-    
-    $all_products = $all_products_result['data'];
-    
-    // Filter by category
-    if ($category !== 'all') {
-        $all_products = array_filter($all_products, function($product) use ($category) {
-            return $product['product_cat'] == $category;
-        });
-    }
-    
-    // Filter by brand
-    if ($brand !== 'all') {
-        $all_products = array_filter($all_products, function($product) use ($brand) {
-            return $product['product_brand'] == $brand;
-        });
-    }
-    
-    // Sort products
-    switch ($sort) {
-        case 'name_asc':
-            usort($all_products, function($a, $b) {
-                return strcmp($a['product_title'], $b['product_title']);
-            });
-            break;
-        case 'name_desc':
-            usort($all_products, function($a, $b) {
-                return strcmp($b['product_title'], $a['product_title']);
-            });
-            break;
-        case 'price_asc':
-            usort($all_products, function($a, $b) {
-                return floatval($a['product_price']) - floatval($b['product_price']);
-            });
-            break;
-        case 'price_desc':
-            usort($all_products, function($a, $b) {
-                return floatval($b['product_price']) - floatval($a['product_price']);
-            });
-            break;
-    }
-    
-    echo json_encode(array(
-        'success' => true,
-        'data' => array(
-            'products' => array_values($all_products),
-            'total' => count($all_products),
-            'filters' => array(
-                'category' => $category,
-                'brand' => $brand,
-                'sort' => $sort
-            )
-        )
-    ));
-}
-
-function getCategories() {
-    try {
-        $product_controller = new product_controller();
-        $result = $product_controller->get_categories_ctr();
-        
-        echo json_encode($result);
-    } catch (Exception $e) {
-        echo json_encode(array('success' => false, 'message' => 'Error getting categories: ' . $e->getMessage()));
-    }
-}
-
-function getBrands() {
-    try {
-        $product_controller = new product_controller();
-        $result = $product_controller->get_brands_ctr();
-        
-        echo json_encode($result);
-    } catch (Exception $e) {
-        echo json_encode(array('success' => false, 'message' => 'Error getting brands: ' . $e->getMessage()));
-    }
-}
-
-function debugProducts() {
-    $product_controller = new product_controller();
-    $result = $product_controller->get_all_products_ctr();
-    
-    echo json_encode(array(
-        'success' => true,
-        'debug' => true,
-        'data' => $result,
-        'count' => is_array($result['data']) ? count($result['data']) : 'not array'
-    ));
+    echo json_encode(array('success' => false, 'message' => 'An error occurred: ' . $e->getMessage()));
 }
 ?>
