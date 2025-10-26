@@ -1,8 +1,8 @@
 <?php
 require_once 'settings/core.php';
-require_once 'controllers/product_controller.php';
-require_once 'controllers/category_controller.php';
-require_once 'controllers/brand_controller.php';
+require_once 'classes/product_class.php';
+require_once 'classes/category_class.php';
+require_once 'classes/brand_class.php';
 
 // Get page number
 $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
@@ -12,38 +12,31 @@ $page = max(1, $page);
 $category_filter = isset($_GET['category']) ? (int)$_GET['category'] : 0;
 $brand_filter = isset($_GET['brand']) ? (int)$_GET['brand'] : 0;
 
-// Initialize controllers
-$product_controller = new product_controller();
-$category_controller = new category_controller();
-$brand_controller = new brand_controller();
+// Initialize classes directly
+$product_class = new product_class();
+$category_class = new category_class();
+$brand_class = new brand_class();
 
 // Get products with pagination
 $limit = 10;
 $offset = ($page - 1) * $limit;
 
 if ($category_filter > 0) {
-    $products_result = $product_controller->filter_products_by_category_ctr($category_filter);
-    $products = $products_result['success'] ? $products_result['data'] : [];
+    $products = $product_class->filter_products_by_category($category_filter);
     $total_products = count($products);
     $products = array_slice($products, $offset, $limit);
 } elseif ($brand_filter > 0) {
-    $products_result = $product_controller->filter_products_by_brand_ctr($brand_filter);
-    $products = $products_result['success'] ? $products_result['data'] : [];
+    $products = $product_class->filter_products_by_brand($brand_filter);
     $total_products = count($products);
     $products = array_slice($products, $offset, $limit);
 } else {
-    $products_result = $product_controller->get_products_paginated_ctr($limit, $offset);
-    $products = $products_result['success'] ? $products_result['data'] : [];
-    $total_result = $product_controller->get_all_products_count_ctr();
-    $total_products = $total_result['success'] ? $total_result['data'] : 0;
+    $products = $product_class->get_products_paginated($limit, $offset);
+    $total_products = $product_class->get_all_products_count();
 }
 
 // Get categories and brands for filters
-$categories_result = $category_controller->get_all_categories_ctr();
-$categories = $categories_result['success'] ? $categories_result['data'] : [];
-
-$brands_result = $brand_controller->get_all_brands_ctr();
-$brands = $brands_result['success'] ? $brands_result['data'] : [];
+$categories = $category_class->get_categories();
+$brands = $brand_class->get_brands();
 
 // Calculate pagination
 $total_pages = ceil($total_products / $limit);

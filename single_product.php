@@ -1,6 +1,6 @@
 <?php
 require_once 'settings/core.php';
-require_once 'controllers/product_controller.php';
+require_once 'classes/product_class.php';
 
 // Get product ID
 $product_id = isset($_GET['id']) ? (int)$_GET['id'] : 0;
@@ -10,18 +10,16 @@ if (!$product_id) {
     exit();
 }
 
-// Initialize controller
-$product_controller = new product_controller();
+// Initialize class
+$product_class = new product_class();
 
 // Get product details
-$product_result = $product_controller->view_single_product_ctr($product_id);
+$product = $product_class->view_single_product($product_id);
 
-if (!$product_result['success']) {
+if (!$product) {
     header('Location: all_product.php');
     exit();
 }
-
-$product = $product_result['data'];
 ?>
 <!DOCTYPE html>
 <html lang="en">

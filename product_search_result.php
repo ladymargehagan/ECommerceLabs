@@ -1,8 +1,8 @@
 <?php
 require_once 'settings/core.php';
-require_once 'controllers/product_controller.php';
-require_once 'controllers/category_controller.php';
-require_once 'controllers/brand_controller.php';
+require_once 'classes/product_class.php';
+require_once 'classes/category_class.php';
+require_once 'classes/brand_class.php';
 
 // Get search parameters
 $search_query = isset($_GET['q']) ? trim($_GET['q']) : '';
@@ -16,14 +16,13 @@ if (empty($search_query)) {
     exit();
 }
 
-// Initialize controllers
-$product_controller = new product_controller();
-$category_controller = new category_controller();
-$brand_controller = new brand_controller();
+// Initialize classes
+$product_class = new product_class();
+$category_class = new category_class();
+$brand_class = new brand_class();
 
 // Get search results
-$search_result = $product_controller->search_products_ctr($search_query);
-$all_products = $search_result['success'] ? $search_result['data'] : [];
+$all_products = $product_class->search_products($search_query);
 
 // Apply additional filters
 $filtered_products = $all_products;
@@ -48,11 +47,8 @@ $offset = ($page - 1) * $limit;
 $products = array_slice($filtered_products, $offset, $limit);
 
 // Get categories and brands for filters
-$categories_result = $category_controller->get_all_categories_ctr();
-$categories = $categories_result['success'] ? $categories_result['data'] : [];
-
-$brands_result = $brand_controller->get_all_brands_ctr();
-$brands = $brands_result['success'] ? $brands_result['data'] : [];
+$categories = $category_class->get_categories();
+$brands = $brand_class->get_brands();
 ?>
 <!DOCTYPE html>
 <html lang="en">
