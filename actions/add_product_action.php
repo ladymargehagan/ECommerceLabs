@@ -50,29 +50,67 @@ $product_keywords = htmlspecialchars($product_keywords, ENT_QUOTES, 'UTF-8');
 
 $product_controller = new product_controller();
 
-// Handle image upload
-$product_image = '';
-if (isset($_FILES['productImage']) && $_FILES['productImage']['error'] === UPLOAD_ERR_OK) {
-    $upload_result = $product_controller->upload_image_ctr($_FILES['productImage'], 'temp', $user_id);
-    if ($upload_result['success']) {
-        $product_image = $upload_result['data'];
-    } else {
-        echo json_encode($upload_result);
-        exit;
-    }
-}
-
 $kwargs = array(
     'product_cat' => $product_cat,
     'product_brand' => $product_brand,
     'product_title' => $product_title,
     'product_price' => $product_price,
     'product_desc' => $product_desc,
-    'product_image' => $product_image,
+    'product_image' => '',
     'product_keywords' => $product_keywords
 );
 
 $result = $product_controller->add_product_ctr($kwargs);
+
+// Handle image upload after product is created
+if ($result['success'] && isset($_FILES['productImage']) && $_FILES['productImage']['error'] === UPLOAD_ERR_OK) {
+    // Get the product ID from the database (we need to find the last inserted product)
+    $last_product = $product_controller->get_all_products_ctr();
+    if ($last_product['success'] && !empty($last_product['data'])) {
+        $new_product = end($last_product['data']); // Get the last product
+        $product_id = $new_product['product_id'];
+        
+        // Use the same pattern as user registration
+        $originalName = $_FILES['productImage']['name'];
+        $extension = pathinfo($originalName, PATHINFO_EXTENSION);
+        $sanitizedName = preg_replace('/[^a-zA-Z0-9._-]/', '_', pathinfo($originalName, PATHINFO_FILENAME));
+        
+        // Create directory structure: uploads/u{user_id}/p{product_id}/
+        $upload_dir = "../uploads/u{$user_id}/p{$product_id}/";
+        
+        // Ensure directory exists (uploads/ folder already exists on server)
+        if (!is_dir($upload_dir)) {
+            if (!mkdir($upload_dir, 0777, true)) {
+                echo json_encode(array('success' => false, 'message' => 'Failed to create upload directory'));
+                exit;
+            }
+        }
+        
+        // Generate filename with timestamp
+        $timestamp = time();
+        $filename = "img_{$sanitizedName}_{$timestamp}.{$extension}";
+        $file_path = $upload_dir . $filename;
+        
+        // Move uploaded file
+        if (move_uploaded_file($_FILES['productImage']['tmp_name'], $file_path)) {
+            $product_image = "uploads/u{$user_id}/p{$product_id}/{$filename}";
+            
+            // Update the product with the image path
+            $update_kwargs = array(
+                'product_id' => $product_id,
+                'product_cat' => $product_cat,
+                'product_brand' => $product_brand,
+                'product_title' => $product_title,
+                'product_price' => $product_price,
+                'product_desc' => $product_desc,
+                'product_image' => $product_image,
+                'product_keywords' => $product_keywords
+            );
+            
+            $product_controller->update_product_ctr($update_kwargs);
+        }
+    }
+}
 
 header('Content-Type: application/json');
 echo json_encode($result);

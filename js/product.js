@@ -83,14 +83,33 @@ $(document).ready(function() {
 
 // Load products function
 function loadProducts() {
-    // For now, just show empty state since fetch_product_action.php was removed
-    $('#productsContainer').html(`
-        <div class="col-12 text-center py-5">
-            <i class="fa fa-box fa-3x text-muted mb-3"></i>
-            <h4>Products will be displayed here</h4>
-            <p class="text-muted">Product display functionality will be added in future labs.</p>
-        </div>
-    `);
+    $.ajax({
+        url: '../actions/fetch_product_action.php',
+        method: 'GET',
+        dataType: 'json',
+        success: function(response) {
+            if (response.success && response.data && response.data.length > 0) {
+                displayProducts(response.data);
+            } else {
+                $('#productsContainer').html(`
+                    <div class="col-12 text-center py-5">
+                        <i class="fa fa-box fa-3x text-muted mb-3"></i>
+                        <h4>No Products Found</h4>
+                        <p class="text-muted">Start by adding your first product.</p>
+                    </div>
+                `);
+            }
+        },
+        error: function() {
+            $('#productsContainer').html(`
+                <div class="col-12 text-center py-5">
+                    <i class="fa fa-exclamation-triangle fa-3x text-danger mb-3"></i>
+                    <h4>Error Loading Products</h4>
+                    <p class="text-muted">Please refresh the page and try again.</p>
+                </div>
+            `);
+        }
+    });
 }
 
 // Load form data (categories and brands)

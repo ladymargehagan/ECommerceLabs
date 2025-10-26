@@ -32,9 +32,12 @@ $sanitizedName = preg_replace('/[^a-zA-Z0-9._-]/', '_', pathinfo($originalName, 
 // Create directory structure: uploads/u{user_id}/p{product_id}/
 $upload_dir = "../uploads/u{$user_id}/p{$product_id}/";
 
-// Ensure directory exists
+// Ensure directory exists (uploads/ folder already exists on server)
 if (!is_dir($upload_dir)) {
-    mkdir($upload_dir, 0777, true);
+    if (!mkdir($upload_dir, 0777, true)) {
+        echo json_encode(array('success' => false, 'message' => 'Failed to create upload directory'));
+        exit;
+    }
 }
 
 // Generate filename with timestamp for efficient searching (binary search friendly)

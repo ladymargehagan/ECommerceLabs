@@ -126,7 +126,7 @@ class product_class extends db_connection
         // Create directory structure: uploads/u{user_id}/p{product_id}/
         $upload_dir = "../uploads/u{$user_id}/p{$product_id}/";
         
-        // Ensure directory exists
+        // Ensure directory exists (uploads/ folder already exists on server)
         if (!is_dir($upload_dir)) {
             mkdir($upload_dir, 0777, true);
         }
