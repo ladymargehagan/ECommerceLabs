@@ -51,8 +51,7 @@ class product_controller extends product_class
     
     public function get_product_by_id_ctr($product_id)
     {
-        $product_class = new product_class();
-        $product = $product_class->get_product_by_id($product_id);
+        $product = $this->get_product_by_id($product_id);
         
         if ($product) {
             return array('success' => true, 'data' => $product);
