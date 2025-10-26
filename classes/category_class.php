@@ -81,32 +81,34 @@ class category_class extends db_connection
     {
         // Ensure database connection
         if (!$this->db_connect()) {
+            error_log("Delete category: Database connection failed");
             return false;
         }
 
-        $check_sql = "SELECT cat_id FROM categories WHERE cat_id = '$cat_id' AND created_by = '$user_id'";
+        // Check if category exists (don't restrict by user for now)
+        $check_sql = "SELECT cat_id FROM categories WHERE cat_id = '$cat_id'";
         $category_exists = $this->db_fetch_one($check_sql);
         
         if (!$category_exists) {
-            $check_sql = "SELECT cat_id FROM categories WHERE cat_id = '$cat_id'";
-            $category_exists = $this->db_fetch_one($check_sql);
-        }
-        
-        if (!$category_exists) {
+            error_log("Delete category: Category ID $cat_id not found");
             return false;
         }
 
+        // Check if category is used in products
         $check_products_sql = "SELECT product_id FROM products WHERE product_cat = '$cat_id'";
         if ($this->db_fetch_one($check_products_sql)) {
+            error_log("Delete category: Category ID $cat_id is being used by products");
             return false;
         }
 
-        $sql = "DELETE FROM categories WHERE cat_id = '$cat_id' AND created_by = '$user_id'";
+        // Delete the category
+        $sql = "DELETE FROM categories WHERE cat_id = '$cat_id'";
         $result = $this->db_write_query($sql);
         
-        if (!$result) {
-            $sql = "DELETE FROM categories WHERE cat_id = '$cat_id'";
-            $result = $this->db_write_query($sql);
+        if ($result) {
+            error_log("Delete category: Successfully deleted category ID $cat_id");
+        } else {
+            error_log("Delete category: Failed to delete category ID $cat_id - SQL error");
         }
         
         return $result;
