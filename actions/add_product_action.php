@@ -66,6 +66,7 @@ $result = $product_controller->add_product_ctr($kwargs);
 if ($result['success'] && isset($_FILES['productImage']) && $_FILES['productImage']['error'] === UPLOAD_ERR_OK) {
     // Get the product ID from the result
     $product_id = $result['product_id'];
+    $user_id = $_SESSION['user_id'];
     
     // Use the same pattern as user registration
     $originalName = $_FILES['productImage']['name'];

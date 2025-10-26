@@ -3,18 +3,18 @@ require_once '../settings/db_class.php';
 
 class category_class extends db_connection
 {
-    public function add_category($cat_name, $created_by)
+    public function add_category($cat_name, $created_by, $cat_image = '')
     {
         $check_sql = "SELECT cat_id FROM categories WHERE cat_name = '$cat_name'";
         if ($this->db_fetch_one($check_sql)) {
             return false;
         }
 
-        $sql = "INSERT INTO categories (cat_name, created_by) VALUES ('$cat_name', '$created_by')";
+        $sql = "INSERT INTO categories (cat_name, created_by, cat_image) VALUES ('$cat_name', '$created_by', '$cat_image')";
         $result = $this->db_write_query($sql);
         
         if (!$result) {
-            $sql = "INSERT INTO categories (cat_name) VALUES ('$cat_name')";
+            $sql = "INSERT INTO categories (cat_name, cat_image) VALUES ('$cat_name', '$cat_image')";
             $result = $this->db_write_query($sql);
         }
         
@@ -47,7 +47,7 @@ class category_class extends db_connection
         return $result;
     }
 
-    public function update_category($cat_id, $cat_name, $user_id)
+    public function update_category($cat_id, $cat_name, $user_id, $cat_image = '')
     {
         $check_sql = "SELECT cat_id FROM categories WHERE cat_id = '$cat_id' AND created_by = '$user_id'";
         $category_exists = $this->db_fetch_one($check_sql);
@@ -66,11 +66,11 @@ class category_class extends db_connection
             return false;
         }
 
-        $sql = "UPDATE categories SET cat_name = '$cat_name' WHERE cat_id = '$cat_id' AND created_by = '$user_id'";
+        $sql = "UPDATE categories SET cat_name = '$cat_name', cat_image = '$cat_image' WHERE cat_id = '$cat_id' AND created_by = '$user_id'";
         $result = $this->db_write_query($sql);
         
         if (!$result) {
-            $sql = "UPDATE categories SET cat_name = '$cat_name' WHERE cat_id = '$cat_id'";
+            $sql = "UPDATE categories SET cat_name = '$cat_name', cat_image = '$cat_image' WHERE cat_id = '$cat_id'";
             $result = $this->db_write_query($sql);
         }
         

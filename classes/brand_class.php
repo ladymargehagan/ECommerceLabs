@@ -3,7 +3,7 @@ require_once '../settings/db_class.php';
 
 class brand_class extends db_connection
 {
-    public function add_brand($brand_name)
+    public function add_brand($brand_name, $brand_image = '')
     {
         // Check if brand name already exists
         $check_sql = "SELECT brand_id FROM brands WHERE brand_name = '$brand_name'";
@@ -11,7 +11,7 @@ class brand_class extends db_connection
             return false;
         }
 
-        $sql = "INSERT INTO brands (brand_name) VALUES ('$brand_name')";
+        $sql = "INSERT INTO brands (brand_name, brand_image) VALUES ('$brand_name', '$brand_image')";
         $result = $this->db_write_query($sql);
         
         return $result;
@@ -41,7 +41,7 @@ class brand_class extends db_connection
         return $result;
     }
 
-    public function update_brand($brand_id, $brand_name)
+    public function update_brand($brand_id, $brand_name, $brand_image = '')
     {
         // Check if brand exists
         $check_sql = "SELECT brand_id FROM brands WHERE brand_id = '$brand_id'";
@@ -57,7 +57,7 @@ class brand_class extends db_connection
             return false;
         }
 
-        $sql = "UPDATE brands SET brand_name = '$brand_name' WHERE brand_id = '$brand_id'";
+        $sql = "UPDATE brands SET brand_name = '$brand_name', brand_image = '$brand_image' WHERE brand_id = '$brand_id'";
         $result = $this->db_write_query($sql);
         
         return $result;
