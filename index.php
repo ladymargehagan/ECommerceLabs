@@ -27,6 +27,9 @@ session_start();
 		<?php if (isset($_SESSION['user_id'])): ?>
 			<span class="me-2">Welcome, <?php echo htmlspecialchars($_SESSION['name']); ?>!</span>
 			<?php if ($_SESSION['role'] == 1): // Admin users ?>
+				<a href="login/logout.php" class="btn btn-sm btn-outline-danger me-2">
+					<i class="fa fa-sign-out-alt me-1"></i>Logout
+				</a>
 				<a href="admin/category.php" class="btn btn-sm btn-outline-primary me-2">
 					<i class="fa fa-tags me-1"></i>Category
 				</a>
@@ -36,14 +39,18 @@ session_start();
 				<a href="admin/product.php" class="btn btn-sm btn-outline-success me-2">
 					<i class="fa fa-plus me-1"></i>Add Product
 				</a>
+			<?php else: // Non-admin users ?>
+				<a href="login/logout.php" class="btn btn-sm btn-outline-danger">
+					<i class="fa fa-sign-out-alt me-1"></i>Logout
+				</a>
 			<?php endif; ?>
-			<a href="login/logout.php" class="btn btn-sm btn-outline-danger">
-				<i class="fa fa-sign-out-alt me-1"></i>Logout
-			</a>
 		<?php else: ?>
 			<span class="me-2">Menu:</span>
 			<a href="login/register.php" class="btn btn-sm btn-outline-primary me-2">
 				<i class="fa fa-user-plus me-1"></i>Register
+			</a>
+			<a href="login/login.php" class="btn btn-sm btn-outline-secondary me-2">
+				<i class="fa fa-sign-in-alt me-1"></i>Login
 			</a>
 			<a href="all_product.php" class="btn btn-sm btn-outline-success me-2">
 				<i class="fa fa-box me-1"></i>All Products
@@ -84,9 +91,6 @@ session_start();
 					<?php endforeach; ?>
 				</select>
 			</div>
-			<a href="login/login.php" class="btn btn-sm btn-outline-secondary">
-				<i class="fa fa-sign-in-alt me-1"></i>Login
-			</a>
 		<?php endif; ?>
 	</div>
 
