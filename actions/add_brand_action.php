@@ -1,4 +1,5 @@
 <?php
+header('Content-Type: application/json');
 require_once '../settings/core.php';
 require_once '../controllers/brand_controller.php';
 
@@ -76,6 +77,5 @@ if ($result['success'] && isset($_FILES['brandImage']) && $_FILES['brandImage'][
     }
 }
 
-header('Content-Type: application/json');
 echo json_encode($result);
 ?>

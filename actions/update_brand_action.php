@@ -1,4 +1,5 @@
 <?php
+header('Content-Type: application/json');
 require_once '../settings/core.php';
 require_once '../controllers/brand_controller.php';
 
@@ -51,6 +52,5 @@ $kwargs = array(
 
 $result = $brand_controller->update_brand_ctr($kwargs);
 
-header('Content-Type: application/json');
 echo json_encode($result);
 ?>

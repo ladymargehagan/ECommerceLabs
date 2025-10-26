@@ -1,13 +1,11 @@
 <?php
 require_once '../classes/category_class.php';
 
-class category_controller
+class category_controller extends category_class
 {
-    private $category_class;
-
     public function __construct()
     {
-        $this->category_class = new category_class();
+        parent::__construct();
     }
 
     public function add_category_ctr($kwargs)
@@ -24,11 +22,11 @@ class category_controller
             return array('success' => false, 'message' => 'Category name must be less than 100 characters');
         }
 
-        if ($this->category_class->category_name_exists($cat_name)) {
+        if ($this->category_name_exists($cat_name)) {
             return array('success' => false, 'message' => 'Category name already exists');
         }
 
-        $result = $this->category_class->add_category($cat_name, $created_by, $cat_image);
+        $result = $this->add_category($cat_name, $created_by, $cat_image);
         
         if ($result) {
             return array('success' => true, 'message' => 'Category added successfully', 'category_id' => $result);
@@ -39,7 +37,7 @@ class category_controller
 
     public function get_categories_ctr($user_id)
     {
-        $categories = $this->category_class->get_categories_by_user($user_id);
+        $categories = $this->get_categories_by_user($user_id);
         
         if ($categories === false) {
             return array('success' => false, 'message' => 'Failed to fetch categories');
@@ -50,7 +48,7 @@ class category_controller
     
     public function get_category_by_id_ctr($cat_id, $user_id)
     {
-        $category = $this->category_class->get_category_by_id($cat_id, $user_id);
+        $category = $this->get_category_by_id($cat_id, $user_id);
         
         if ($category) {
             return array('success' => true, 'data' => $category);
@@ -74,11 +72,11 @@ class category_controller
             return array('success' => false, 'message' => 'Category name must be less than 100 characters');
         }
 
-        if ($this->category_class->category_name_exists($cat_name, $cat_id)) {
+        if ($this->category_name_exists($cat_name, $cat_id)) {
             return array('success' => false, 'message' => 'Category name already exists');
         }
 
-        $result = $this->category_class->update_category($cat_id, $cat_name, $user_id, $cat_image);
+        $result = $this->update_category($cat_id, $cat_name, $user_id, $cat_image);
         
         if ($result) {
             return array('success' => true, 'message' => 'Category updated successfully');
@@ -93,7 +91,7 @@ class category_controller
             return array('success' => false, 'message' => 'Category ID is required');
         }
 
-        $result = $this->category_class->delete_category($cat_id, $user_id);
+        $result = $this->delete_category($cat_id, $user_id);
         
         if ($result) {
             return array('success' => true, 'message' => 'Category deleted successfully');
