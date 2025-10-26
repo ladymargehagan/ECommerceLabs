@@ -50,7 +50,7 @@ session_start();
 			</a>
 		<?php endif; ?>
 		
-		<!-- Product Navigation -->
+		<!-- Lab Required Menu Items -->
 		<div class="mt-2">
 			<a href="all_product.php" class="btn btn-sm btn-outline-info me-2">
 				<i class="fa fa-box me-1"></i>All Products
@@ -59,7 +59,8 @@ session_start();
 		
 		<!-- Search Box -->
 		<div class="mt-2">
-			<form class="d-flex" method="GET" action="product_search_result.php">
+			<form class="d-flex" method="GET" action="actions/product_actions.php">
+				<input type="hidden" name="action" value="search_products">
 				<input class="form-control form-control-sm me-2" type="search" name="query" 
 					   placeholder="Search products..." aria-label="Search" style="width: 200px;">
 				<button class="btn btn-outline-success btn-sm" type="submit">
@@ -73,12 +74,10 @@ session_start();
 			<div class="d-flex gap-2">
 				<select class="form-select form-select-sm" style="width: 150px;" onchange="filterByCategory(this.value)">
 					<option value="">All Categories</option>
-					<!-- Categories will be loaded dynamically -->
 				</select>
 				
 				<select class="form-select form-select-sm" style="width: 150px;" onchange="filterByBrand(this.value)">
 					<option value="">All Brands</option>
-					<!-- Brands will be loaded dynamically -->
 				</select>
 			</div>
 		</div>
@@ -157,17 +156,17 @@ session_start();
 		// Filter functions
 		function filterByCategory(catId) {
 			if (catId) {
-				window.location.href = 'all_product.php?action=filter_by_category&cat_id=' + catId;
+				window.location.href = 'actions/product_actions.php?action=filter_by_category&cat_id=' + catId;
 			} else {
-				window.location.href = 'all_product.php';
+				window.location.href = 'actions/product_actions.php?action=view_all_products';
 			}
 		}
 
 		function filterByBrand(brandId) {
 			if (brandId) {
-				window.location.href = 'all_product.php?action=filter_by_brand&brand_id=' + brandId;
+				window.location.href = 'actions/product_actions.php?action=filter_by_brand&brand_id=' + brandId;
 			} else {
-				window.location.href = 'all_product.php';
+				window.location.href = 'actions/product_actions.php?action=view_all_products';
 			}
 		}
 	</script>
