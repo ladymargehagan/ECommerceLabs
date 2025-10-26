@@ -126,5 +126,64 @@ class product_class extends db_connection
         return $this->db_fetch_one($sql) ? true : false;
     }
 
+    // View all products (alias for get_all_products)
+    public function view_all_products()
+    {
+        return $this->get_all_products();
+    }
+
+    // Search products by query
+    public function search_products($query)
+    {
+        $search_query = $this->db->real_escape_string($query);
+        $sql = "SELECT p.*, c.cat_name, b.brand_name 
+                FROM products p 
+                LEFT JOIN categories c ON p.product_cat = c.cat_id 
+                LEFT JOIN brands b ON p.product_brand = b.brand_id 
+                WHERE p.product_title LIKE '%$search_query%' 
+                OR p.product_desc LIKE '%$search_query%' 
+                OR p.product_keywords LIKE '%$search_query%'
+                ORDER BY p.product_title ASC";
+        $result = $this->db_fetch_all($sql);
+        
+        return $result ? $result : array();
+    }
+
+    // Filter products by category
+    public function filter_products_by_category($cat_id)
+    {
+        $cat_id = $this->db->real_escape_string($cat_id);
+        $sql = "SELECT p.*, c.cat_name, b.brand_name 
+                FROM products p 
+                LEFT JOIN categories c ON p.product_cat = c.cat_id 
+                LEFT JOIN brands b ON p.product_brand = b.brand_id 
+                WHERE p.product_cat = '$cat_id'
+                ORDER BY p.product_title ASC";
+        $result = $this->db_fetch_all($sql);
+        
+        return $result ? $result : array();
+    }
+
+    // Filter products by brand
+    public function filter_products_by_brand($brand_id)
+    {
+        $brand_id = $this->db->real_escape_string($brand_id);
+        $sql = "SELECT p.*, c.cat_name, b.brand_name 
+                FROM products p 
+                LEFT JOIN categories c ON p.product_cat = c.cat_id 
+                LEFT JOIN brands b ON p.product_brand = b.brand_id 
+                WHERE p.product_brand = '$brand_id'
+                ORDER BY p.product_title ASC";
+        $result = $this->db_fetch_all($sql);
+        
+        return $result ? $result : array();
+    }
+
+    // View single product (alias for get_product_by_id)
+    public function view_single_product($id)
+    {
+        return $this->get_product_by_id($id);
+    }
+
 }
 ?>

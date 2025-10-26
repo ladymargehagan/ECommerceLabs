@@ -42,9 +42,48 @@ session_start();
 			</a>
 		<?php else: ?>
 			<span class="me-2">Menu:</span>
-			<a href="login/register.php" class="btn btn-sm btn-outline-primary">
+			<a href="login/register.php" class="btn btn-sm btn-outline-primary me-2">
 				<i class="fa fa-user-plus me-1"></i>Register
 			</a>
+			<a href="all_product.php" class="btn btn-sm btn-outline-success me-2">
+				<i class="fa fa-box me-1"></i>All Products
+			</a>
+			<div class="d-inline-block me-2">
+				<form method="GET" action="product_search_result.php" class="d-inline">
+					<div class="input-group input-group-sm">
+						<input type="text" class="form-control" name="q" placeholder="Search products..." required style="width: 150px;">
+						<button class="btn btn-outline-secondary" type="submit">
+							<i class="fa fa-search"></i>
+						</button>
+					</div>
+				</form>
+			</div>
+			<div class="d-inline-block me-2">
+				<select class="form-select form-select-sm d-inline-block" style="width: auto;" onchange="filterByCategory()">
+					<option value="">Filter by Category</option>
+					<?php
+					require_once 'actions/product_actions.php';
+					$product_actions = new product_actions();
+					$categories_result = $product_actions->get_categories();
+					$categories = $categories_result['success'] ? $categories_result['data'] : array();
+					foreach($categories as $category): 
+					?>
+						<option value="<?php echo $category['cat_id']; ?>"><?php echo htmlspecialchars($category['cat_name']); ?></option>
+					<?php endforeach; ?>
+				</select>
+			</div>
+			<div class="d-inline-block me-2">
+				<select class="form-select form-select-sm d-inline-block" style="width: auto;" onchange="filterByBrand()">
+					<option value="">Filter by Brand</option>
+					<?php
+					$brands_result = $product_actions->get_brands();
+					$brands = $brands_result['success'] ? $brands_result['data'] : array();
+					foreach($brands as $brand): 
+					?>
+						<option value="<?php echo $brand['brand_id']; ?>"><?php echo htmlspecialchars($brand['brand_name']); ?></option>
+					<?php endforeach; ?>
+				</select>
+			</div>
 			<a href="login/login.php" class="btn btn-sm btn-outline-secondary">
 				<i class="fa fa-sign-in-alt me-1"></i>Login
 			</a>
@@ -120,6 +159,20 @@ session_start();
 				console.log('Login successful!');
 			}
 		});
+
+		function filterByCategory() {
+			const categoryId = document.querySelector('select[onchange="filterByCategory()"]').value;
+			if (categoryId) {
+				window.location.href = 'all_product.php?category=' + categoryId;
+			}
+		}
+
+		function filterByBrand() {
+			const brandId = document.querySelector('select[onchange="filterByBrand()"]').value;
+			if (brandId) {
+				window.location.href = 'all_product.php?brand=' + brandId;
+			}
+		}
 	</script>
 </body>
 </html>

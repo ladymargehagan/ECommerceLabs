@@ -18,12 +18,16 @@ $(document).ready(function() {
         e.preventDefault();
         
         const formData = new FormData(this);
+        const imageFile = formData.get('productImage');
 
         if (!validateProductForm(formData)) {
             return;
         }
 
         showLoading();
+        
+        // Remove image from form data for product creation
+        formData.delete('productImage');
         
         $.ajax({
             url: '../actions/add_product_action.php',
@@ -33,20 +37,19 @@ $(document).ready(function() {
             contentType: false,
             dataType: 'json',
             success: function(response) {
-                hideLoading();
                 if (response.success) {
-                    Swal.fire({
-                        icon: 'success',
-                        title: 'Success!',
-                        text: response.message,
-                        timer: 2000,
-                        showConfirmButton: false
-                    });
-                    $('#addProductModal').modal('hide');
-                    $('#addProductForm')[0].reset();
-                    clearFieldErrors();
-                    $('#imagePreview').hide();
-                    loadProducts();
+                    // If product created successfully and image was selected, upload image
+                    if (imageFile && imageFile.size > 0) {
+                        uploadProductImage(response.product_id, imageFile);
+                    } else {
+                        hideLoading();
+                        showSuccessMessage(response.message);
+                        $('#addProductModal').modal('hide');
+                        $('#addProductForm')[0].reset();
+                        clearFieldErrors();
+                        $('#imagePreview').hide();
+                        loadProducts();
+                    }
                 } else {
                     Swal.fire({
                         icon: 'error',
@@ -71,12 +74,17 @@ $(document).ready(function() {
         e.preventDefault();
         
         const formData = new FormData(this);
+        const imageFile = formData.get('productImage');
+        const productId = formData.get('productId');
 
         if (!validateProductForm(formData)) {
             return;
         }
 
         showLoading();
+        
+        // Remove image from form data for product update
+        formData.delete('productImage');
         
         $.ajax({
             url: '../actions/update_product_action.php',
@@ -86,18 +94,17 @@ $(document).ready(function() {
             contentType: false,
             dataType: 'json',
             success: function(response) {
-                hideLoading();
                 if (response.success) {
-                    Swal.fire({
-                        icon: 'success',
-                        title: 'Success!',
-                        text: response.message,
-                        timer: 2000,
-                        showConfirmButton: false
-                    });
-                    $('#editProductModal').modal('hide');
-                    clearFieldErrors();
-                    loadProducts();
+                    // If product updated successfully and new image was selected, upload image
+                    if (imageFile && imageFile.size > 0) {
+                        uploadProductImage(productId, imageFile);
+                    } else {
+                        hideLoading();
+                        showSuccessMessage(response.message);
+                        $('#editProductModal').modal('hide');
+                        clearFieldErrors();
+                        loadProducts();
+                    }
                 } else {
                     Swal.fire({
                         icon: 'error',
@@ -421,4 +428,57 @@ function clearFieldError(fieldId) {
 function clearFieldErrors() {
     $('.form-control').removeClass('is-invalid');
     $('.invalid-feedback').text('');
+}
+
+function showSuccessMessage(message) {
+    Swal.fire({
+        icon: 'success',
+        title: 'Success!',
+        text: message,
+        timer: 2000,
+        showConfirmButton: false
+    });
+}
+
+function uploadProductImage(productId, imageFile) {
+    const formData = new FormData();
+    formData.append('productImage', imageFile);
+    formData.append('product_id', productId);
+    
+    $.ajax({
+        url: '../actions/upload_product_image_action.php',
+        method: 'POST',
+        data: formData,
+        processData: false,
+        contentType: false,
+        dataType: 'json',
+        success: function(response) {
+            hideLoading();
+            if (response.success) {
+                showSuccessMessage('Product and image uploaded successfully!');
+                $('#addProductModal').modal('hide');
+                $('#editProductModal').modal('hide');
+                $('#addProductForm')[0].reset();
+                $('#editProductForm')[0].reset();
+                clearFieldErrors();
+                $('#imagePreview').hide();
+                $('#editImagePreview').hide();
+                loadProducts();
+            } else {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error!',
+                    text: response.message
+                });
+            }
+        },
+        error: function() {
+            hideLoading();
+            Swal.fire({
+                icon: 'error',
+                title: 'Error!',
+                text: 'An error occurred while uploading the image'
+            });
+        }
+    });
 }
