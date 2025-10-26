@@ -1,4 +1,5 @@
 <?php
+header('Content-Type: application/json');
 require_once '../settings/core.php';
 require_once '../controllers/product_controller.php';
 
@@ -62,6 +63,5 @@ $kwargs = array(
 
 $result = $product_controller->add_product_ctr($kwargs);
 
-header('Content-Type: application/json');
 echo json_encode($result);
 ?>

@@ -1,4 +1,5 @@
 <?php
+header('Content-Type: application/json');
 require_once '../settings/core.php';
 require_once '../controllers/product_controller.php';
 
@@ -15,6 +16,5 @@ if ($_SESSION['role'] != 1) {
 $product_controller = new product_controller();
 $result = $product_controller->get_all_products_ctr();
 
-header('Content-Type: application/json');
 echo json_encode($result);
 ?>

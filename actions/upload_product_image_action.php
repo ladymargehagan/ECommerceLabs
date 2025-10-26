@@ -40,10 +40,14 @@ if ($file['size'] > 5 * 1024 * 1024) {
     exit;
 }
 
-// Check file type
+// Check file type using both MIME type and file extension
 $allowed_types = array('image/jpeg', 'image/png', 'image/gif');
+$allowed_extensions = array('jpg', 'jpeg', 'png', 'gif');
+
 $file_type = mime_content_type($file['tmp_name']);
-if (!in_array($file_type, $allowed_types)) {
+$file_extension = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
+
+if (!in_array($file_type, $allowed_types) || !in_array($file_extension, $allowed_extensions)) {
     echo json_encode(array('success' => false, 'message' => 'Invalid file type. Only JPG, PNG, and GIF are allowed.'));
     exit;
 }
@@ -56,9 +60,12 @@ $sanitizedName = preg_replace('/[^a-zA-Z0-9._-]/', '_', pathinfo($originalName, 
 // Create directory structure: uploads/u{user_id}/p{product_id}/
 $upload_dir = "../uploads/u{$user_id}/p{$product_id}/";
 
-// Create directory if it doesn't exist
+// Create directory if it doesn't exist with secure permissions
 if (!is_dir($upload_dir)) {
-    mkdir($upload_dir, 0777, true);
+    if (!mkdir($upload_dir, 0755, true)) {
+        echo json_encode(array('success' => false, 'message' => 'Failed to create upload directory'));
+        exit;
+    }
 }
 
 // Generate filename with timestamp
