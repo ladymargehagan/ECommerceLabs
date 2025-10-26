@@ -136,49 +136,5 @@ class product_controller extends product_class
         return array('success' => true, 'data' => $brands);
     }
 
-    public function upload_image_ctr($file, $product_id, $user_id)
-    {
-        if (!$file || $file['error'] !== UPLOAD_ERR_OK) {
-            return array('success' => false, 'message' => 'No file uploaded or upload error');
-        }
-
-        // Validate file type
-        $allowed_types = array('jpg', 'jpeg', 'png', 'gif', 'webp');
-        $file_extension = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
-        
-        if (!in_array($file_extension, $allowed_types)) {
-            return array('success' => false, 'message' => 'Invalid file type. Only JPG, PNG, GIF, and WebP are allowed.');
-        }
-
-        // Validate file size (max 10MB)
-        if ($file['size'] > 10 * 1024 * 1024) {
-            return array('success' => false, 'message' => 'File too large. Maximum size is 10MB.');
-        }
-
-        $image_path = $this->upload_product_image($file, $product_id, $user_id);
-        
-        if ($image_path) {
-            return array('success' => true, 'data' => $image_path);
-        } else {
-            return array('success' => false, 'message' => 'Failed to upload image');
-        }
-    }
-
-    public function get_product_images_ctr($product_id, $user_id)
-    {
-        $images = $this->get_product_images($product_id, $user_id);
-        return array('success' => true, 'data' => $images);
-    }
-
-    public function delete_product_image_ctr($image_path, $user_id)
-    {
-        $result = $this->delete_product_image($image_path, $user_id);
-        
-        if ($result) {
-            return array('success' => true, 'message' => 'Image deleted successfully');
-        } else {
-            return array('success' => false, 'message' => 'Failed to delete image');
-        }
-    }
 }
 ?>
