@@ -190,13 +190,13 @@ function displayProducts(products) {
 
     let html = '';
     products.forEach(function(product) {
-        const imageSrc = product.product_image ? `../${product.product_image}` : '../images/placeholder.png';
+        const imageSrc = product.product_image ? `../${product.product_image}` : '../uploads/placeholder.png';
         
         html += `
             <div class="col-md-6 col-lg-4 mb-4">
                 <div class="card product-card h-100">
                     <div class="product-image-container">
-                        <img src="${imageSrc}" class="card-img-top product-image" alt="${product.product_title}" onerror="this.src='../images/placeholder.png'">
+                        <img src="${imageSrc}" class="card-img-top product-image" alt="${product.product_title}" onerror="this.src='../uploads/placeholder.png'">
                         <div class="product-overlay">
                             <div class="action-buttons">
                                 <button class="btn btn-sm btn-outline-primary me-1" onclick="editProduct(${product.product_id})" title="Edit Product">
@@ -245,7 +245,7 @@ function editProduct(productId) {
                     $('#editProductKeywords').val(product.product_keywords || '');
                     
                     // Set current image
-                    const imageSrc = product.product_image ? `../${product.product_image}` : '../images/placeholder.png';
+                    const imageSrc = product.product_image ? `../${product.product_image}` : '../uploads/placeholder.png';
                     $('#editPreviewImg').attr('src', imageSrc);
                     
                     $('#editProductModal').modal('show');
