@@ -14,7 +14,12 @@ class brand_class extends db_connection
         $sql = "INSERT INTO brands (brand_name, brand_image) VALUES ('$brand_name', '$brand_image')";
         $result = $this->db_write_query($sql);
         
-        return $result;
+        if ($result) {
+            // Return the ID of the inserted brand
+            return $this->db->insert_id;
+        }
+        
+        return false;
     }
 
     public function get_brands_by_user($user_id)

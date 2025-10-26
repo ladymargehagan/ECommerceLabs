@@ -18,7 +18,12 @@ class category_class extends db_connection
             $result = $this->db_write_query($sql);
         }
         
-        return true;
+        if ($result) {
+            // Return the ID of the inserted category
+            return $this->db->insert_id;
+        }
+        
+        return false;
     }
 
     public function get_categories_by_user($user_id)

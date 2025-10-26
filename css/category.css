@@ -12,3 +12,97 @@
 .category-card:hover .action-buttons {
     opacity: 1;
 }
+
+/* Category Image Styles */
+.category-image-container {
+    position: relative;
+    height: 200px;
+    overflow: hidden;
+}
+
+.category-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+}
+
+.category-card:hover .category-image {
+    transform: scale(1.05);
+}
+
+.category-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.7);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.category-card:hover .category-overlay {
+    opacity: 1;
+}
+
+.action-buttons .btn {
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+}
+
+.action-buttons .btn-outline-primary:hover {
+    background-color: #007bff;
+    border-color: #007bff;
+    color: white;
+}
+
+.action-buttons .btn-outline-danger:hover {
+    background-color: #dc3545;
+    border-color: #dc3545;
+    color: white;
+}
+
+/* Category Card Content */
+.card-title {
+    color: #2c3e50;
+    font-weight: 600;
+    margin-bottom: 10px;
+}
+
+.card-text {
+    color: #6c757d;
+    font-size: 0.9rem;
+    line-height: 1.4;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .category-overlay {
+        opacity: 1;
+        background: rgba(0, 0, 0, 0.5);
+    }
+    
+    .action-buttons {
+        flex-direction: column;
+        gap: 5px;
+    }
+    
+    .action-buttons .btn {
+        width: 35px;
+        height: 35px;
+        font-size: 12px;
+    }
+    
+    .category-image-container {
+        height: 150px;
+    }
+}

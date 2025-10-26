@@ -422,7 +422,7 @@ function validateBrandForm(formData) {
         showFieldError('#brandName', 'Brand name is required');
         isValid = false;
     } else {
-        clearFieldError('#brandName');
+        clearFieldErrors();
     }
     
     // Check edit form required fields
@@ -431,7 +431,7 @@ function validateBrandForm(formData) {
         showFieldError('#editBrandName', 'Brand name is required');
         isValid = false;
     } else if ($('#editBrandId').length) {
-        clearFieldError('#editBrandName');
+        clearFieldErrors();
     }
     
     return isValid;
