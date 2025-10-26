@@ -396,6 +396,12 @@ function showFieldError(fieldId, message) {
     $(fieldId).siblings('.invalid-feedback').text(message);
 }
 
+function clearFieldError(fieldId) {
+    const field = $(fieldId);
+    field.removeClass('is-invalid');
+    field.siblings('.invalid-feedback').remove();
+}
+
 function clearFieldErrors() {
     $('.form-control').removeClass('is-invalid');
     $('.invalid-feedback').text('');
