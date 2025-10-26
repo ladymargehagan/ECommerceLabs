@@ -215,30 +215,39 @@ function loadProducts(page = 1, filters = {}) {
     showLoading();
     
     const requestData = {
-        action: 'get_products',
+        action: 'get_products_paginated',
         page: page,
+        limit: 12,
         ...filters
     };
+    
+    console.log('Loading products with data:', requestData);
     
     $.ajax({
         url: 'product_actions.php',
         method: 'GET',
         data: requestData,
         dataType: 'json',
+        timeout: 10000,
         success: function(response) {
             hideLoading();
+            console.log('Products response:', response);
+            
             if (response.success) {
                 displayProducts(response.data.products);
                 updatePagination(response.data.pagination);
                 updateResultsInfo(response.data.total, response.data.page);
                 updateFilterCounts(response.data.filter_counts);
             } else {
+                console.error('Products API error:', response.message);
                 showError('Failed to load products: ' + response.message);
             }
         },
-        error: function() {
+        error: function(xhr, status, error) {
             hideLoading();
-            showError('An error occurred while loading products');
+            console.error('AJAX error:', status, error);
+            console.error('Response:', xhr.responseText);
+            showError('An error occurred while loading products. Please check the console for details.');
         }
     });
 }
@@ -253,11 +262,19 @@ function loadFilters() {
         method: 'GET',
         data: { action: 'get_categories' },
         dataType: 'json',
+        timeout: 5000,
         success: function(response) {
+            console.log('Categories response:', response);
             if (response.success) {
                 populateCategoryFilters(response.data);
                 populateCategoryDropdown(response.data);
+            } else {
+                console.error('Categories API error:', response.message);
             }
+        },
+        error: function(xhr, status, error) {
+            console.error('Categories AJAX error:', status, error);
+            console.error('Response:', xhr.responseText);
         }
     });
     
@@ -267,11 +284,19 @@ function loadFilters() {
         method: 'GET',
         data: { action: 'get_brands' },
         dataType: 'json',
+        timeout: 5000,
         success: function(response) {
+            console.log('Brands response:', response);
             if (response.success) {
                 populateBrandFilters(response.data);
                 populateBrandDropdown(response.data);
+            } else {
+                console.error('Brands API error:', response.message);
             }
+        },
+        error: function(xhr, status, error) {
+            console.error('Brands AJAX error:', status, error);
+            console.error('Response:', xhr.responseText);
         }
     });
 }
@@ -299,20 +324,27 @@ function loadFeaturedProducts() {
 function performSearch(searchTerm) {
     showLoading();
     
+    console.log('Performing search for:', searchTerm);
+    
     $.ajax({
         url: 'product_actions.php',
         method: 'GET',
         data: { 
             action: 'search_products', 
             search: searchTerm,
-            include_suggestions: true
+            page: 1,
+            limit: 12
         },
         dataType: 'json',
+        timeout: 10000,
         success: function(response) {
             hideLoading();
+            console.log('Search response:', response);
+            
             if (response.success) {
                 displayProducts(response.data.products);
-                updateResultsInfo(response.data.total, 1);
+                updatePagination(response.data.pagination);
+                updateResultsInfo(response.data.total, response.data.page);
                 $('#resultsInfo').removeClass('results-info-hidden');
                 
                 // Show search suggestions if available
@@ -320,12 +352,15 @@ function performSearch(searchTerm) {
                     showSearchSuggestions(searchTerm, response.data.suggestions);
                 }
             } else {
+                console.error('Search API error:', response.message);
                 showError('Search failed: ' + response.message);
             }
         },
-        error: function() {
+        error: function(xhr, status, error) {
             hideLoading();
-            showError('An error occurred during search');
+            console.error('Search AJAX error:', status, error);
+            console.error('Response:', xhr.responseText);
+            showError('An error occurred during search. Please check the console for details.');
         }
     });
 }

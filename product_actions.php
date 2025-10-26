@@ -100,19 +100,24 @@ function getProductsPaginated() {
     
     $product_controller = new product_controller();
     
-    // Get all products first
-    $all_products_result = $product_controller->get_all_products_ctr();
-    
-    if (!$all_products_result['success']) {
-        echo json_encode($all_products_result);
+    // Get total count first
+    $total_result = $product_controller->get_all_products_count_ctr();
+    if (!$total_result['success']) {
+        echo json_encode($total_result);
         return;
     }
     
-    $all_products = $all_products_result['data'];
-    $total = count($all_products);
+    $total = $total_result['data'];
     
-    // Get products for current page
-    $products = array_slice($all_products, $offset, $limit);
+    // Get products for current page using pagination
+    $products_result = $product_controller->get_products_paginated_ctr($limit, $offset);
+    
+    if (!$products_result['success']) {
+        echo json_encode($products_result);
+        return;
+    }
+    
+    $products = $products_result['data'];
     
     $pagination = array(
         'current_page' => $page,
@@ -170,6 +175,9 @@ function getProductDetail() {
 
 function searchProducts() {
     $search_term = trim($_GET['search'] ?? '');
+    $page = intval($_GET['page'] ?? 1);
+    $limit = intval($_GET['limit'] ?? 10);
+    $offset = ($page - 1) * $limit;
     
     if (empty($search_term)) {
         echo json_encode(array('success' => false, 'message' => 'Search term is required'));
@@ -198,12 +206,24 @@ function searchProducts() {
                strpos(strtolower($product['brand_name']), $search_term_lower) !== false;
     });
     
+    $total = count($filtered_products);
+    $products = array_slice($filtered_products, $offset, $limit);
+    
+    $pagination = array(
+        'current_page' => $page,
+        'total_pages' => ceil($total / $limit),
+        'total_items' => $total,
+        'items_per_page' => $limit
+    );
+    
     echo json_encode(array(
         'success' => true,
         'data' => array(
-            'products' => array_values($filtered_products),
-            'total' => count($filtered_products),
-            'search_term' => $search_term
+            'products' => array_values($products),
+            'pagination' => $pagination,
+            'total' => $total,
+            'search_term' => $search_term,
+            'page' => $page
         )
     ));
 }

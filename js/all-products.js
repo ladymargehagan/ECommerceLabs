@@ -104,24 +104,32 @@ function loadProducts(page = 1, filters = {}) {
         ...filters
     };
     
+    console.log('Loading products with data:', requestData);
+    
     $.ajax({
         url: 'product_actions.php',
         method: 'GET',
         data: requestData,
         dataType: 'json',
+        timeout: 10000, // 10 second timeout
         success: function(response) {
             hideLoading();
+            console.log('Products response:', response);
+            
             if (response.success) {
                 displayProducts(response.data.products);
                 updatePagination(response.data.pagination);
                 updateResultsInfo(response.data.total, response.data.page);
             } else {
+                console.error('Products API error:', response.message);
                 showError('Failed to load products: ' + response.message);
             }
         },
-        error: function() {
+        error: function(xhr, status, error) {
             hideLoading();
-            showError('An error occurred while loading products');
+            console.error('AJAX error:', status, error);
+            console.error('Response:', xhr.responseText);
+            showError('An error occurred while loading products. Please check the console for details.');
         }
     });
 }
@@ -136,10 +144,18 @@ function loadFilters() {
         method: 'GET',
         data: { action: 'get_categories' },
         dataType: 'json',
+        timeout: 5000,
         success: function(response) {
+            console.log('Categories response:', response);
             if (response.success) {
                 populateCategoryFilter(response.data);
+            } else {
+                console.error('Categories API error:', response.message);
             }
+        },
+        error: function(xhr, status, error) {
+            console.error('Categories AJAX error:', status, error);
+            console.error('Response:', xhr.responseText);
         }
     });
     
@@ -149,10 +165,18 @@ function loadFilters() {
         method: 'GET',
         data: { action: 'get_brands' },
         dataType: 'json',
+        timeout: 5000,
         success: function(response) {
+            console.log('Brands response:', response);
             if (response.success) {
                 populateBrandFilter(response.data);
+            } else {
+                console.error('Brands API error:', response.message);
             }
+        },
+        error: function(xhr, status, error) {
+            console.error('Brands AJAX error:', status, error);
+            console.error('Response:', xhr.responseText);
         }
     });
 }

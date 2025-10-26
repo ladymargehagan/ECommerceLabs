@@ -1,24 +1,37 @@
 <?php
 require_once 'settings/core.php';
+require_once 'controllers/product_controller.php';
 
-// Get product ID from URL parameter
+// Get product ID
 $product_id = isset($_GET['id']) ? (int)$_GET['id'] : 0;
 
 if (!$product_id) {
     header('Location: all_product.php');
     exit();
 }
+
+// Initialize controller
+$product_controller = new product_controller();
+
+// Get product details
+$product_result = $product_controller->view_single_product_ctr($product_id);
+
+if (!$product_result['success']) {
+    header('Location: all_product.php');
+    exit();
+}
+
+$product = $product_result['data'];
 ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Product Details - Taste of Africa</title>
+    <title><?php echo htmlspecialchars($product['product_title']); ?> - Taste of Africa</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <link href="css/main.css" rel="stylesheet">
-    <link href="css/product-customer.css" rel="stylesheet">
     <link href="css/common.css" rel="stylesheet">
 </head>
 <body>
@@ -57,94 +70,122 @@ if (!$product_id) {
         </div>
     </nav>
 
-    <!-- Breadcrumb -->
-    <div class="container mt-3">
-        <nav aria-label="breadcrumb">
+    <div class="container mt-4">
+        <!-- Breadcrumb -->
+        <nav aria-label="breadcrumb" class="mb-4">
             <ol class="breadcrumb">
                 <li class="breadcrumb-item"><a href="index.php">Home</a></li>
                 <li class="breadcrumb-item"><a href="all_product.php">All Products</a></li>
-                <li class="breadcrumb-item active" id="breadcrumbProduct">Product Details</li>
+                <li class="breadcrumb-item active"><?php echo htmlspecialchars($product['product_title']); ?></li>
             </ol>
         </nav>
-    </div>
 
-    <div class="container">
-        <!-- Product Details Section -->
-        <div class="product-details-section">
-            <div class="row" id="productDetailsContainer">
-                <!-- Loading state -->
-                <div class="col-12 text-center py-5">
-                    <div class="loading-spinner">
-                        <div class="spinner-border text-primary spinner-large" role="status">
-                            <span class="visually-hidden">Loading...</span>
+        <div class="row">
+            <!-- Product Image -->
+            <div class="col-md-6">
+                <div class="product-image-container">
+                    <img src="uploads/product/<?php echo htmlspecialchars($product['product_image'] ?: 'placeholder.png'); ?>" 
+                         class="img-fluid rounded shadow" 
+                         alt="<?php echo htmlspecialchars($product['product_title']); ?>"
+                         onerror="this.src='uploads/placeholder.png'">
+                </div>
+            </div>
+
+            <!-- Product Details -->
+            <div class="col-md-6">
+                <div class="product-details">
+                    <h1 class="product-title mb-3"><?php echo htmlspecialchars($product['product_title']); ?></h1>
+                    
+                    <div class="product-price mb-4">
+                        <span class="h2 text-primary fw-bold">$<?php echo number_format($product['product_price'], 2); ?></span>
+                    </div>
+
+                    <div class="product-meta mb-4">
+                        <div class="row">
+                            <div class="col-6">
+                                <div class="meta-item">
+                                    <strong>Product ID:</strong><br>
+                                    <span class="text-muted"><?php echo $product['product_id']; ?></span>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="meta-item">
+                                    <strong>Category:</strong><br>
+                                    <span class="text-muted"><?php echo htmlspecialchars($product['cat_name'] ?: 'No Category'); ?></span>
+                                </div>
+                            </div>
                         </div>
-                        <p class="mt-3 text-muted">Loading product details...</p>
+                        <div class="row mt-2">
+                            <div class="col-6">
+                                <div class="meta-item">
+                                    <strong>Brand:</strong><br>
+                                    <span class="text-muted"><?php echo htmlspecialchars($product['brand_name'] ?: 'No Brand'); ?></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <?php if ($product['product_desc']): ?>
+                        <div class="product-description mb-4">
+                            <h5>Description</h5>
+                            <p class="text-muted"><?php echo nl2br(htmlspecialchars($product['product_desc'])); ?></p>
+                        </div>
+                    <?php endif; ?>
+
+                    <?php if ($product['product_keywords']): ?>
+                        <div class="product-keywords mb-4">
+                            <h5>Keywords</h5>
+                            <div class="keywords-container">
+                                <?php 
+                                $keywords = explode(',', $product['product_keywords']);
+                                foreach ($keywords as $keyword): 
+                                    $keyword = trim($keyword);
+                                    if ($keyword):
+                                ?>
+                                    <span class="badge bg-secondary me-1 mb-1"><?php echo htmlspecialchars($keyword); ?></span>
+                                <?php 
+                                    endif;
+                                endforeach; 
+                                ?>
+                            </div>
+                        </div>
+                    <?php endif; ?>
+
+                    <div class="product-actions">
+                        <div class="d-grid gap-2">
+                            <button class="btn btn-primary btn-lg" onclick="addToCart(<?php echo $product['product_id']; ?>)">
+                                <i class="fa fa-shopping-cart me-2"></i>Add to Cart
+                            </button>
+                            <a href="all_product.php" class="btn btn-outline-secondary">
+                                <i class="fa fa-arrow-left me-2"></i>Back to Products
+                            </a>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- Related Products Section -->
-        <div class="related-products-section mt-5">
-            <h3 class="mb-4">
-                <i class="fa fa-heart text-danger me-2"></i>Related Products
-            </h3>
-            <div class="row" id="relatedProductsContainer">
-                <!-- Related products will be loaded here -->
-            </div>
-        </div>
-    </div>
-
-    <!-- Add to Cart Modal -->
-    <div class="modal fade" id="addToCartModal" tabindex="-1">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Add to Cart</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body">
-                    <div class="row align-items-center">
-                        <div class="col-md-4">
-                            <img id="cartProductImage" src="" alt="Product" class="img-fluid rounded">
-                        </div>
-                        <div class="col-md-8">
-                            <h6 id="cartProductTitle"></h6>
-                            <div class="mb-3">
-                                <label for="quantity" class="form-label">Quantity:</label>
-                                <input type="number" class="form-control" id="quantity" value="1" min="1" max="99">
-                            </div>
-                            <div class="mb-3">
-                                <strong>Price: $<span id="cartProductPrice"></span></strong>
-                            </div>
-                        </div>
+        <!-- Related Products Section (Optional) -->
+        <div class="row mt-5">
+            <div class="col-12">
+                <h3>Related Products</h3>
+                <p class="text-muted">Check out other products in the same category</p>
+                <div class="row">
+                    <div class="col-12 text-center">
+                        <a href="all_product.php?category=<?php echo $product['product_cat']; ?>" class="btn btn-outline-primary">
+                            <i class="fa fa-tag me-2"></i>View More <?php echo htmlspecialchars($product['cat_name'] ?: 'Products'); ?>
+                        </a>
                     </div>
                 </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                    <button type="button" class="btn btn-primary" id="confirmAddToCart">
-                        <i class="fa fa-shopping-cart me-2"></i>Add to Cart
-                    </button>
-                </div>
             </div>
-        </div>
-    </div>
-
-    <!-- Loading Overlay -->
-    <div class="loading-overlay" id="loadingOverlay">
-        <div class="loading-spinner">
-            <div class="spinner"></div>
-            <p>Loading...</p>
         </div>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
-        // Pass product ID to JavaScript
-        const PRODUCT_ID = <?php echo $product_id; ?>;
+        function addToCart(productId) {
+            alert('Add to Cart functionality will be implemented in future labs. Product ID: ' + productId);
+        }
     </script>
-    <script src="js/single-product.js"></script>
 </body>
 </html>
