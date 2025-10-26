@@ -60,26 +60,12 @@ if ($_SESSION['role'] != 1) {
                         <h5 class="modal-title"><i class="fa fa-plus me-2"></i>Add New Brand</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                     </div>
-                    <form id="addBrandForm" enctype="multipart/form-data">
+                    <form id="addBrandForm">
                         <div class="modal-body">
                             <div class="mb-3">
                                 <label for="brandName" class="form-label">Brand Name <span class="text-danger">*</span></label>
                                 <input type="text" class="form-control" id="brandName" name="brandName" required maxlength="100">
                                 <div class="invalid-feedback"></div>
-                            </div>
-                            
-                            <div class="mb-3">
-                                <label for="brandImage" class="form-label">Brand Image</label>
-                                <input type="file" class="form-control" id="brandImage" name="brandImage" accept="image/*">
-                                <div class="form-text">Supported formats: JPG, PNG, GIF. Max size: 5MB</div>
-                                <div class="invalid-feedback"></div>
-                            </div>
-
-                            <div id="brandImagePreview" class="mb-3" style="display: none;">
-                                <label class="form-label">Image Preview</label>
-                                <div class="text-center">
-                                    <img id="previewBrandImg" src="" alt="Preview" class="img-thumbnail" style="max-width: 200px; max-height: 200px;">
-                                </div>
                             </div>
                         </div>
                         <div class="modal-footer">
@@ -101,27 +87,13 @@ if ($_SESSION['role'] != 1) {
                         <h5 class="modal-title"><i class="fa fa-edit me-2"></i>Edit Brand</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                     </div>
-                    <form id="editBrandForm" enctype="multipart/form-data">
+                    <form id="editBrandForm">
                         <div class="modal-body">
                             <input type="hidden" id="editBrandId" name="brandId">
                             <div class="mb-3">
                                 <label for="editBrandName" class="form-label">Brand Name <span class="text-danger">*</span></label>
                                 <input type="text" class="form-control" id="editBrandName" name="brandName" required maxlength="100">
                                 <div class="invalid-feedback"></div>
-                            </div>
-                            
-                            <div class="mb-3">
-                                <label for="editBrandImage" class="form-label">Brand Image</label>
-                                <input type="file" class="form-control" id="editBrandImage" name="brandImage" accept="image/*">
-                                <div class="form-text">Supported formats: JPG, PNG, GIF. Max size: 5MB</div>
-                                <div class="invalid-feedback"></div>
-                            </div>
-
-                            <div id="editBrandImagePreview" class="mb-3">
-                                <label class="form-label">Current Image</label>
-                                <div class="text-center">
-                                    <img id="editPreviewBrandImg" src="" alt="Current Image" class="img-thumbnail" style="max-width: 200px; max-height: 200px;">
-                                </div>
                             </div>
                         </div>
                         <div class="modal-footer">

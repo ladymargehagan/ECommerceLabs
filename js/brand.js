@@ -1,24 +1,18 @@
 $(document).ready(function() {
-    // Load brands on page load
+    // Load brands and categories on page load
     loadBrands();
-
-    // Image preview for add form
-    $('#brandImage').on('change', function() {
-        previewImage(this, '#previewBrandImg', '#brandImagePreview');
-    });
-
-    // Image preview for edit form
-    $('#editBrandImage').on('change', function() {
-        previewImage(this, '#editPreviewBrandImg', '#editBrandImagePreview');
-    });
+    loadCategories();
 
     // Add Brand Form Submission
     $('#addBrandForm').on('submit', function(e) {
         e.preventDefault();
         
-        const formData = new FormData(this);
+        const formData = {
+            brandName: $('#brandName').val().trim()
+        };
 
-        if (!validateBrandForm(formData)) {
+        if (!formData.brandName) {
+            showFieldError('#brandName', 'Brand name is required');
             return;
         }
 
@@ -28,8 +22,6 @@ $(document).ready(function() {
             url: '../actions/add_brand_action.php',
             method: 'POST',
             data: formData,
-            processData: false,
-            contentType: false,
             dataType: 'json',
             success: function(response) {
                 hideLoading();
@@ -68,9 +60,13 @@ $(document).ready(function() {
     $('#editBrandForm').on('submit', function(e) {
         e.preventDefault();
         
-        const formData = new FormData(this);
+        const formData = {
+            brandId: $('#editBrandId').val(),
+            brandName: $('#editBrandName').val().trim()
+        };
 
-        if (!validateBrandForm(formData)) {
+        if (!formData.brandName) {
+            showFieldError('#editBrandName', 'Brand name is required');
             return;
         }
 
@@ -80,8 +76,6 @@ $(document).ready(function() {
             url: '../actions/update_brand_action.php',
             method: 'POST',
             data: formData,
-            processData: false,
-            contentType: false,
             dataType: 'json',
             success: function(response) {
                 hideLoading();
@@ -200,8 +194,39 @@ function loadBrands() {
     });
 }
 
+// Load categories function
+function loadCategories() {
+    $.ajax({
+        url: '../actions/fetch_category_action.php',
+        method: 'GET',
+        dataType: 'json',
+        success: function(response) {
+            if (response.success) {
+                populateCategorySelects(response.data);
+            }
+        },
+        error: function() {
+            console.error('Error loading categories');
+        }
+    });
+}
 
-// Display brands function - brands are independent of categories
+// Populate category dropdowns
+function populateCategorySelects(categories) {
+    const addSelect = $('#categoryId');
+    const editSelect = $('#editCategoryId');
+    
+    // Clear existing options except the first one
+    addSelect.find('option:not(:first)').remove();
+    editSelect.find('option:not(:first)').remove();
+    
+    categories.forEach(function(category) {
+        addSelect.append(`<option value="${category.cat_id}">${category.cat_name}</option>`);
+        editSelect.append(`<option value="${category.cat_id}">${category.cat_name}</option>`);
+    });
+}
+
+// Display brands function with visual grouping by categories
 function displayBrands(brands) {
     if (!brands || brands.length === 0) {
         $('#brandsContainer').html(`
@@ -214,26 +239,94 @@ function displayBrands(brands) {
         return;
     }
 
-    // Display brands independently without category grouping
-    displayBrandsSimple(brands);
+    // Get categories for grouping
+    $.ajax({
+        url: '../actions/fetch_category_action.php',
+        method: 'GET',
+        dataType: 'json',
+        success: function(response) {
+            if (response.success) {
+                displayBrandsGroupedByCategories(brands, response.data);
+            } else {
+                displayBrandsSimple(brands);
+            }
+        },
+        error: function() {
+            displayBrandsSimple(brands);
+        }
+    });
 }
 
-
-// Display brands in a simple grid - brands are independent of categories
-function displayBrandsSimple(brands) {
-    let html = '<div class="row">';
+// Display brands grouped by categories
+function displayBrandsGroupedByCategories(brands, categories) {
+    let html = '';
     
-    brands.forEach(function(brand) {
-        const imageSrc = brand.brand_image ? `../${brand.brand_image}` : '../uploads/placeholder.png';
+    // Group brands by categories (visual grouping only)
+    categories.forEach(function(category) {
+        html += `
+            <div class="col-12 mb-4">
+                <div class="category-section">
+                    <h4 class="category-header">
+                        <i class="fa fa-tags text-primary me-2"></i>
+                        ${category.cat_name}
+                    </h4>
+                    <div class="row">
+        `;
         
+        // Display all brands under each category (since brands can produce across categories)
+        brands.forEach(function(brand) {
+            html += `
+                <div class="col-md-6 col-lg-4 mb-3">
+                    <div class="card brand-card h-100">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-start mb-3">
+                                <h5 class="card-title mb-0">
+                                    <i class="fa fa-star text-warning me-2"></i>
+                                    ${brand.brand_name}
+                                </h5>
+                                <div class="action-buttons">
+                                    <button class="btn btn-sm btn-outline-primary me-1" onclick="editBrand(${brand.brand_id}, '${brand.brand_name}')" title="Edit Brand">
+                                        <i class="fa fa-edit"></i>
+                                    </button>
+                                    <button class="btn btn-sm btn-outline-danger" onclick="deleteBrand(${brand.brand_id})" title="Delete Brand">
+                                        <i class="fa fa-trash"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <p class="card-text text-muted">
+                                <small><strong>Brand ID:</strong> ${brand.brand_id}</small>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            `;
+        });
+        
+        html += `
+                    </div>
+                </div>
+            </div>
+        `;
+    });
+
+    $('#brandsContainer').html(html);
+}
+
+// Simple display without grouping
+function displayBrandsSimple(brands) {
+    let html = '';
+    brands.forEach(function(brand) {
         html += `
             <div class="col-md-6 col-lg-4 mb-4">
                 <div class="card brand-card h-100">
-                    <div class="brand-image-container">
-                        <img src="${imageSrc}" class="card-img-top brand-image" alt="${brand.brand_name}" onerror="this.src='../uploads/placeholder.png'">
-                        <div class="brand-overlay">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-start mb-3">
+                            <h5 class="card-title mb-0">
+                                <i class="fa fa-star text-warning me-2"></i>
+                                ${brand.brand_name}
+                            </h5>
                             <div class="action-buttons">
-                                <button class="btn btn-sm btn-outline-primary me-1" onclick="editBrand(${brand.brand_id}, '${brand.brand_name}', '${brand.brand_image || ''}')" title="Edit Brand">
+                                <button class="btn btn-sm btn-outline-primary me-1" onclick="editBrand(${brand.brand_id}, '${brand.brand_name}')" title="Edit Brand">
                                     <i class="fa fa-edit"></i>
                                 </button>
                                 <button class="btn btn-sm btn-outline-danger" onclick="deleteBrand(${brand.brand_id})" title="Delete Brand">
@@ -241,12 +334,6 @@ function displayBrandsSimple(brands) {
                                 </button>
                             </div>
                         </div>
-                    </div>
-                    <div class="card-body">
-                        <h5 class="card-title">
-                            <i class="fa fa-star text-warning me-2"></i>
-                            ${brand.brand_name}
-                        </h5>
                         <p class="card-text text-muted">
                             <small><strong>Brand ID:</strong> ${brand.brand_id}</small>
                         </p>
@@ -255,25 +342,14 @@ function displayBrandsSimple(brands) {
             </div>
         `;
     });
-    
-    html += '</div>';
+
     $('#brandsContainer').html(html);
 }
 
 // Edit brand function
-function editBrand(brandId, brandName, brandImage = '') {
+function editBrand(brandId, brandName) {
     $('#editBrandId').val(brandId);
     $('#editBrandName').val(brandName);
-    
-    // Set current image preview
-    if (brandImage) {
-        $('#editPreviewBrandImg').attr('src', `../${brandImage}`);
-        $('#editBrandImagePreview').show();
-    } else {
-        $('#editPreviewBrandImg').attr('src', '../uploads/placeholder.png');
-        $('#editBrandImagePreview').show();
-    }
-    
     $('#editBrandModal').modal('show');
 }
 
@@ -300,43 +376,4 @@ function showFieldError(fieldId, message) {
 function clearFieldErrors() {
     $('.form-control').removeClass('is-invalid');
     $('.invalid-feedback').text('');
-}
-
-// Image preview function
-function previewImage(input, previewId, containerId) {
-    if (input.files && input.files[0]) {
-        const reader = new FileReader();
-        reader.onload = function(e) {
-            $(previewId).attr('src', e.target.result);
-            $(containerId).show();
-        };
-        reader.readAsDataURL(input.files[0]);
-    }
-}
-
-// Validate brand form
-function validateBrandForm(formData) {
-    let isValid = true;
-    
-    // Check required fields
-    const brandName = formData.get('brandName');
-    if (!brandName || brandName.trim() === '') {
-        showFieldError('#brandName', 'Brand name is required');
-        isValid = false;
-    } else {
-        $('#brandName').removeClass('is-invalid');
-        $('#brandName').siblings('.invalid-feedback').text('');
-    }
-    
-    // Check edit form required fields
-    const editBrandName = formData.get('brandName');
-    if ($('#editBrandId').length && (!editBrandName || editBrandName.trim() === '')) {
-        showFieldError('#editBrandName', 'Brand name is required');
-        isValid = false;
-    } else if ($('#editBrandId').length) {
-        $('#editBrandName').removeClass('is-invalid');
-        $('#editBrandName').siblings('.invalid-feedback').text('');
-    }
-    
-    return isValid;
 }

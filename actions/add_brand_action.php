@@ -28,34 +28,10 @@ $brand_name = htmlspecialchars($brand_name, ENT_QUOTES, 'UTF-8');
 $brand_controller = new brand_controller();
 
 $kwargs = array(
-    'brand_name' => $brand_name,
-    'brand_image' => ''
+    'brand_name' => $brand_name
 );
 
 $result = $brand_controller->add_brand_ctr($kwargs);
-
-// Handle image upload after brand is created
-if ($result['success'] && isset($_FILES['brandImage']) && $_FILES['brandImage']['error'] === UPLOAD_ERR_OK) {
-    // Get the brand ID from the result
-    $brand_id = $result['brand_id'];
-    $user_id = $_SESSION['user_id'];
-    
-    // Use the upload_image_ctr method from brand_controller
-    $upload_result = $brand_controller->upload_image_ctr($_FILES['brandImage'], $brand_id);
-    
-    if ($upload_result['success']) {
-        $brand_image = $upload_result['data'];
-        
-        // Update the brand with the image path
-        $update_kwargs = array(
-            'brand_id' => $brand_id,
-            'brand_name' => $brand_name,
-            'brand_image' => $brand_image
-        );
-        
-        $brand_controller->update_brand_ctr($update_kwargs);
-    }
-}
 
 header('Content-Type: application/json');
 echo json_encode($result);

@@ -35,34 +35,10 @@ $category_id = (int)$category_id;
 $category_name = htmlspecialchars($category_name, ENT_QUOTES, 'UTF-8');
 $category_controller = new category_controller();
 
-// Get current category to preserve existing image if no new image uploaded
-$current_category = $category_controller->get_categories_ctr($user_id);
-$category_image = '';
-if ($current_category['success']) {
-    foreach ($current_category['data'] as $cat) {
-        if ($cat['cat_id'] == $category_id) {
-            $category_image = $cat['cat_image'] ?? '';
-            break;
-        }
-    }
-}
-
-// Handle new image upload
-if (isset($_FILES['categoryImage']) && $_FILES['categoryImage']['error'] === UPLOAD_ERR_OK) {
-    $upload_result = $category_controller->upload_image_ctr($_FILES['categoryImage'], $category_id);
-    if ($upload_result['success']) {
-        $category_image = $upload_result['data'];
-    } else {
-        echo json_encode($upload_result);
-        exit;
-    }
-}
-
 $kwargs = array(
     'cat_id' => $category_id,
     'cat_name' => $category_name,
-    'user_id' => $user_id,
-    'cat_image' => $category_image
+    'user_id' => $user_id
 );
 
 $result = $category_controller->update_category_ctr($kwargs);

@@ -75,26 +75,12 @@ if ($_SESSION['role'] != 1) {
                         <h5 class="modal-title"><i class="fa fa-plus me-2"></i>Add New Category</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                     </div>
-                    <form id="addCategoryForm" enctype="multipart/form-data">
+                    <form id="addCategoryForm">
                         <div class="modal-body">
                             <div class="mb-3">
                                 <label for="categoryName" class="form-label">Category Name <span class="text-danger">*</span></label>
                                 <input type="text" class="form-control" id="categoryName" name="categoryName" required maxlength="100">
                                 <div class="invalid-feedback"></div>
-                            </div>
-                            
-                            <div class="mb-3">
-                                <label for="categoryImage" class="form-label">Category Image</label>
-                                <input type="file" class="form-control" id="categoryImage" name="categoryImage" accept="image/*">
-                                <div class="form-text">Supported formats: JPG, PNG, GIF. Max size: 5MB</div>
-                                <div class="invalid-feedback"></div>
-                            </div>
-
-                            <div id="categoryImagePreview" class="mb-3" style="display: none;">
-                                <label class="form-label">Image Preview</label>
-                                <div class="text-center">
-                                    <img id="previewCategoryImg" src="" alt="Preview" class="img-thumbnail" style="max-width: 200px; max-height: 200px;">
-                                </div>
                             </div>
                         </div>
                         <div class="modal-footer">
@@ -116,27 +102,13 @@ if ($_SESSION['role'] != 1) {
                         <h5 class="modal-title"><i class="fa fa-edit me-2"></i>Edit Category</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                     </div>
-                    <form id="editCategoryForm" enctype="multipart/form-data">
+                    <form id="editCategoryForm">
                         <div class="modal-body">
                             <input type="hidden" id="editCategoryId" name="categoryId">
                             <div class="mb-3">
                                 <label for="editCategoryName" class="form-label">Category Name <span class="text-danger">*</span></label>
                                 <input type="text" class="form-control" id="editCategoryName" name="categoryName" required maxlength="100">
                                 <div class="invalid-feedback"></div>
-                            </div>
-                            
-                            <div class="mb-3">
-                                <label for="editCategoryImage" class="form-label">Category Image</label>
-                                <input type="file" class="form-control" id="editCategoryImage" name="categoryImage" accept="image/*">
-                                <div class="form-text">Supported formats: JPG, PNG, GIF. Max size: 5MB</div>
-                                <div class="invalid-feedback"></div>
-                            </div>
-
-                            <div id="editCategoryImagePreview" class="mb-3">
-                                <label class="form-label">Current Image</label>
-                                <div class="text-center">
-                                    <img id="editPreviewCategoryImg" src="" alt="Current Image" class="img-thumbnail" style="max-width: 200px; max-height: 200px;">
-                                </div>
                             </div>
                         </div>
                         <div class="modal-footer">

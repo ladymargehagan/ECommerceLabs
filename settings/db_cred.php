@@ -13,15 +13,15 @@ if (!defined("SERVER")) {
 }
 
 if (!defined("USERNAME")) {
-    define("USERNAME", "lady.hagan");
+    define("USERNAME", "root");
 }
 
 if (!defined("PASSWD")) {
-    define("PASSWD", "Stacks4lyf!$");
+    define("PASSWD", "");
 }
 
 if (!defined("DATABASE")) {
-
-    define("DATABASE", "ecommerce_2025A_lady_hagan");
+    // Use the database name from the provided SQL dump
+    define("DATABASE", "shoppn");
 }
 ?>

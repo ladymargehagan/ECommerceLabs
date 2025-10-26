@@ -28,25 +28,9 @@ if (empty($brand_id) || empty($brand_name)) {
 $brand_name = htmlspecialchars($brand_name, ENT_QUOTES, 'UTF-8');
 $brand_controller = new brand_controller();
 
-// Get current brand to preserve existing image if no new image uploaded
-$current_brand = $brand_controller->get_brand_by_id_ctr($brand_id);
-$brand_image = $current_brand['success'] ? $current_brand['data']['brand_image'] : '';
-
-// Handle new image upload
-if (isset($_FILES['brandImage']) && $_FILES['brandImage']['error'] === UPLOAD_ERR_OK) {
-    $upload_result = $brand_controller->upload_image_ctr($_FILES['brandImage'], $brand_id);
-    if ($upload_result['success']) {
-        $brand_image = $upload_result['data'];
-    } else {
-        echo json_encode($upload_result);
-        exit;
-    }
-}
-
 $kwargs = array(
     'brand_id' => $brand_id,
-    'brand_name' => $brand_name,
-    'brand_image' => $brand_image
+    'brand_name' => $brand_name
 );
 
 $result = $brand_controller->update_brand_ctr($kwargs);
