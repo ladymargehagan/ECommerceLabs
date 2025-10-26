@@ -190,38 +190,5 @@ class product_controller extends product_class
         }
     }
 
-    // Search products controller
-    public function search_products_ctr($query)
-    {
-        if (empty($query)) {
-            return array('success' => false, 'message' => 'Search query is required');
-        }
-
-        $products = $this->search_products($query);
-        return array('success' => true, 'data' => $products);
-    }
-
-    // Filter products by category controller
-    public function filter_products_by_category_ctr($cat_id)
-    {
-        if (empty($cat_id)) {
-            return array('success' => false, 'message' => 'Category ID is required');
-        }
-
-        $products = $this->filter_products_by_category($cat_id);
-        return array('success' => true, 'data' => $products);
-    }
-
-    // Filter products by brand controller
-    public function filter_products_by_brand_ctr($brand_id)
-    {
-        if (empty($brand_id)) {
-            return array('success' => false, 'message' => 'Brand ID is required');
-        }
-
-        $products = $this->filter_products_by_brand($brand_id);
-        return array('success' => true, 'data' => $products);
-    }
-
 }
 ?>

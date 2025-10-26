@@ -1,5 +1,4 @@
 <?php
-header('Content-Type: application/json');
 require_once '../settings/core.php';
 require_once '../controllers/category_controller.php';
 
@@ -79,5 +78,6 @@ if ($result['success'] && isset($_FILES['categoryImage']) && $_FILES['categoryIm
     }
 }
 
+header('Content-Type: application/json');
 echo json_encode($result);
 ?>

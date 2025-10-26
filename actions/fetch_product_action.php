@@ -1,5 +1,4 @@
 <?php
-header('Content-Type: application/json');
 require_once '../settings/core.php';
 require_once '../controllers/product_controller.php';
 
@@ -14,15 +13,8 @@ if ($_SESSION['role'] != 1) {
 }
 
 $product_controller = new product_controller();
+$result = $product_controller->get_all_products_ctr();
 
-// Check if requesting a specific product
-if (isset($_GET['productId']) && !empty($_GET['productId'])) {
-    $product_id = trim($_GET['productId']);
-    $result = $product_controller->get_product_by_id_ctr($product_id);
-} else {
-    // Return all products
-    $result = $product_controller->get_all_products_ctr();
-}
-
+header('Content-Type: application/json');
 echo json_encode($result);
 ?>

@@ -1,5 +1,4 @@
 <?php
-header('Content-Type: application/json');
 require_once '../settings/core.php';
 require_once '../controllers/product_controller.php';
 
@@ -28,5 +27,6 @@ if (empty($product_id)) {
 $product_controller = new product_controller();
 $result = $product_controller->delete_product_ctr($product_id);
 
+header('Content-Type: application/json');
 echo json_encode($result);
 ?>

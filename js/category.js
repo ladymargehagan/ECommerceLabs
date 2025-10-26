@@ -138,9 +138,6 @@ function addCategory() {
             if (response.success) {
                 showAlert('success', 'Success', response.message);
                 $('#addCategoryModal').modal('hide');
-                $('#addCategoryForm')[0].reset();
-                clearValidationErrors('#addCategoryForm');
-                $('#categoryImagePreview').hide();
                 loadCategories();
             } else {
                 showAlert('error', 'Error', response.message);
@@ -175,9 +172,6 @@ function updateCategory() {
             if (response.success) {
                 showAlert('success', 'Success', response.message);
                 $('#editCategoryModal').modal('hide');
-                $('#editCategoryForm')[0].reset();
-                clearValidationErrors('#editCategoryForm');
-                $('#editCategoryImagePreview').hide();
                 loadCategories();
             } else {
                 showAlert('error', 'Error', response.message);
@@ -328,4 +322,3 @@ function previewImage(input, previewId, containerId) {
         reader.readAsDataURL(input.files[0]);
     }
 }
-

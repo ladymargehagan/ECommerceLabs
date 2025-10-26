@@ -1,5 +1,4 @@
 <?php
-header('Content-Type: application/json');
 require_once '../settings/core.php';
 require_once '../controllers/category_controller.php';
 
@@ -15,8 +14,8 @@ if ($_SESSION['role'] != 1) {
 
 $user_id = $_SESSION['user_id'];
 $category_controller = new category_controller();
-
 $result = $category_controller->get_categories_ctr($user_id);
 
+header('Content-Type: application/json');
 echo json_encode($result);
 ?>

@@ -1,5 +1,4 @@
 <?php
-header('Content-Type: application/json');
 require_once '../settings/core.php';
 require_once '../controllers/product_controller.php';
 
@@ -46,6 +45,17 @@ $product_controller = new product_controller();
 $current_product = $product_controller->get_product_by_id_ctr($product_id);
 $product_image = $current_product['success'] ? $current_product['data']['product_image'] : '';
 
+// Handle new image upload
+if (isset($_FILES['productImage']) && $_FILES['productImage']['error'] === UPLOAD_ERR_OK) {
+    $upload_result = $product_controller->upload_image_ctr($_FILES['productImage'], $product_id);
+    if ($upload_result['success']) {
+        $product_image = $upload_result['data'];
+    } else {
+        echo json_encode($upload_result);
+        exit;
+    }
+}
+
 $kwargs = array(
     'product_id' => $product_id,
     'product_cat' => $product_cat,
@@ -59,5 +69,6 @@ $kwargs = array(
 
 $result = $product_controller->update_product_ctr($kwargs);
 
+header('Content-Type: application/json');
 echo json_encode($result);
 ?>

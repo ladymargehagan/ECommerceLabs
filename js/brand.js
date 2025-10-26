@@ -35,11 +35,16 @@ $(document).ready(function() {
             success: function(response) {
                 hideLoading();
                 if (response.success) {
-                    showSuccessMessage(response.message);
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Success!',
+                        text: response.message,
+                        timer: 2000,
+                        showConfirmButton: false
+                    });
                     $('#addBrandModal').modal('hide');
                     $('#addBrandForm')[0].reset();
                     clearFieldErrors();
-                    $('#brandImagePreview').hide();
                     loadBrands();
                 } else {
                     Swal.fire({
@@ -82,7 +87,13 @@ $(document).ready(function() {
             success: function(response) {
                 hideLoading();
                 if (response.success) {
-                    showSuccessMessage(response.message);
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Success!',
+                        text: response.message,
+                        timer: 2000,
+                        showConfirmButton: false
+                    });
                     $('#editBrandModal').modal('hide');
                     clearFieldErrors();
                     loadBrands();
@@ -411,8 +422,7 @@ function validateBrandForm(formData) {
         showFieldError('#brandName', 'Brand name is required');
         isValid = false;
     } else {
-        $('#brandName').removeClass('is-invalid');
-        $('#brandName').siblings('.invalid-feedback').text('');
+        clearFieldError('#brandName');
     }
     
     // Check edit form required fields
@@ -421,20 +431,8 @@ function validateBrandForm(formData) {
         showFieldError('#editBrandName', 'Brand name is required');
         isValid = false;
     } else if ($('#editBrandId').length) {
-        $('#editBrandName').removeClass('is-invalid');
-        $('#editBrandName').siblings('.invalid-feedback').text('');
+        clearFieldError('#editBrandName');
     }
     
     return isValid;
 }
-
-function showSuccessMessage(message) {
-    Swal.fire({
-        icon: 'success',
-        title: 'Success!',
-        text: message,
-        timer: 2000,
-        showConfirmButton: false
-    });
-}
-

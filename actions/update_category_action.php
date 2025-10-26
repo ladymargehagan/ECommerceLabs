@@ -1,5 +1,4 @@
 <?php
-header('Content-Type: application/json');
 require_once '../settings/core.php';
 require_once '../controllers/category_controller.php';
 
@@ -37,10 +36,15 @@ $category_name = htmlspecialchars($category_name, ENT_QUOTES, 'UTF-8');
 $category_controller = new category_controller();
 
 // Get current category to preserve existing image if no new image uploaded
-$current_category = $category_controller->get_category_by_id_ctr($category_id, $user_id);
+$current_category = $category_controller->get_categories_ctr($user_id);
 $category_image = '';
 if ($current_category['success']) {
-    $category_image = $current_category['data']['cat_image'] ?? '';
+    foreach ($current_category['data'] as $cat) {
+        if ($cat['cat_id'] == $category_id) {
+            $category_image = $cat['cat_image'] ?? '';
+            break;
+        }
+    }
 }
 
 // Handle new image upload
@@ -63,5 +67,6 @@ $kwargs = array(
 
 $result = $category_controller->update_category_ctr($kwargs);
 
+header('Content-Type: application/json');
 echo json_encode($result);
 ?>
