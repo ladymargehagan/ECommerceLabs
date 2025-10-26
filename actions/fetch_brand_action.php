@@ -12,6 +12,7 @@ if ($_SESSION['role'] != 1) {
     exit;
 }
 
+$user_id = $_SESSION['user_id'];
 $brand_controller = new brand_controller();
 $result = $brand_controller->get_brands_by_user_ctr($user_id);
 

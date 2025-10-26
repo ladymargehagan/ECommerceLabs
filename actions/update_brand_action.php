@@ -17,6 +17,7 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     exit;
 }
 
+$user_id = $_SESSION['user_id'];
 $brand_id = trim($_POST['brandId'] ?? '');
 $brand_name = trim($_POST['brandName'] ?? '');
 
