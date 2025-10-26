@@ -17,7 +17,7 @@ class product_class extends db_connection
         
         if ($result) {
             // Return the ID of the inserted product
-            return $this->db_connection->insert_id;
+            return $this->db->insert_id;
         }
         
         return false;
