@@ -320,6 +320,249 @@
     }
 }
 
+/* Additional styles for all product pages */
+
+/* All Products Page Styles */
+.product-card-all {
+    transition: all 0.3s ease;
+    border: none;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+}
+
+.product-card-all:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+.product-image-all {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+}
+
+.product-image-all.hover-effect {
+    transform: scale(1.1);
+}
+
+/* Single Product Page Styles */
+.product-main-image-container {
+    position: relative;
+    overflow: hidden;
+    border-radius: 0.5rem;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.product-main-image {
+    width: 100%;
+    height: auto;
+    transition: transform 0.3s ease;
+}
+
+.product-image-overlay {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.product-main-image-container:hover .product-image-overlay {
+    opacity: 1;
+}
+
+.product-info {
+    padding: 2rem;
+}
+
+.price-current {
+    color: #007bff;
+    font-weight: bold;
+}
+
+.meta-item {
+    margin-bottom: 1rem;
+}
+
+.product-actions {
+    margin-top: 2rem;
+}
+
+.keywords-container {
+    margin-top: 0.5rem;
+}
+
+/* Related Products Styles */
+.related-product-card {
+    transition: all 0.3s ease;
+    border: none;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    cursor: pointer;
+}
+
+.related-product-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+}
+
+.related-product-image-container {
+    position: relative;
+    overflow: hidden;
+    height: 150px;
+}
+
+.related-product-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+}
+
+.related-product-image.hover-effect {
+    transform: scale(1.1);
+}
+
+.related-product-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.7);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.related-product-card:hover .related-product-overlay {
+    opacity: 1;
+}
+
+/* Search Results Page Styles */
+.product-card-search {
+    transition: all 0.3s ease;
+    border: none;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+}
+
+.product-card-search:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+.product-image-search {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+}
+
+.product-image-search.hover-effect {
+    transform: scale(1.1);
+}
+
+.search-highlight {
+    background-color: #fff3cd;
+    padding: 0.1rem 0.2rem;
+    border-radius: 0.2rem;
+    font-weight: bold;
+}
+
+/* Breadcrumb Styles */
+.breadcrumb {
+    background: transparent;
+    padding: 0;
+    margin: 0;
+}
+
+.breadcrumb-item + .breadcrumb-item::before {
+    content: ">";
+    color: #6c757d;
+}
+
+/* Pagination Info Styles */
+.pagination-info {
+    color: #6c757d;
+    font-size: 0.9rem;
+}
+
+/* Product ID Styles */
+.product-id {
+    font-size: 0.8rem;
+    color: #6c757d;
+}
+
+/* Enhanced Modal Styles */
+.modal-xl {
+    max-width: 90%;
+}
+
+/* Loading States */
+.loading-spinner {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 3rem;
+}
+
+.spinner-large {
+    width: 3rem;
+    height: 3rem;
+}
+
+/* No Results Styles */
+.no-results {
+    text-align: center;
+    padding: 4rem 2rem;
+    background: #f8f9fa;
+    border-radius: 0.5rem;
+    border: 2px dashed #dee2e6;
+}
+
+.no-results i {
+    color: #6c757d;
+    margin-bottom: 1rem;
+}
+
+/* Responsive Design for New Pages */
+@media (max-width: 768px) {
+    .product-info {
+        padding: 1rem;
+    }
+    
+    .product-main-image-container {
+        margin-bottom: 1rem;
+    }
+    
+    .related-product-image-container {
+        height: 120px;
+    }
+    
+    .product-image-all,
+    .product-image-search {
+        height: 150px;
+    }
+}
+
+@media (max-width: 576px) {
+    .product-actions .row > div {
+        margin-bottom: 0.5rem;
+    }
+    
+    .product-actions .btn {
+        font-size: 0.9rem;
+    }
+    
+    .modal-xl {
+        max-width: 95%;
+    }
+}
+
 /* Customer-facing product page styles */
 .hero-section {
     background: linear-gradient(135deg, var(--primary-color), var(--primary-hover));
