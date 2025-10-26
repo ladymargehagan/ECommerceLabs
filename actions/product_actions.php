@@ -1,5 +1,14 @@
 <?php
-require_once '../controllers/product_controller.php';
+// Enable error reporting for debugging
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
+
+try {
+    require_once '../controllers/product_controller.php';
+} catch (Exception $e) {
+    echo "Error loading product controller: " . $e->getMessage();
+    exit;
+}
 
 // Handle AJAX requests for product operations
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -64,7 +73,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 // Handle GET requests for direct page access
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $action = $_GET['action'] ?? '';
-    $product_controller = new product_controller();
+    
+    try {
+        $product_controller = new product_controller();
+    } catch (Exception $e) {
+        echo "Error creating product controller: " . $e->getMessage();
+        exit;
+    }
     
     switch ($action) {
         case 'view_all_products':

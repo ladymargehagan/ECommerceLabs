@@ -70,33 +70,15 @@ session_start();
 		
 		<!-- Category and Brand Filters -->
 		<div class="mt-2">
-			<?php
-			// Load categories and brands for filtering
-			require_once 'controllers/product_controller.php';
-			$product_controller = new product_controller();
-			$categories_result = $product_controller->get_categories_ctr();
-			$brands_result = $product_controller->get_brands_ctr();
-			$categories = $categories_result['success'] ? $categories_result['data'] : array();
-			$brands = $brands_result['success'] ? $brands_result['data'] : array();
-			?>
-			
 			<div class="d-flex gap-2">
 				<select class="form-select form-select-sm" style="width: 150px;" onchange="filterByCategory(this.value)">
 					<option value="">All Categories</option>
-					<?php foreach ($categories as $category): ?>
-						<option value="<?php echo $category['cat_id']; ?>">
-							<?php echo htmlspecialchars($category['cat_name']); ?>
-						</option>
-					<?php endforeach; ?>
+					<!-- Categories will be loaded dynamically -->
 				</select>
 				
 				<select class="form-select form-select-sm" style="width: 150px;" onchange="filterByBrand(this.value)">
 					<option value="">All Brands</option>
-					<?php foreach ($brands as $brand): ?>
-						<option value="<?php echo $brand['brand_id']; ?>">
-							<?php echo htmlspecialchars($brand['brand_name']); ?>
-						</option>
-					<?php endforeach; ?>
+					<!-- Brands will be loaded dynamically -->
 				</select>
 			</div>
 		</div>
