@@ -17,7 +17,7 @@ if (!defined("USERNAME")) {
 }
 
 if (!defined("PASSWD")) {
-    define("PASSWD", "");
+    define("PASSWD", "Stacks4lyf!$");
 }
 
 if (!defined("DATABASE")) {
