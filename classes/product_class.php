@@ -1,4 +1,5 @@
 <?php
+#problem child for now lol
 require_once '../settings/db_class.php';
 
 class product_class extends db_connection
