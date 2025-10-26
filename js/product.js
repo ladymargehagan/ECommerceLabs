@@ -75,7 +75,7 @@ $(document).ready(function() {
         
         const formData = new FormData(this);
         const imageFile = formData.get('productImage');
-        const productId = formData.get('productId');
+        const productId = formData.get('productId'); // This matches the form field name
 
         if (!validateProductForm(formData)) {
             return;

@@ -1,4 +1,5 @@
 <?php
+header('Content-Type: application/json');
 require_once '../settings/core.php';
 require_once '../controllers/product_controller.php';
 
@@ -55,15 +56,6 @@ $sanitizedName = preg_replace('/[^a-zA-Z0-9._-]/', '_', pathinfo($originalName, 
 // Construct file path - MUST be inside uploads/ folder only
 $upload_dir = "../uploads/u{$user_id}/p{$product_id}/";
 
-// Verify upload directory is inside uploads/ folder
-$real_upload_dir = realpath($upload_dir);
-$real_uploads_dir = realpath("../uploads/");
-
-if (!$real_upload_dir || strpos($real_upload_dir, $real_uploads_dir) !== 0) {
-    echo json_encode(array('success' => false, 'message' => 'Invalid upload directory. Must be inside uploads/ folder.'));
-    exit;
-}
-
 // Ensure directory exists
 if (!is_dir($upload_dir)) {
     if (!mkdir($upload_dir, 0777, true)) {
@@ -119,6 +111,4 @@ if (move_uploaded_file($file['tmp_name'], $file_path)) {
 } else {
     echo json_encode(array('success' => false, 'message' => 'Failed to move uploaded file'));
 }
-
-header('Content-Type: application/json');
 ?>
