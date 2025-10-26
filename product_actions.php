@@ -16,6 +16,10 @@ try {
             getProducts();
             break;
             
+        case 'get_products_paginated':
+            getProductsPaginated();
+            break;
+            
         case 'get_product_detail':
             getProductDetail();
             break;
@@ -47,6 +51,47 @@ try {
 function getProducts() {
     $page = intval($_GET['page'] ?? 1);
     $limit = 12; // Products per page
+    $offset = ($page - 1) * $limit;
+    
+    $product_controller = new product_controller();
+    
+    // Get total count
+    $total_result = $product_controller->get_all_products_count_ctr();
+    if (!$total_result['success']) {
+        echo json_encode($total_result);
+        return;
+    }
+    
+    $total = $total_result['data'];
+    
+    // Get products for current page
+    $result = $product_controller->get_products_paginated_ctr($limit, $offset);
+    
+    if ($result['success']) {
+        $pagination = array(
+            'current_page' => $page,
+            'total_pages' => ceil($total / $limit),
+            'total_items' => $total,
+            'items_per_page' => $limit
+        );
+        
+        echo json_encode(array(
+            'success' => true,
+            'data' => array(
+                'products' => $result['data'],
+                'pagination' => $pagination,
+                'total' => $total,
+                'page' => $page
+            )
+        ));
+    } else {
+        echo json_encode($result);
+    }
+}
+
+function getProductsPaginated() {
+    $page = intval($_GET['page'] ?? 1);
+    $limit = intval($_GET['limit'] ?? 10);
     $offset = ($page - 1) * $limit;
     
     $product_controller = new product_controller();
@@ -160,8 +205,7 @@ function getCategories() {
 
 function getBrands() {
     $brand_controller = new brand_controller();
-    $user_id = $_SESSION['user_id'] ?? 0;
-    $result = $brand_controller->get_brands_by_user_ctr($user_id);
+    $result = $brand_controller->get_all_brands_ctr();
     
     echo json_encode($result);
 }

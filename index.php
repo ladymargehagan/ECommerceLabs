@@ -153,23 +153,6 @@ require_once 'settings/core.php';
 	</div>
 
 	<div class="container">
-		<!-- Featured Products Section -->
-		<div class="featured-products-section mb-5">
-			<h2 class="text-center mb-4">
-				<i class="fa fa-heart text-danger me-2"></i>Featured Products
-			</h2>
-			<div class="row" id="featuredProductsContainer">
-				<!-- Featured products will be loaded here -->
-				<div class="col-12 text-center py-4">
-					<div class="loading-spinner">
-						<div class="spinner-border text-primary" role="status">
-							<span class="visually-hidden">Loading...</span>
-						</div>
-						<p class="mt-3 text-muted">Loading featured products...</p>
-					</div>
-				</div>
-			</div>
-		</div>
 
 		<!-- Quick Actions Section -->
 		<div class="quick-actions-section mb-5">

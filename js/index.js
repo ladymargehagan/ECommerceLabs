@@ -12,9 +12,6 @@ $(document).ready(function() {
     
     // Quick filters functionality
     initializeQuickFilters();
-    
-    // Featured products
-    loadFeaturedProducts();
 });
 
 /**
@@ -187,101 +184,6 @@ function populateQuickBrandFilter(brands) {
     });
 }
 
-/**
- * Load featured products
- */
-function loadFeaturedProducts() {
-    $.ajax({
-        url: 'product_actions.php',
-        method: 'GET',
-        data: { action: 'get_featured_products', limit: 6 },
-        dataType: 'json',
-        success: function(response) {
-            if (response.success) {
-                displayFeaturedProducts(response.data);
-            } else {
-                showFeaturedProductsError();
-            }
-        },
-        error: function() {
-            showFeaturedProductsError();
-        }
-    });
-}
-
-/**
- * Display featured products
- */
-function displayFeaturedProducts(products) {
-    const container = $('#featuredProductsContainer');
-    
-    if (!products || products.length === 0) {
-        container.html(`
-            <div class="col-12 text-center py-4">
-                <p class="text-muted">No featured products available at the moment.</p>
-            </div>
-        `);
-        return;
-    }
-    
-    let html = '';
-    products.forEach(function(product) {
-        const imageSrc = getProductImagePath(product.product_image);
-        const price = parseFloat(product.product_price).toFixed(2);
-        
-        html += `
-            <div class="col-md-6 col-lg-4 mb-4">
-                <div class="card featured-product-card h-100" data-product-id="${product.product_id}">
-                    <div class="featured-product-image-container">
-                        <img src="${imageSrc}" class="featured-product-image" 
-                             alt="${product.product_title}" onerror="this.src='uploads/placeholder.png'">
-                        <div class="featured-product-overlay">
-                            <button class="btn btn-sm btn-outline-light btn-view-featured" 
-                                    data-product-id="${product.product_id}">
-                                <i class="fa fa-eye"></i>
-                            </button>
-                        </div>
-                    </div>
-                    <div class="card-body">
-                        <h6 class="card-title">${product.product_title}</h6>
-                        <div class="text-primary fw-bold mb-2">$${price}</div>
-                        <small class="text-muted">${product.cat_name || 'No Category'}</small>
-                        <div class="mt-2">
-                            <button class="btn btn-primary btn-sm w-100 btn-view-featured" 
-                                    data-product-id="${product.product_id}">
-                                <i class="fa fa-eye me-1"></i>View Details
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        `;
-    });
-    
-    container.html(html);
-    
-    // Add click handlers for featured products
-    $('.btn-view-featured').on('click', function() {
-        const productId = $(this).data('product-id');
-        window.location.href = `single_product.php?id=${productId}`;
-    });
-}
-
-/**
- * Show featured products error
- */
-function showFeaturedProductsError() {
-    const container = $('#featuredProductsContainer');
-    container.html(`
-        <div class="col-12 text-center py-4">
-            <i class="fa fa-exclamation-triangle fa-2x text-warning mb-3"></i>
-            <p class="text-muted">Unable to load featured products. Please try again later.</p>
-            <button class="btn btn-outline-primary" onclick="loadFeaturedProducts()">
-                <i class="fa fa-refresh me-2"></i>Retry
-            </button>
-        </div>
-    `);
-}
 
 /**
  * Show search suggestions
@@ -403,4 +305,3 @@ function showSuccess(message) {
 }
 
 // Export functions for global access
-window.loadFeaturedProducts = loadFeaturedProducts;
