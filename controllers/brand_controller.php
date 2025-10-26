@@ -6,18 +6,17 @@ class brand_controller extends brand_class
     public function add_brand_ctr($kwargs)
     {
         $brand_name = $kwargs['brand_name'];
-        $created_by = $kwargs['created_by'];
         
         if (empty($brand_name)) {
             return array('success' => false, 'message' => 'Brand name is required');
         }
         
-        // Check if brand name already exists for this user
-        if ($this->brand_name_exists($brand_name, $created_by)) {
+        // Check if brand name already exists
+        if ($this->brand_name_exists($brand_name)) {
             return array('success' => false, 'message' => 'Brand name already exists');
         }
         
-        $result = $this->add_brand($brand_name, $created_by);
+        $result = $this->add_brand($brand_name);
         
         if ($result) {
             return array('success' => true, 'message' => 'Brand added successfully');
@@ -53,24 +52,23 @@ class brand_controller extends brand_class
     {
         $brand_id = $kwargs['brand_id'];
         $brand_name = $kwargs['brand_name'];
-        $user_id = $kwargs['user_id'];
         
         if (empty($brand_name)) {
             return array('success' => false, 'message' => 'Brand name is required');
         }
         
-        // Check if brand exists and belongs to user
+        // Check if brand exists
         $brand = $this->get_brand_by_id($brand_id);
         if (!$brand) {
             return array('success' => false, 'message' => 'Brand not found');
         }
         
-        // Check if new name already exists for this user (excluding current brand)
-        if ($this->brand_name_exists($brand_name, $user_id, $brand_id)) {
+        // Check if new name already exists (excluding current brand)
+        if ($this->brand_name_exists($brand_name, $brand_id)) {
             return array('success' => false, 'message' => 'Brand name already exists');
         }
         
-        $result = $this->update_brand($brand_id, $brand_name, $user_id);
+        $result = $this->update_brand($brand_id, $brand_name);
         
         if ($result) {
             return array('success' => true, 'message' => 'Brand updated successfully');
@@ -79,7 +77,7 @@ class brand_controller extends brand_class
         }
     }
     
-    public function delete_brand_ctr($brand_id, $user_id)
+    public function delete_brand_ctr($brand_id)
     {
         // Check if brand exists
         $brand = $this->get_brand_by_id($brand_id);
@@ -87,12 +85,12 @@ class brand_controller extends brand_class
             return array('success' => false, 'message' => 'Brand not found');
         }
         
-        $result = $this->delete_brand($brand_id, $user_id);
+        $result = $this->delete_brand($brand_id);
         
         if ($result) {
             return array('success' => true, 'message' => 'Brand deleted successfully');
         } else {
-            return array('success' => false, 'message' => 'Cannot delete brand. It may be associated with products or you do not have permission.');
+            return array('success' => false, 'message' => 'Cannot delete brand. It may be associated with products.');
         }
     }
 

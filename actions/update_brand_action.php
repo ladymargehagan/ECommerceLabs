@@ -17,7 +17,6 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     exit;
 }
 
-$user_id = $_SESSION['user_id'];
 $brand_id = trim($_POST['brandId'] ?? '');
 $brand_name = trim($_POST['brandName'] ?? '');
 
@@ -31,8 +30,7 @@ $brand_controller = new brand_controller();
 
 $kwargs = array(
     'brand_id' => $brand_id,
-    'brand_name' => $brand_name,
-    'user_id' => $user_id
+    'brand_name' => $brand_name
 );
 
 $result = $brand_controller->update_brand_ctr($kwargs);

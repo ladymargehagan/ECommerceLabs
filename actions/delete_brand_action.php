@@ -17,7 +17,6 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     exit;
 }
 
-$user_id = $_SESSION['user_id'];
 $brand_id = trim($_POST['brandId'] ?? '');
 
 if (empty($brand_id)) {
@@ -26,7 +25,7 @@ if (empty($brand_id)) {
 }
 
 $brand_controller = new brand_controller();
-$result = $brand_controller->delete_brand_ctr($brand_id, $user_id);
+$result = $brand_controller->delete_brand_ctr($brand_id);
 
 header('Content-Type: application/json');
 echo json_encode($result);

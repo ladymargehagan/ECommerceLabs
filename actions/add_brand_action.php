@@ -17,7 +17,6 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     exit;
 }
 
-$user_id = $_SESSION['user_id'];
 $brand_name = trim($_POST['brandName'] ?? '');
 
 if (empty($brand_name)) {
@@ -29,8 +28,7 @@ $brand_name = htmlspecialchars($brand_name, ENT_QUOTES, 'UTF-8');
 $brand_controller = new brand_controller();
 
 $kwargs = array(
-    'brand_name' => $brand_name,
-    'created_by' => $user_id
+    'brand_name' => $brand_name
 );
 
 $result = $brand_controller->add_brand_ctr($kwargs);
