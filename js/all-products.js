@@ -105,7 +105,7 @@ function loadProducts(page = 1, filters = {}) {
     };
     
     $.ajax({
-        url: 'product_actions.php',
+        url: 'simple_product_actions.php',
         method: 'GET',
         data: requestData,
         dataType: 'json',
