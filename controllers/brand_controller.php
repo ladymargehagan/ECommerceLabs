@@ -28,7 +28,7 @@ class brand_controller extends brand_class
     
     public function get_brands_by_user_ctr($user_id)
     {
-        $brands = $this->get_brands_by_user($user_id);
+        $brands = $this->get_all_brands();
         return array('success' => true, 'data' => $brands);
     }
     

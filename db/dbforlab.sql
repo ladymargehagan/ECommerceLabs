@@ -29,7 +29,8 @@ SET time_zone = "+00:00";
 
 CREATE TABLE `brands` (
   `brand_id` int(11) NOT NULL,
-  `brand_name` varchar(100) NOT NULL
+  `brand_name` varchar(100) NOT NULL,
+  `brand_image` varchar(255) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
@@ -54,7 +55,9 @@ CREATE TABLE `cart` (
 CREATE TABLE `categories` (
   `cat_id` int(11) NOT NULL,
   `cat_name` varchar(100) NOT NULL,
-  `created_by` int(11) NOT NULL
+  `created_by` int(11) NOT NULL,
+  `cat_image` varchar(255) DEFAULT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
