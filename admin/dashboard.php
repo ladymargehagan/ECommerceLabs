@@ -68,6 +68,22 @@ $user_email = $_SESSION['email'];
                 </div>
             </div>
 
+            <!-- Brands Management -->
+            <div class="col-md-6 col-lg-4 mb-4">
+                <div class="card h-100">
+                    <div class="card-body text-center">
+                        <div class="mb-3">
+                            <i class="fa fa-star fa-3x text-warning"></i>
+                        </div>
+                        <h5 class="card-title">Brands</h5>
+                        <p class="card-text">Manage product brands, add new ones, edit existing brands, and organize your brand catalog.</p>
+                        <a href="brand.php" class="btn btn-custom">
+                            <i class="fa fa-cog me-1"></i>Manage Brands
+                        </a>
+                    </div>
+                </div>
+            </div>
+
             <!-- Products Management -->
             <div class="col-md-6 col-lg-4 mb-4">
                 <div class="card h-100">
