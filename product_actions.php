@@ -40,6 +40,10 @@ try {
             getBrands();
             break;
             
+        case 'debug_products':
+            debugProducts();
+            break;
+            
         default:
             echo json_encode(array('success' => false, 'message' => 'Invalid action'));
             break;
@@ -96,38 +100,36 @@ function getProductsPaginated() {
     
     $product_controller = new product_controller();
     
-    // Get total count
-    $total_result = $product_controller->get_all_products_count_ctr();
-    if (!$total_result['success']) {
-        echo json_encode($total_result);
+    // Get all products first
+    $all_products_result = $product_controller->get_all_products_ctr();
+    
+    if (!$all_products_result['success']) {
+        echo json_encode($all_products_result);
         return;
     }
     
-    $total = $total_result['data'];
+    $all_products = $all_products_result['data'];
+    $total = count($all_products);
     
     // Get products for current page
-    $result = $product_controller->get_products_paginated_ctr($limit, $offset);
+    $products = array_slice($all_products, $offset, $limit);
     
-    if ($result['success']) {
-        $pagination = array(
-            'current_page' => $page,
-            'total_pages' => ceil($total / $limit),
-            'total_items' => $total,
-            'items_per_page' => $limit
-        );
-        
-        echo json_encode(array(
-            'success' => true,
-            'data' => array(
-                'products' => $result['data'],
-                'pagination' => $pagination,
-                'total' => $total,
-                'page' => $page
-            )
-        ));
-    } else {
-        echo json_encode($result);
-    }
+    $pagination = array(
+        'current_page' => $page,
+        'total_pages' => ceil($total / $limit),
+        'total_items' => $total,
+        'items_per_page' => $limit
+    );
+    
+    echo json_encode(array(
+        'success' => true,
+        'data' => array(
+            'products' => $products,
+            'pagination' => $pagination,
+            'total' => $total,
+            'page' => $page
+        )
+    ));
 }
 
 function getProductDetail() {
@@ -139,9 +141,31 @@ function getProductDetail() {
     }
     
     $product_controller = new product_controller();
-    $result = $product_controller->get_product_by_id_ctr($product_id);
     
-    echo json_encode($result);
+    // Get all products first
+    $all_products_result = $product_controller->get_all_products_ctr();
+    
+    if (!$all_products_result['success']) {
+        echo json_encode($all_products_result);
+        return;
+    }
+    
+    $all_products = $all_products_result['data'];
+    
+    // Find the specific product
+    $product = null;
+    foreach ($all_products as $p) {
+        if ($p['product_id'] == $product_id) {
+            $product = $p;
+            break;
+        }
+    }
+    
+    if ($product) {
+        echo json_encode(array('success' => true, 'data' => $product));
+    } else {
+        echo json_encode(array('success' => false, 'message' => 'Product not found'));
+    }
 }
 
 function searchProducts() {
@@ -153,20 +177,35 @@ function searchProducts() {
     }
     
     $product_controller = new product_controller();
-    $result = $product_controller->search_products_ctr($search_term);
     
-    if ($result['success']) {
-        echo json_encode(array(
-            'success' => true,
-            'data' => array(
-                'products' => $result['data'],
-                'total' => count($result['data']),
-                'search_term' => $search_term
-            )
-        ));
-    } else {
-        echo json_encode($result);
+    // Get all products first
+    $all_products_result = $product_controller->get_all_products_ctr();
+    
+    if (!$all_products_result['success']) {
+        echo json_encode($all_products_result);
+        return;
     }
+    
+    $all_products = $all_products_result['data'];
+    $search_term_lower = strtolower($search_term);
+    
+    // Filter products by search term
+    $filtered_products = array_filter($all_products, function($product) use ($search_term_lower) {
+        return strpos(strtolower($product['product_title']), $search_term_lower) !== false ||
+               strpos(strtolower($product['product_desc']), $search_term_lower) !== false ||
+               strpos(strtolower($product['product_keywords']), $search_term_lower) !== false ||
+               strpos(strtolower($product['cat_name']), $search_term_lower) !== false ||
+               strpos(strtolower($product['brand_name']), $search_term_lower) !== false;
+    });
+    
+    echo json_encode(array(
+        'success' => true,
+        'data' => array(
+            'products' => array_values($filtered_products),
+            'total' => count($filtered_products),
+            'search_term' => $search_term
+        )
+    ));
 }
 
 function filterProducts() {
@@ -175,24 +214,67 @@ function filterProducts() {
     $sort = $_GET['sort'] ?? 'name_asc';
     
     $product_controller = new product_controller();
-    $result = $product_controller->filter_products_ctr($category, $brand, $sort);
     
-    if ($result['success']) {
-        echo json_encode(array(
-            'success' => true,
-            'data' => array(
-                'products' => $result['data'],
-                'total' => count($result['data']),
-                'filters' => array(
-                    'category' => $category,
-                    'brand' => $brand,
-                    'sort' => $sort
-                )
-            )
-        ));
-    } else {
-        echo json_encode($result);
+    // Get all products first
+    $all_products_result = $product_controller->get_all_products_ctr();
+    
+    if (!$all_products_result['success']) {
+        echo json_encode($all_products_result);
+        return;
     }
+    
+    $all_products = $all_products_result['data'];
+    
+    // Filter by category
+    if ($category !== 'all') {
+        $all_products = array_filter($all_products, function($product) use ($category) {
+            return $product['product_cat'] == $category;
+        });
+    }
+    
+    // Filter by brand
+    if ($brand !== 'all') {
+        $all_products = array_filter($all_products, function($product) use ($brand) {
+            return $product['product_brand'] == $brand;
+        });
+    }
+    
+    // Sort products
+    switch ($sort) {
+        case 'name_asc':
+            usort($all_products, function($a, $b) {
+                return strcmp($a['product_title'], $b['product_title']);
+            });
+            break;
+        case 'name_desc':
+            usort($all_products, function($a, $b) {
+                return strcmp($b['product_title'], $a['product_title']);
+            });
+            break;
+        case 'price_asc':
+            usort($all_products, function($a, $b) {
+                return floatval($a['product_price']) - floatval($b['product_price']);
+            });
+            break;
+        case 'price_desc':
+            usort($all_products, function($a, $b) {
+                return floatval($b['product_price']) - floatval($a['product_price']);
+            });
+            break;
+    }
+    
+    echo json_encode(array(
+        'success' => true,
+        'data' => array(
+            'products' => array_values($all_products),
+            'total' => count($all_products),
+            'filters' => array(
+                'category' => $category,
+                'brand' => $brand,
+                'sort' => $sort
+            )
+        )
+    ));
 }
 
 function getCategories() {
@@ -208,5 +290,17 @@ function getBrands() {
     $result = $brand_controller->get_all_brands_ctr();
     
     echo json_encode($result);
+}
+
+function debugProducts() {
+    $product_controller = new product_controller();
+    $result = $product_controller->get_all_products_ctr();
+    
+    echo json_encode(array(
+        'success' => true,
+        'debug' => true,
+        'data' => $result,
+        'count' => is_array($result['data']) ? count($result['data']) : 'not array'
+    ));
 }
 ?>
