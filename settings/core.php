@@ -2,16 +2,22 @@
 session_start();
 ob_start();
 
-// Redirect unauthenticated users to login
+// Redirect unauthenticated users to login (except for customer-facing product actions)
 if (!isset($_SESSION['user_id'])) {
-    // Simple path detection - if we're in a subdirectory, go up one level
-    $current_dir = dirname($_SERVER['PHP_SELF']);
-    $login_path = (strpos($current_dir, '/admin') !== false || 
-                   strpos($current_dir, '/customer') !== false || 
-                   strpos($current_dir, '/actions') !== false) 
-                   ? '../login/login.php' : 'login/login.php';
-    header("Location: $login_path");
-    exit;
+    // Allow access to product_actions.php for customer-facing functionality
+    $current_file = basename($_SERVER['PHP_SELF']);
+    $is_product_action = ($current_file === 'product_actions.php');
+    
+    if (!$is_product_action) {
+        // Simple path detection - if we're in a subdirectory, go up one level
+        $current_dir = dirname($_SERVER['PHP_SELF']);
+        $login_path = (strpos($current_dir, '/admin') !== false || 
+                       strpos($current_dir, '/customer') !== false || 
+                       strpos($current_dir, '/actions') !== false) 
+                       ? '../login/login.php' : 'login/login.php';
+        header("Location: $login_path");
+        exit;
+    }
 }
 
 function getUserID() {

@@ -148,12 +148,6 @@ class product_controller extends product_class
         return array('success' => true, 'data' => $products);
     }
     
-    public function search_products_ctr($search_term)
-    {
-        $products = $this->search_products($search_term);
-        return array('success' => true, 'data' => $products);
-    }
-    
     public function filter_products_ctr($category, $brand, $sort)
     {
         $products = $this->filter_products($category, $brand, $sort);

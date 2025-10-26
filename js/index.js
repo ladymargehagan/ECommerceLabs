@@ -129,7 +129,7 @@ function initializeQuickFilters() {
 function loadQuickFilters() {
     // Load categories
     $.ajax({
-        url: 'simple_filters.php',
+        url: 'product_actions.php',
         method: 'GET',
         data: { action: 'get_categories' },
         dataType: 'json',
@@ -145,7 +145,7 @@ function loadQuickFilters() {
     
     // Load brands
     $.ajax({
-        url: 'simple_filters.php',
+        url: 'product_actions.php',
         method: 'GET',
         data: { action: 'get_brands' },
         dataType: 'json',

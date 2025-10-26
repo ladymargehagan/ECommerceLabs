@@ -137,25 +137,6 @@ class product_class extends db_connection
         return $result ? $result : array();
     }
     
-    public function search_products($search_term)
-    {
-        $search_term = $this->db->real_escape_string($search_term);
-        
-        $sql = "SELECT p.*, c.cat_name, b.brand_name 
-                FROM products p 
-                LEFT JOIN categories c ON p.product_cat = c.cat_id 
-                LEFT JOIN brands b ON p.product_brand = b.brand_id 
-                WHERE p.product_title LIKE '%$search_term%' 
-                OR p.product_desc LIKE '%$search_term%' 
-                OR p.product_keywords LIKE '%$search_term%'
-                OR c.cat_name LIKE '%$search_term%'
-                OR b.brand_name LIKE '%$search_term%'
-                ORDER BY p.product_title ASC";
-        $result = $this->db_fetch_all($sql);
-        
-        return $result ? $result : array();
-    }
-    
     public function filter_products($category, $brand, $sort)
     {
         $sql = "SELECT p.*, c.cat_name, b.brand_name 
