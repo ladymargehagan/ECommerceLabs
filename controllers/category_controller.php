@@ -82,7 +82,13 @@ class category_controller
             return array('success' => false, 'message' => 'Category ID is required');
         }
 
-        $result = $this->category_class->delete_category($cat_id, $user_id);
+        if (!is_numeric($cat_id)) {
+            return array('success' => false, 'message' => 'Invalid category ID');
+        }
+
+        $cat_id = (int)$cat_id;
+
+        $result = $this->delete_category($cat_id, $user_id);
         
         if ($result) {
             return array('success' => true, 'message' => 'Category deleted successfully');

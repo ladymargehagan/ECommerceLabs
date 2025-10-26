@@ -65,6 +65,11 @@ class brand_class extends db_connection
 
     public function delete_brand($brand_id)
     {
+        // Ensure database connection
+        if (!$this->db_connect()) {
+            return false;
+        }
+
         // Check if brand exists
         $check_sql = "SELECT brand_id FROM brands WHERE brand_id = '$brand_id'";
         $brand_exists = $this->db_fetch_one($check_sql);

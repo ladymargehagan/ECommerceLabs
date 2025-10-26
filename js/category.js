@@ -211,7 +211,8 @@ function deleteCategory() {
         },
         error: function(xhr, status, error) {
             hideLoading();
-            showAlert('error', 'Error', 'Failed to delete category. Please try again.');
+            console.error('Delete category error:', xhr.responseText);
+            showAlert('error', 'Error', 'Failed to delete category. Please check the console for details.');
         }
     });
 }

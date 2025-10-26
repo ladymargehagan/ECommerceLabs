@@ -147,12 +147,13 @@ $(document).ready(function() {
                     });
                 }
             },
-            error: function() {
+            error: function(xhr, status, error) {
                 hideLoading();
+                console.error('Delete brand error:', xhr.responseText);
                 Swal.fire({
                     icon: 'error',
                     title: 'Error!',
-                    text: 'An error occurred while deleting the brand'
+                    text: 'An error occurred while deleting the brand. Please check the console for details.'
                 });
             }
         });

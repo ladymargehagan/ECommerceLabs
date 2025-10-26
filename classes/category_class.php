@@ -79,6 +79,11 @@ class category_class extends db_connection
 
     public function delete_category($cat_id, $user_id)
     {
+        // Ensure database connection
+        if (!$this->db_connect()) {
+            return false;
+        }
+
         $check_sql = "SELECT cat_id FROM categories WHERE cat_id = '$cat_id' AND created_by = '$user_id'";
         $category_exists = $this->db_fetch_one($check_sql);
         

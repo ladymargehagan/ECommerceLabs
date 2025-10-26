@@ -81,6 +81,16 @@ class brand_controller extends brand_class
     
     public function delete_brand_ctr($brand_id)
     {
+        if (empty($brand_id)) {
+            return array('success' => false, 'message' => 'Brand ID is required');
+        }
+
+        if (!is_numeric($brand_id)) {
+            return array('success' => false, 'message' => 'Invalid brand ID');
+        }
+
+        $brand_id = (int)$brand_id;
+        
         // Check if brand exists
         $brand = $this->get_brand_by_id($brand_id);
         if (!$brand) {

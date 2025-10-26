@@ -31,8 +31,14 @@ if (!is_numeric($category_id)) {
 }
 
 $category_id = (int)$category_id;
-$category_controller = new category_controller();
-$result = $category_controller->delete_category_ctr($category_id, $user_id);
+
+try {
+    $category_controller = new category_controller();
+    $result = $category_controller->delete_category_ctr($category_id, $user_id);
+} catch (Exception $e) {
+    error_log("Delete category error: " . $e->getMessage());
+    $result = array('success' => false, 'message' => 'An error occurred while deleting the category');
+}
 
 header('Content-Type: application/json');
 echo json_encode($result);

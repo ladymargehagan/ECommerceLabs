@@ -24,8 +24,20 @@ if (empty($brand_id)) {
     exit;
 }
 
-$brand_controller = new brand_controller();
-$result = $brand_controller->delete_brand_ctr($brand_id);
+if (!is_numeric($brand_id)) {
+    echo json_encode(array('success' => false, 'message' => 'Invalid brand ID'));
+    exit;
+}
+
+$brand_id = (int)$brand_id;
+
+try {
+    $brand_controller = new brand_controller();
+    $result = $brand_controller->delete_brand_ctr($brand_id);
+} catch (Exception $e) {
+    error_log("Delete brand error: " . $e->getMessage());
+    $result = array('success' => false, 'message' => 'An error occurred while deleting the brand');
+}
 
 header('Content-Type: application/json');
 echo json_encode($result);
