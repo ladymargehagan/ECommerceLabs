@@ -120,7 +120,7 @@ function performSearch(searchQuery, page = 1, filters = {}) {
     };
     
     $.ajax({
-        url: 'product_actions.php',
+        url: 'simple_filters.php',
         method: 'GET',
         data: requestData,
         dataType: 'json',
@@ -147,7 +147,7 @@ function performSearch(searchQuery, page = 1, filters = {}) {
 function loadFilters() {
     // Load categories
     $.ajax({
-        url: 'product_actions.php',
+        url: 'simple_filters.php',
         method: 'GET',
         data: { action: 'get_categories' },
         dataType: 'json',
@@ -160,7 +160,7 @@ function loadFilters() {
     
     // Load brands
     $.ajax({
-        url: 'product_actions.php',
+        url: 'simple_filters.php',
         method: 'GET',
         data: { action: 'get_brands' },
         dataType: 'json',

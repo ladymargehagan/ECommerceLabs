@@ -3,6 +3,6 @@ session_start();
 session_unset();      
 session_destroy();     
 
-// redirect to login page
+// Redirect to login page (same directory)
 header("Location: login.php");
 exit();
