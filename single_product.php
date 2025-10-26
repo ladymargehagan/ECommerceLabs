@@ -1,9 +1,5 @@
 <?php
-require_once 'settings/core.php';
-require_once 'controllers/product_controller.php';
-
-// Initialize product controller
-$product_controller = new product_controller();
+session_start();
 
 // Get product ID from URL
 $product_id = isset($_GET['id']) ? (int)$_GET['id'] : null;
@@ -13,15 +9,28 @@ if (!$product_id) {
     exit;
 }
 
-// Get product details
-$result = $product_controller->view_single_product_ctr($product_id);
+$product = null;
 
-if (!$result['success']) {
+// Try to load product data
+if (file_exists('settings/db_class.php') && file_exists('classes/product_class.php')) {
+    try {
+        require_once 'settings/db_class.php';
+        require_once 'classes/product_class.php';
+        
+        $product_class = new product_class();
+        
+        if ($product_class->db_connect()) {
+            $product = $product_class->view_single_product($product_id);
+        }
+    } catch (Exception $e) {
+        error_log("Error loading product data: " . $e->getMessage());
+    }
+}
+
+if (!$product) {
     header("Location: all_product.php");
     exit;
 }
-
-$product = $result['data'];
 ?>
 <!DOCTYPE html>
 <html lang="en">

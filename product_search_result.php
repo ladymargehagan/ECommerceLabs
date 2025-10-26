@@ -1,9 +1,12 @@
 <?php
-require_once 'settings/core.php';
-require_once 'controllers/product_controller.php';
+session_start();
 
-// Initialize product controller
-$product_controller = new product_controller();
+// Initialize empty arrays
+$products = array();
+$categories = array();
+$brands = array();
+$total_count = 0;
+$total_pages = 0;
 
 // Get search parameters
 $search_query = isset($_GET['q']) ? trim($_GET['q']) : '';
@@ -20,18 +23,32 @@ if (empty($search_query)) {
     exit;
 }
 
-// Get search results
-$result = $product_controller->get_products_with_filters_ctr($category_id, $brand_id, $search_query, $limit, $offset);
-
-$products = $result['success'] ? $result['data'] : array();
-$total_count = $result['success'] ? $result['total_count'] : 0;
-
-// Get categories and brands for filters
-$categories_result = $product_controller->get_categories_ctr();
-$brands_result = $product_controller->get_brands_ctr();
-
-$categories = $categories_result['success'] ? $categories_result['data'] : array();
-$brands = $brands_result['success'] ? $brands_result['data'] : array();
+// Try to load data from database
+if (file_exists('settings/db_class.php') && file_exists('classes/product_class.php')) {
+    try {
+        require_once 'settings/db_class.php';
+        require_once 'classes/product_class.php';
+        
+        $product_class = new product_class();
+        
+        if ($product_class->db_connect()) {
+            // Get search results
+            $products = $product_class->get_products_with_filters($category_id, $brand_id, $search_query, $limit, $offset);
+            $total_count = $product_class->get_filtered_count($category_id, $brand_id, $search_query);
+            
+            // Get categories and brands for filters
+            $categories = $product_class->get_categories();
+            $brands = $product_class->get_brands();
+            
+            // Ensure we have arrays
+            if (!is_array($products)) $products = array();
+            if (!is_array($categories)) $categories = array();
+            if (!is_array($brands)) $brands = array();
+        }
+    } catch (Exception $e) {
+        error_log("Error loading search data: " . $e->getMessage());
+    }
+}
 
 // Calculate pagination
 $total_pages = ceil($total_count / $limit);

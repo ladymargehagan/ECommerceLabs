@@ -1,5 +1,6 @@
 <?php
-require_once 'settings/core.php';
+require_once 'settings/db_class.php';
+require_once 'classes/product_class.php';
 require_once 'controllers/product_controller.php';
 
 // Initialize product controller
