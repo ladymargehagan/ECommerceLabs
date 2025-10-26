@@ -119,12 +119,16 @@ function displayCategories(categories) {
 function addCategory() {
     const form = $('#addCategoryForm');
     const formData = new FormData(form[0]);
+    const imageFile = formData.get('categoryImage');
     
     if (!validateCategoryForm(form)) {
         return;
     }
 
     showLoading();
+    
+    // Remove image from form data for category creation
+    formData.delete('categoryImage');
     
     $.ajax({
         url: '../actions/add_category_action.php',
@@ -134,12 +138,21 @@ function addCategory() {
         contentType: false,
         dataType: 'json',
         success: function(response) {
-            hideLoading();
             if (response.success) {
-                showAlert('success', 'Success', response.message);
-                $('#addCategoryModal').modal('hide');
-                loadCategories();
+                // If category created successfully and image was selected, upload image
+                if (imageFile && imageFile.size > 0) {
+                    uploadCategoryImage(response.category_id, imageFile);
+                } else {
+                    hideLoading();
+                    showAlert('success', 'Success', response.message);
+                    $('#addCategoryModal').modal('hide');
+                    $('#addCategoryForm')[0].reset();
+                    clearValidationErrors('#addCategoryForm');
+                    $('#categoryImagePreview').hide();
+                    loadCategories();
+                }
             } else {
+                hideLoading();
                 showAlert('error', 'Error', response.message);
             }
         },
@@ -153,12 +166,17 @@ function addCategory() {
 function updateCategory() {
     const form = $('#editCategoryForm');
     const formData = new FormData(form[0]);
+    const imageFile = formData.get('categoryImage');
+    const categoryId = formData.get('categoryId');
     
     if (!validateCategoryForm(form)) {
         return;
     }
 
     showLoading();
+    
+    // Remove image from form data for category update
+    formData.delete('categoryImage');
     
     $.ajax({
         url: '../actions/update_category_action.php',
@@ -168,12 +186,19 @@ function updateCategory() {
         contentType: false,
         dataType: 'json',
         success: function(response) {
-            hideLoading();
             if (response.success) {
-                showAlert('success', 'Success', response.message);
-                $('#editCategoryModal').modal('hide');
-                loadCategories();
+                // If category updated successfully and new image was selected, upload image
+                if (imageFile && imageFile.size > 0) {
+                    uploadCategoryImage(categoryId, imageFile);
+                } else {
+                    hideLoading();
+                    showAlert('success', 'Success', response.message);
+                    $('#editCategoryModal').modal('hide');
+                    clearValidationErrors('#editCategoryForm');
+                    loadCategories();
+                }
             } else {
+                hideLoading();
                 showAlert('error', 'Error', response.message);
             }
         },
@@ -321,4 +346,40 @@ function previewImage(input, previewId, containerId) {
         };
         reader.readAsDataURL(input.files[0]);
     }
+}
+
+function uploadCategoryImage(categoryId, imageFile) {
+    const formData = new FormData();
+    formData.append('categoryImage', imageFile);
+    formData.append('category_id', categoryId);
+    
+    $.ajax({
+        url: '../actions/upload_category_image_action.php',
+        method: 'POST',
+        data: formData,
+        processData: false,
+        contentType: false,
+        dataType: 'json',
+        success: function(response) {
+            hideLoading();
+            if (response.success) {
+                showAlert('success', 'Success', 'Category and image uploaded successfully!');
+                $('#addCategoryModal').modal('hide');
+                $('#editCategoryModal').modal('hide');
+                $('#addCategoryForm')[0].reset();
+                $('#editCategoryForm')[0].reset();
+                clearValidationErrors('#addCategoryForm');
+                clearValidationErrors('#editCategoryForm');
+                $('#categoryImagePreview').hide();
+                $('#editCategoryImagePreview').hide();
+                loadCategories();
+            } else {
+                showAlert('error', 'Error', response.message);
+            }
+        },
+        error: function() {
+            hideLoading();
+            showAlert('error', 'Error', 'An error occurred while uploading the image');
+        }
+    });
 }
