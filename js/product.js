@@ -25,29 +25,46 @@ $(document).ready(function() {
 
         showLoading();
         
+        // First create the product without image
+        const productData = new FormData();
+        productData.append('productCategory', formData.get('productCategory'));
+        productData.append('productBrand', formData.get('productBrand'));
+        productData.append('productTitle', formData.get('productTitle'));
+        productData.append('productPrice', formData.get('productPrice'));
+        productData.append('productDescription', formData.get('productDescription'));
+        productData.append('productKeywords', formData.get('productKeywords'));
+        
         $.ajax({
             url: '../actions/add_product_action.php',
             method: 'POST',
-            data: formData,
+            data: productData,
             processData: false,
             contentType: false,
             dataType: 'json',
             success: function(response) {
-                hideLoading();
                 if (response.success) {
-                    Swal.fire({
-                        icon: 'success',
-                        title: 'Success!',
-                        text: response.message,
-                        timer: 2000,
-                        showConfirmButton: false
-                    });
-                    $('#addProductModal').modal('hide');
-                    $('#addProductForm')[0].reset();
-                    clearFieldErrors();
-                    $('#imagePreview').hide();
-                    loadProducts();
+                    const productId = response.product_id;
+                    
+                    // If there's an image, upload it separately
+                    if (formData.get('productImage').size > 0) {
+                        uploadProductImage(productId, formData.get('productImage'));
+                    } else {
+                        hideLoading();
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Success!',
+                            text: response.message,
+                            timer: 2000,
+                            showConfirmButton: false
+                        });
+                        $('#addProductModal').modal('hide');
+                        $('#addProductForm')[0].reset();
+                        clearFieldErrors();
+                        $('#imagePreview').hide();
+                        loadProducts();
+                    }
                 } else {
+                    hideLoading();
                     Swal.fire({
                         icon: 'error',
                         title: 'Error!',
@@ -421,4 +438,51 @@ function clearFieldError(fieldId) {
 function clearFieldErrors() {
     $('.form-control').removeClass('is-invalid');
     $('.invalid-feedback').text('');
+}
+
+// Upload product image function
+function uploadProductImage(productId, imageFile) {
+    const imageData = new FormData();
+    imageData.append('product_id', productId);
+    imageData.append('productImage', imageFile);
+    
+    $.ajax({
+        url: '../actions/upload_product_image_action.php',
+        method: 'POST',
+        data: imageData,
+        processData: false,
+        contentType: false,
+        dataType: 'json',
+        success: function(response) {
+            hideLoading();
+            if (response.success) {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Success!',
+                    text: 'Product and image added successfully',
+                    timer: 2000,
+                    showConfirmButton: false
+                });
+                $('#addProductModal').modal('hide');
+                $('#addProductForm')[0].reset();
+                clearFieldErrors();
+                $('#imagePreview').hide();
+                loadProducts();
+            } else {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error!',
+                    text: response.message
+                });
+            }
+        },
+        error: function() {
+            hideLoading();
+            Swal.fire({
+                icon: 'error',
+                title: 'Error!',
+                text: 'An error occurred while uploading the image'
+            });
+        }
+    });
 }
