@@ -42,7 +42,6 @@ if (isset($_FILES['image']) && $_FILES['image']['error'] === UPLOAD_ERR_OK) {
     $image = $sanitizedName . '_' . time() . '.' . $extension;
     
     $targetDir = "../uploads/";
-    // uploads/ folder should already exist on server, but create if missing for compatibility
     if (!is_dir($targetDir)) {
         mkdir($targetDir, 0777, true);
     }
