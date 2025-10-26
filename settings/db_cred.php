@@ -22,6 +22,6 @@ if (!defined("PASSWD")) {
 
 if (!defined("DATABASE")) {
 
-    define("DATABASE", "shoppn");
+    define("DATABASE", "ecommerce_2025A_lady_hagan");
 }
 ?>
