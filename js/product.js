@@ -66,7 +66,47 @@ $(document).ready(function() {
         });
     });
 
-    // Edit and Delete functionality removed - will be added in future labs
+    // Delete Product Confirmation
+    $('#confirmDelete').on('click', function() {
+        const productId = $('#deleteProductId').val();
+        
+        showLoading();
+        
+        $.ajax({
+            url: '../actions/delete_product_action.php',
+            method: 'POST',
+            data: { productId: productId },
+            dataType: 'json',
+            success: function(response) {
+                hideLoading();
+                if (response.success) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Success!',
+                        text: response.message,
+                        timer: 2000,
+                        showConfirmButton: false
+                    });
+                    $('#deleteProductModal').modal('hide');
+                    loadProducts();
+                } else {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error!',
+                        text: response.message
+                    });
+                }
+            },
+            error: function() {
+                hideLoading();
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error!',
+                    text: 'An error occurred while deleting the product'
+                });
+            }
+        });
+    });
 
     // Clear form when modal is closed
     $('#addProductModal').on('hidden.bs.modal', function() {
@@ -223,43 +263,6 @@ function displayProducts(products) {
     });
 
     $('#productsContainer').html(html);
-}
-
-// Edit product function
-function editProduct(productId) {
-    $.ajax({
-        url: '../actions/fetch_product_action.php',
-        method: 'GET',
-        data: { productId: productId },
-        dataType: 'json',
-        success: function(response) {
-            if (response.success) {
-                const product = response.data.find(p => p.product_id == productId);
-                if (product) {
-                    $('#editProductId').val(product.product_id);
-                    $('#editProductTitle').val(product.product_title);
-                    $('#editProductPrice').val(product.product_price);
-                    $('#editProductCategory').val(product.product_cat);
-                    $('#editProductBrand').val(product.product_brand);
-                    $('#editProductDescription').val(product.product_desc || '');
-                    $('#editProductKeywords').val(product.product_keywords || '');
-                    
-                    // Set current image
-                    const imageSrc = product.product_image ? `../${product.product_image}` : '../uploads/placeholder.png';
-                    $('#editPreviewImg').attr('src', imageSrc);
-                    
-                    $('#editProductModal').modal('show');
-                }
-            }
-        },
-        error: function() {
-            Swal.fire({
-                icon: 'error',
-                title: 'Error!',
-                text: 'Failed to load product data'
-            });
-        }
-    });
 }
 
 // Delete product function

@@ -37,7 +37,7 @@ class product_controller extends product_class
         $result = $this->add_product($product_cat, $product_brand, $product_title, $product_price, $product_desc, $product_image, $product_keywords);
         
         if ($result) {
-            return array('success' => true, 'message' => 'Product added successfully');
+            return array('success' => true, 'message' => 'Product added successfully', 'product_id' => $result);
         } else {
             return array('success' => false, 'message' => 'Failed to add product');
         }

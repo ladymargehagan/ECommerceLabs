@@ -15,7 +15,12 @@ class product_class extends db_connection
                 VALUES ('$product_cat', '$product_brand', '$product_title', '$product_price', '$product_desc', '$product_image', '$product_keywords')";
         $result = $this->db_write_query($sql);
         
-        return $result;
+        if ($result) {
+            // Return the ID of the inserted product
+            return $this->db_connection->insert_id;
+        }
+        
+        return false;
     }
 
     public function get_all_products()
