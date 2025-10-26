@@ -21,7 +21,6 @@ if (!defined("PASSWD")) {
 }
 
 if (!defined("DATABASE")) {
-    // Use the database name from the provided SQL dump
     define("DATABASE", "shoppn");
 }
 ?>
