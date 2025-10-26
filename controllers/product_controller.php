@@ -1,5 +1,5 @@
 <?php
-require_once '../classes/product_class.php';
+require_once __DIR__ . '/../classes/product_class.php';
 
 class product_controller extends product_class
 {
