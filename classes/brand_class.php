@@ -3,18 +3,26 @@ require_once '../settings/db_class.php';
 
 class brand_class extends db_connection
 {
-    public function add_brand($brand_name)
+    public function add_brand($brand_name, $created_by)
     {
-        // Check if brand name already exists
-        $check_sql = "SELECT brand_id FROM brands WHERE brand_name = '$brand_name'";
+        // Check if brand name already exists for this user
+        $check_sql = "SELECT brand_id FROM brands WHERE brand_name = '$brand_name' AND created_by = '$created_by'";
         if ($this->db_fetch_one($check_sql)) {
             return false;
         }
 
-        $sql = "INSERT INTO brands (brand_name) VALUES ('$brand_name')";
+        $sql = "INSERT INTO brands (brand_name, created_by) VALUES ('$brand_name', '$created_by')";
         $result = $this->db_write_query($sql);
         
         return $result;
+    }
+
+    public function get_brands_by_user($user_id)
+    {
+        $sql = "SELECT * FROM brands WHERE created_by = '$user_id' ORDER BY brand_name ASC";
+        $result = $this->db_fetch_all($sql);
+        
+        return $result ? $result : array();
     }
 
     public function get_all_brands()
@@ -33,32 +41,32 @@ class brand_class extends db_connection
         return $result;
     }
 
-    public function update_brand($brand_id, $brand_name)
+    public function update_brand($brand_id, $brand_name, $user_id)
     {
-        // Check if brand exists
-        $check_sql = "SELECT brand_id FROM brands WHERE brand_id = '$brand_id'";
+        // Check if brand exists and belongs to user
+        $check_sql = "SELECT brand_id FROM brands WHERE brand_id = '$brand_id' AND created_by = '$user_id'";
         $brand_exists = $this->db_fetch_one($check_sql);
         
         if (!$brand_exists) {
             return false;
         }
 
-        // Check if new name already exists (excluding current brand)
-        $check_name_sql = "SELECT brand_id FROM brands WHERE brand_name = '$brand_name' AND brand_id != '$brand_id'";
+        // Check if new name already exists for this user (excluding current brand)
+        $check_name_sql = "SELECT brand_id FROM brands WHERE brand_name = '$brand_name' AND created_by = '$user_id' AND brand_id != '$brand_id'";
         if ($this->db_fetch_one($check_name_sql)) {
             return false;
         }
 
-        $sql = "UPDATE brands SET brand_name = '$brand_name' WHERE brand_id = '$brand_id'";
+        $sql = "UPDATE brands SET brand_name = '$brand_name' WHERE brand_id = '$brand_id' AND created_by = '$user_id'";
         $result = $this->db_write_query($sql);
         
         return $result;
     }
 
-    public function delete_brand($brand_id)
+    public function delete_brand($brand_id, $user_id)
     {
-        // Check if brand exists
-        $check_sql = "SELECT brand_id FROM brands WHERE brand_id = '$brand_id'";
+        // Check if brand exists and belongs to user
+        $check_sql = "SELECT brand_id FROM brands WHERE brand_id = '$brand_id' AND created_by = '$user_id'";
         $brand_exists = $this->db_fetch_one($check_sql);
         
         if (!$brand_exists) {
@@ -71,15 +79,28 @@ class brand_class extends db_connection
             return false;
         }
 
-        $sql = "DELETE FROM brands WHERE brand_id = '$brand_id'";
+        $sql = "DELETE FROM brands WHERE brand_id = '$brand_id' AND created_by = '$user_id'";
         $result = $this->db_write_query($sql);
         
         return $result;
     }
 
-    public function brand_name_exists($brand_name, $exclude_id = null)
+    public function get_categories_by_user($user_id)
     {
-        $sql = "SELECT brand_id FROM brands WHERE brand_name = '$brand_name'";
+        $sql = "SELECT * FROM categories WHERE created_by = '$user_id' ORDER BY cat_name ASC";
+        $result = $this->db_fetch_all($sql);
+        
+        if ($result === false || empty($result)) {
+            $sql = "SELECT * FROM categories ORDER BY cat_name ASC";
+            $result = $this->db_fetch_all($sql);
+        }
+        
+        return $result ? $result : array();
+    }
+
+    public function brand_name_exists($brand_name, $user_id, $exclude_id = null)
+    {
+        $sql = "SELECT brand_id FROM brands WHERE brand_name = '$brand_name' AND created_by = '$user_id'";
         if ($exclude_id) {
             $sql .= " AND brand_id != '$exclude_id'";
         }

@@ -25,7 +25,7 @@ if (empty($brand_id)) {
 }
 
 $brand_controller = new brand_controller();
-$result = $brand_controller->delete_brand_ctr($brand_id);
+$result = $brand_controller->delete_brand_ctr($brand_id, $user_id);
 
 header('Content-Type: application/json');
 echo json_encode($result);

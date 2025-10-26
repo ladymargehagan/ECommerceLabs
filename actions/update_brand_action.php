@@ -30,7 +30,8 @@ $brand_controller = new brand_controller();
 
 $kwargs = array(
     'brand_id' => $brand_id,
-    'brand_name' => $brand_name
+    'brand_name' => $brand_name,
+    'user_id' => $user_id
 );
 
 $result = $brand_controller->update_brand_ctr($kwargs);

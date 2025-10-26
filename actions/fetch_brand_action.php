@@ -13,7 +13,7 @@ if ($_SESSION['role'] != 1) {
 }
 
 $brand_controller = new brand_controller();
-$result = $brand_controller->get_all_brands_ctr();
+$result = $brand_controller->get_brands_by_user_ctr($user_id);
 
 header('Content-Type: application/json');
 echo json_encode($result);

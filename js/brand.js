@@ -1,6 +1,7 @@
 $(document).ready(function() {
-    // Load brands on page load
+    // Load brands and categories on page load
     loadBrands();
+    loadCategories();
 
     // Add Brand Form Submission
     $('#addBrandForm').on('submit', function(e) {
@@ -193,7 +194,39 @@ function loadBrands() {
     });
 }
 
-// Display brands function
+// Load categories function
+function loadCategories() {
+    $.ajax({
+        url: '../actions/fetch_category_action.php',
+        method: 'GET',
+        dataType: 'json',
+        success: function(response) {
+            if (response.success) {
+                populateCategorySelects(response.data);
+            }
+        },
+        error: function() {
+            console.error('Error loading categories');
+        }
+    });
+}
+
+// Populate category dropdowns
+function populateCategorySelects(categories) {
+    const addSelect = $('#categoryId');
+    const editSelect = $('#editCategoryId');
+    
+    // Clear existing options except the first one
+    addSelect.find('option:not(:first)').remove();
+    editSelect.find('option:not(:first)').remove();
+    
+    categories.forEach(function(category) {
+        addSelect.append(`<option value="${category.cat_id}">${category.cat_name}</option>`);
+        editSelect.append(`<option value="${category.cat_id}">${category.cat_name}</option>`);
+    });
+}
+
+// Display brands function with visual grouping by categories
 function displayBrands(brands) {
     if (!brands || brands.length === 0) {
         $('#brandsContainer').html(`
@@ -206,6 +239,81 @@ function displayBrands(brands) {
         return;
     }
 
+    // Get categories for grouping
+    $.ajax({
+        url: '../actions/fetch_category_action.php',
+        method: 'GET',
+        dataType: 'json',
+        success: function(response) {
+            if (response.success) {
+                displayBrandsGroupedByCategories(brands, response.data);
+            } else {
+                displayBrandsSimple(brands);
+            }
+        },
+        error: function() {
+            displayBrandsSimple(brands);
+        }
+    });
+}
+
+// Display brands grouped by categories
+function displayBrandsGroupedByCategories(brands, categories) {
+    let html = '';
+    
+    // Group brands by categories (visual grouping only)
+    categories.forEach(function(category) {
+        html += `
+            <div class="col-12 mb-4">
+                <div class="category-section">
+                    <h4 class="category-header">
+                        <i class="fa fa-tags text-primary me-2"></i>
+                        ${category.cat_name}
+                    </h4>
+                    <div class="row">
+        `;
+        
+        // Display all brands under each category (since brands can produce across categories)
+        brands.forEach(function(brand) {
+            html += `
+                <div class="col-md-6 col-lg-4 mb-3">
+                    <div class="card brand-card h-100">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-start mb-3">
+                                <h5 class="card-title mb-0">
+                                    <i class="fa fa-star text-warning me-2"></i>
+                                    ${brand.brand_name}
+                                </h5>
+                                <div class="action-buttons">
+                                    <button class="btn btn-sm btn-outline-primary me-1" onclick="editBrand(${brand.brand_id}, '${brand.brand_name}')" title="Edit Brand">
+                                        <i class="fa fa-edit"></i>
+                                    </button>
+                                    <button class="btn btn-sm btn-outline-danger" onclick="deleteBrand(${brand.brand_id})" title="Delete Brand">
+                                        <i class="fa fa-trash"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <p class="card-text text-muted">
+                                <small><strong>Brand ID:</strong> ${brand.brand_id}</small>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            `;
+        });
+        
+        html += `
+                    </div>
+                </div>
+            </div>
+        `;
+    });
+
+    $('#brandsContainer').html(html);
+}
+
+// Simple display without grouping
+function displayBrandsSimple(brands) {
     let html = '';
     brands.forEach(function(brand) {
         html += `
@@ -227,7 +335,7 @@ function displayBrands(brands) {
                             </div>
                         </div>
                         <p class="card-text text-muted">
-                            <small>Brand ID: ${brand.brand_id}</small>
+                            <small><strong>Brand ID:</strong> ${brand.brand_id}</small>
                         </p>
                     </div>
                 </div>

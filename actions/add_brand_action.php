@@ -28,7 +28,8 @@ $brand_name = htmlspecialchars($brand_name, ENT_QUOTES, 'UTF-8');
 $brand_controller = new brand_controller();
 
 $kwargs = array(
-    'brand_name' => $brand_name
+    'brand_name' => $brand_name,
+    'created_by' => $user_id
 );
 
 $result = $brand_controller->add_brand_ctr($kwargs);
