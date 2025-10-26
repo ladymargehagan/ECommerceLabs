@@ -1,0 +1,16 @@
+# Database configuration files (contains sensitive information)
+db_config.env
+.env
+
+# System files
+.DS_Store
+Thumbs.db
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Logs
+*.log
