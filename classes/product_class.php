@@ -117,14 +117,87 @@ class product_class extends db_connection
         return $result ? $result : array();
     }
 
-    public function product_title_exists($product_title, $exclude_id = null)
+    public function get_all_products_count()
     {
-        $sql = "SELECT product_id FROM products WHERE product_title = '$product_title'";
-        if ($exclude_id) {
-            $sql .= " AND product_id != '$exclude_id'";
-        }
-        return $this->db_fetch_one($sql) ? true : false;
+        $sql = "SELECT COUNT(*) as total FROM products";
+        $result = $this->db_fetch_one($sql);
+        return $result ? $result['total'] : 0;
     }
-
-}
+    
+    public function get_products_paginated($limit, $offset)
+    {
+        $sql = "SELECT p.*, c.cat_name, b.brand_name 
+                FROM products p 
+                LEFT JOIN categories c ON p.product_cat = c.cat_id 
+                LEFT JOIN brands b ON p.product_brand = b.brand_id 
+                ORDER BY p.product_title ASC
+                LIMIT $limit OFFSET $offset";
+        $result = $this->db_fetch_all($sql);
+        
+        return $result ? $result : array();
+    }
+    
+    public function search_products($search_term)
+    {
+        $search_term = $this->db->real_escape_string($search_term);
+        
+        $sql = "SELECT p.*, c.cat_name, b.brand_name 
+                FROM products p 
+                LEFT JOIN categories c ON p.product_cat = c.cat_id 
+                LEFT JOIN brands b ON p.product_brand = b.brand_id 
+                WHERE p.product_title LIKE '%$search_term%' 
+                OR p.product_desc LIKE '%$search_term%' 
+                OR p.product_keywords LIKE '%$search_term%'
+                OR c.cat_name LIKE '%$search_term%'
+                OR b.brand_name LIKE '%$search_term%'
+                ORDER BY p.product_title ASC";
+        $result = $this->db_fetch_all($sql);
+        
+        return $result ? $result : array();
+    }
+    
+    public function filter_products($category, $brand, $sort)
+    {
+        $sql = "SELECT p.*, c.cat_name, b.brand_name 
+                FROM products p 
+                LEFT JOIN categories c ON p.product_cat = c.cat_id 
+                LEFT JOIN brands b ON p.product_brand = b.brand_id 
+                WHERE 1=1";
+        
+        // Add category filter
+        if ($category !== 'all' && is_numeric($category)) {
+            $sql .= " AND p.product_cat = '$category'";
+        }
+        
+        // Add brand filter
+        if ($brand !== 'all' && is_numeric($brand)) {
+            $sql .= " AND p.product_brand = '$brand'";
+        }
+        
+        // Add sorting
+        switch ($sort) {
+            case 'name_asc':
+                $sql .= " ORDER BY p.product_title ASC";
+                break;
+            case 'name_desc':
+                $sql .= " ORDER BY p.product_title DESC";
+                break;
+            case 'price_asc':
+                $sql .= " ORDER BY p.product_price ASC";
+                break;
+            case 'price_desc':
+                $sql .= " ORDER BY p.product_price DESC";
+                break;
+            case 'newest':
+                $sql .= " ORDER BY p.product_id DESC";
+                break;
+            default:
+                $sql .= " ORDER BY p.product_title ASC";
+                break;
+        }
+        
+        $result = $this->db_fetch_all($sql);
+        
+        return $result ? $result : array();
+    }
 ?>

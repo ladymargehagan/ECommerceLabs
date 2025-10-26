@@ -51,7 +51,7 @@ session_start();
 		<?php endif; ?>
 	</div>
 
-	<div class="container" style="padding-top:120px;">
+	<div class="container container-padding-top-small">
 		<?php if (isset($_SESSION['user_id'])): ?>
 			<!-- Logged in user content -->
 			<div class="welcome-card text-center">

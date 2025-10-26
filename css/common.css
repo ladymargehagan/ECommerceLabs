@@ -1,0 +1,40 @@
+/* Common inline styles that were extracted from HTML files */
+
+/* Image preview styles */
+.image-preview-container {
+    display: none;
+}
+
+.image-preview-container.show {
+    display: block;
+}
+
+.image-preview-thumbnail {
+    max-width: 200px;
+    max-height: 200px;
+}
+
+/* Results info styles */
+.results-info-hidden {
+    display: none;
+}
+
+/* Loading spinner styles */
+.spinner-large {
+    width: 3rem;
+    height: 3rem;
+}
+
+/* Pagination container styles */
+.pagination-container-hidden {
+    display: none;
+}
+
+/* Container padding styles */
+.container-padding-top {
+    padding-top: 120px;
+}
+
+.container-padding-top-small {
+    padding-top: 120px;
+}

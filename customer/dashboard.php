@@ -29,9 +29,10 @@ if (isset($_SESSION['role']) && $_SESSION['role'] == 1) {
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <link href="../css/main.css" rel="stylesheet">
     <link href="../css/index.css" rel="stylesheet">
+    <link href="../css/common.css" rel="stylesheet">
 </head>
 <body>
-    <div class="container" style="padding-top: 120px;">
+    <div class="container container-padding-top">
         <!-- Customer Navigation -->
         <div class="card mb-4">
             <div class="card-header d-flex justify-content-between align-items-center">

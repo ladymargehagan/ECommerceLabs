@@ -21,6 +21,7 @@ if ($_SESSION['role'] != 1) {
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <link href="../css/main.css" rel="stylesheet">
     <link href="../css/product.css" rel="stylesheet">
+    <link href="../css/common.css" rel="stylesheet">
 </head>
 <body>
     <div class="container-fluid">
@@ -119,10 +120,10 @@ if ($_SESSION['role'] != 1) {
                                 <div class="invalid-feedback"></div>
                             </div>
 
-                            <div id="imagePreview" class="mb-3" style="display: none;">
+                            <div id="imagePreview" class="mb-3 image-preview-container">
                                 <label class="form-label">Image Preview</label>
                                 <div class="text-center">
-                                    <img id="previewImg" src="" alt="Preview" class="img-thumbnail" style="max-width: 200px; max-height: 200px;">
+                                    <img id="previewImg" src="" alt="Preview" class="img-thumbnail image-preview-thumbnail">
                                 </div>
                             </div>
                         </div>
@@ -209,7 +210,7 @@ if ($_SESSION['role'] != 1) {
                             <div id="editImagePreview" class="mb-3">
                                 <label class="form-label">Current Image</label>
                                 <div class="text-center">
-                                    <img id="editPreviewImg" src="" alt="Current Image" class="img-thumbnail" style="max-width: 200px; max-height: 200px;">
+                                    <img id="editPreviewImg" src="" alt="Current Image" class="img-thumbnail image-preview-thumbnail">
                                 </div>
                             </div>
                         </div>
