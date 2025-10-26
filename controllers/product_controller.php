@@ -136,5 +136,114 @@ class product_controller extends product_class
         return array('success' => true, 'data' => $brands);
     }
 
+    // Customer-facing controller methods
+    public function view_all_products_ctr($page = 1, $per_page = 10)
+    {
+        $offset = ($page - 1) * $per_page;
+        $products = $this->view_all_products($per_page, $offset);
+        $total_count = $this->get_products_count();
+        $total_pages = ceil($total_count / $per_page);
+        
+        return array(
+            'success' => true, 
+            'data' => $products,
+            'pagination' => array(
+                'current_page' => $page,
+                'total_pages' => $total_pages,
+                'total_products' => $total_count,
+                'per_page' => $per_page
+            )
+        );
+    }
+
+    public function search_products_ctr($query, $page = 1, $per_page = 10)
+    {
+        if (empty(trim($query))) {
+            return array('success' => false, 'message' => 'Search query is required');
+        }
+        
+        $offset = ($page - 1) * $per_page;
+        $products = $this->search_products($query, $per_page, $offset);
+        $total_count = $this->get_search_products_count($query);
+        $total_pages = ceil($total_count / $per_page);
+        
+        return array(
+            'success' => true, 
+            'data' => $products,
+            'query' => $query,
+            'pagination' => array(
+                'current_page' => $page,
+                'total_pages' => $total_pages,
+                'total_products' => $total_count,
+                'per_page' => $per_page
+            )
+        );
+    }
+
+    public function filter_products_by_category_ctr($cat_id, $page = 1, $per_page = 10)
+    {
+        if (empty($cat_id) || !is_numeric($cat_id)) {
+            return array('success' => false, 'message' => 'Valid category ID is required');
+        }
+        
+        $offset = ($page - 1) * $per_page;
+        $products = $this->filter_products_by_category($cat_id, $per_page, $offset);
+        $total_count = $this->get_filtered_products_count('category', $cat_id);
+        $total_pages = ceil($total_count / $per_page);
+        
+        return array(
+            'success' => true, 
+            'data' => $products,
+            'filter_type' => 'category',
+            'filter_id' => $cat_id,
+            'pagination' => array(
+                'current_page' => $page,
+                'total_pages' => $total_pages,
+                'total_products' => $total_count,
+                'per_page' => $per_page
+            )
+        );
+    }
+
+    public function filter_products_by_brand_ctr($brand_id, $page = 1, $per_page = 10)
+    {
+        if (empty($brand_id) || !is_numeric($brand_id)) {
+            return array('success' => false, 'message' => 'Valid brand ID is required');
+        }
+        
+        $offset = ($page - 1) * $per_page;
+        $products = $this->filter_products_by_brand($brand_id, $per_page, $offset);
+        $total_count = $this->get_filtered_products_count('brand', $brand_id);
+        $total_pages = ceil($total_count / $per_page);
+        
+        return array(
+            'success' => true, 
+            'data' => $products,
+            'filter_type' => 'brand',
+            'filter_id' => $brand_id,
+            'pagination' => array(
+                'current_page' => $page,
+                'total_pages' => $total_pages,
+                'total_products' => $total_count,
+                'per_page' => $per_page
+            )
+        );
+    }
+
+    public function view_single_product_ctr($product_id)
+    {
+        if (empty($product_id) || !is_numeric($product_id)) {
+            return array('success' => false, 'message' => 'Valid product ID is required');
+        }
+        
+        $product = $this->view_single_product($product_id);
+        
+        if ($product) {
+            return array('success' => true, 'data' => $product);
+        } else {
+            return array('success' => false, 'message' => 'Product not found');
+        }
+    }
+
 }
 ?>
