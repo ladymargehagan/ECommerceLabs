@@ -278,18 +278,26 @@ function filterProducts() {
 }
 
 function getCategories() {
-    $category_controller = new category_controller();
-    $user_id = $_SESSION['user_id'] ?? 0;
-    $result = $category_controller->get_categories_ctr($user_id);
-    
-    echo json_encode($result);
+    try {
+        $category_controller = new category_controller();
+        $user_id = $_SESSION['user_id'] ?? 0;
+        $result = $category_controller->get_categories_ctr($user_id);
+        
+        echo json_encode($result);
+    } catch (Exception $e) {
+        echo json_encode(array('success' => false, 'message' => 'Error getting categories: ' . $e->getMessage()));
+    }
 }
 
 function getBrands() {
-    $brand_controller = new brand_controller();
-    $result = $brand_controller->get_all_brands_ctr();
-    
-    echo json_encode($result);
+    try {
+        $brand_controller = new brand_controller();
+        $result = $brand_controller->get_all_brands_ctr();
+        
+        echo json_encode($result);
+    } catch (Exception $e) {
+        echo json_encode(array('success' => false, 'message' => 'Error getting brands: ' . $e->getMessage()));
+    }
 }
 
 function debugProducts() {

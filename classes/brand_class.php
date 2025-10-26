@@ -32,10 +32,14 @@ class brand_class extends db_connection
 
     public function get_all_brands()
     {
-        $sql = "SELECT * FROM brands ORDER BY brand_name ASC";
-        $result = $this->db_fetch_all($sql);
-        
-        return $result ? $result : array();
+        try {
+            $sql = "SELECT * FROM brands ORDER BY brand_name ASC";
+            $result = $this->db_fetch_all($sql);
+            
+            return $result ? $result : array();
+        } catch (Exception $e) {
+            return array();
+        }
     }
 
     public function get_brand_by_id($brand_id)
