@@ -1,6 +1,16 @@
 $(document).ready(function() {
     loadCategories();
 
+    // Image preview for add form
+    $('#categoryImage').on('change', function() {
+        previewImage(this, '#previewCategoryImg', '#categoryImagePreview');
+    });
+
+    // Image preview for edit form
+    $('#editCategoryImage').on('change', function() {
+        previewImage(this, '#editPreviewCategoryImg', '#editCategoryImagePreview');
+    });
+
     $('#addCategoryForm').on('submit', function(e) {
         e.preventDefault();
         addCategory();
@@ -18,6 +28,7 @@ $(document).ready(function() {
     $('#addCategoryModal').on('hidden.bs.modal', function() {
         $('#addCategoryForm')[0].reset();
         clearValidationErrors('#addCategoryForm');
+        $('#categoryImagePreview').hide();
     });
 
     $('#editCategoryModal').on('hidden.bs.modal', function() {
@@ -67,17 +78,16 @@ function displayCategories(categories) {
 
     let html = '';
     categories.forEach(function(category) {
+        const imageSrc = category.cat_image ? `../${category.cat_image}` : '../uploads/placeholder.png';
+        
         html += `
             <div class="col-md-4 col-lg-3 mb-4">
                 <div class="card category-card h-100">
-                    <div class="card-body d-flex flex-column">
-                        <div class="d-flex justify-content-between align-items-start mb-3">
-                            <h5 class="card-title mb-0">
-                                <i class="fa fa-tag me-2 text-primary"></i>
-                                ${escapeHtml(category.cat_name)}
-                            </h5>
+                    <div class="category-image-container">
+                        <img src="${imageSrc}" class="card-img-top category-image" alt="${escapeHtml(category.cat_name)}" onerror="this.src='../uploads/placeholder.png'">
+                        <div class="category-overlay">
                             <div class="action-buttons">
-                                <button class="btn btn-sm btn-outline-primary me-1" onclick="editCategory(${category.cat_id}, '${escapeHtml(category.cat_name)}')" title="Edit">
+                                <button class="btn btn-sm btn-outline-primary me-1" onclick="editCategory(${category.cat_id}, '${escapeHtml(category.cat_name)}', '${category.cat_image || ''}')" title="Edit">
                                     <i class="fa fa-edit"></i>
                                 </button>
                                 <button class="btn btn-sm btn-outline-danger" onclick="confirmDelete(${category.cat_id}, '${escapeHtml(category.cat_name)}')" title="Delete">
@@ -85,6 +95,12 @@ function displayCategories(categories) {
                                 </button>
                             </div>
                         </div>
+                    </div>
+                    <div class="card-body d-flex flex-column">
+                        <h5 class="card-title">
+                            <i class="fa fa-tag me-2 text-primary"></i>
+                            ${escapeHtml(category.cat_name)}
+                        </h5>
                         <div class="mt-auto">
                             <small class="text-muted">
                                 <i class="fa fa-calendar me-1"></i>
@@ -200,9 +216,19 @@ function deleteCategory() {
     });
 }
 
-function editCategory(categoryId, categoryName) {
+function editCategory(categoryId, categoryName, categoryImage = '') {
     $('#editCategoryId').val(categoryId);
     $('#editCategoryName').val(categoryName);
+    
+    // Set current image preview
+    if (categoryImage) {
+        $('#editPreviewCategoryImg').attr('src', `../${categoryImage}`);
+        $('#editCategoryImagePreview').show();
+    } else {
+        $('#editPreviewCategoryImg').attr('src', '../uploads/placeholder.png');
+        $('#editCategoryImagePreview').show();
+    }
+    
     $('#editCategoryModal').modal('show');
 }
 
@@ -283,4 +309,16 @@ function formatDate(dateString) {
         month: 'short',
         day: 'numeric'
     });
+}
+
+// Image preview function
+function previewImage(input, previewId, containerId) {
+    if (input.files && input.files[0]) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            $(previewId).attr('src', e.target.result);
+            $(containerId).show();
+        };
+        reader.readAsDataURL(input.files[0]);
+    }
 }
