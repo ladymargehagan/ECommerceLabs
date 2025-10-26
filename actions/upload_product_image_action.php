@@ -70,11 +70,41 @@ $file_path = $upload_dir . $filename;
 if (move_uploaded_file($file['tmp_name'], $file_path)) {
     $product_image = "uploads/u{$user_id}/p{$product_id}/{$filename}";
     
-    echo json_encode(array(
-        'success' => true, 
-        'message' => 'Product image uploaded successfully',
-        'image_path' => $product_image
-    ));
+    // Update the product with the image path in database
+    $product_controller = new product_controller();
+    
+    // Get current product data
+    $current_product = $product_controller->get_product_by_id_ctr($product_id);
+    if (!$current_product['success']) {
+        echo json_encode(array('success' => false, 'message' => 'Product not found'));
+        exit;
+    }
+    
+    $product_data = $current_product['data'];
+    
+    // Update product with new image path
+    $update_kwargs = array(
+        'product_id' => $product_id,
+        'product_cat' => $product_data['product_cat'],
+        'product_brand' => $product_data['product_brand'],
+        'product_title' => $product_data['product_title'],
+        'product_price' => $product_data['product_price'],
+        'product_desc' => $product_data['product_desc'],
+        'product_image' => $product_image,
+        'product_keywords' => $product_data['product_keywords']
+    );
+    
+    $result = $product_controller->update_product_ctr($update_kwargs);
+    
+    if ($result['success']) {
+        echo json_encode(array(
+            'success' => true, 
+            'message' => 'Product image uploaded successfully',
+            'image_path' => $product_image
+        ));
+    } else {
+        echo json_encode(array('success' => false, 'message' => 'Failed to update product with image path'));
+    }
 } else {
     echo json_encode(array('success' => false, 'message' => 'Failed to move uploaded file'));
 }
