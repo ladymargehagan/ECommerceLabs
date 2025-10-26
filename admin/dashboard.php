@@ -93,9 +93,9 @@ $user_email = $_SESSION['email'];
                         </div>
                         <h5 class="card-title">Products</h5>
                         <p class="card-text">Add, edit, and manage your product inventory. Control pricing, descriptions, and availability.</p>
-                        <button class="btn btn-custom" disabled>
-                            <i class="fa fa-cog me-1"></i>Coming Soon
-                        </button>
+                        <a href="product.php" class="btn btn-custom">
+                            <i class="fa fa-cog me-1"></i>Manage Products
+                        </a>
                     </div>
                 </div>
             </div>
