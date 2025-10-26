@@ -126,5 +126,21 @@ class product_class extends db_connection
         return $this->db_fetch_one($sql) ? true : false;
     }
 
+    public function update_product_image($product_id, $product_image)
+    {
+        // Check if product exists
+        $check_sql = "SELECT product_id FROM products WHERE product_id = '$product_id'";
+        $product_exists = $this->db_fetch_one($check_sql);
+        
+        if (!$product_exists) {
+            return false;
+        }
+
+        $sql = "UPDATE products SET product_image = '$product_image' WHERE product_id = '$product_id'";
+        $result = $this->db_write_query($sql);
+        
+        return $result;
+    }
+
 }
 ?>

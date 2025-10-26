@@ -136,5 +136,25 @@ class product_controller extends product_class
         return array('success' => true, 'data' => $brands);
     }
 
+    public function update_product_image_ctr($kwargs)
+    {
+        $product_id = $kwargs['product_id'];
+        $product_image = $kwargs['product_image'];
+        
+        // Check if product exists
+        $product = $this->get_product_by_id($product_id);
+        if (!$product) {
+            return array('success' => false, 'message' => 'Product not found');
+        }
+        
+        $result = $this->update_product_image($product_id, $product_image);
+        
+        if ($result) {
+            return array('success' => true, 'message' => 'Product image updated successfully');
+        } else {
+            return array('success' => false, 'message' => 'Failed to update product image');
+        }
+    }
+
 }
 ?>

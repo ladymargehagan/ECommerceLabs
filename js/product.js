@@ -25,6 +25,7 @@ $(document).ready(function() {
 
         showLoading();
         
+        // First, create the product without image
         $.ajax({
             url: '../actions/add_product_action.php',
             method: 'POST',
@@ -33,21 +34,28 @@ $(document).ready(function() {
             contentType: false,
             dataType: 'json',
             success: function(response) {
-                hideLoading();
                 if (response.success) {
-                    Swal.fire({
-                        icon: 'success',
-                        title: 'Success!',
-                        text: response.message,
-                        timer: 2000,
-                        showConfirmButton: false
-                    });
-                    $('#addProductModal').modal('hide');
-                    $('#addProductForm')[0].reset();
-                    clearFieldErrors();
-                    $('#imagePreview').hide();
-                    loadProducts();
+                    // If product created successfully and image was uploaded, upload image separately
+                    const imageFile = $('#productImage')[0].files[0];
+                    if (imageFile) {
+                        uploadProductImage(response.product_id, imageFile);
+                    } else {
+                        hideLoading();
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Success!',
+                            text: response.message,
+                            timer: 2000,
+                            showConfirmButton: false
+                        });
+                        $('#addProductModal').modal('hide');
+                        $('#addProductForm')[0].reset();
+                        clearFieldErrors();
+                        $('#imagePreview').hide();
+                        loadProducts();
+                    }
                 } else {
+                    hideLoading();
                     Swal.fire({
                         icon: 'error',
                         title: 'Error!',
@@ -78,6 +86,7 @@ $(document).ready(function() {
 
         showLoading();
         
+        // First, update the product without image
         $.ajax({
             url: '../actions/update_product_action.php',
             method: 'POST',
@@ -86,19 +95,27 @@ $(document).ready(function() {
             contentType: false,
             dataType: 'json',
             success: function(response) {
-                hideLoading();
                 if (response.success) {
-                    Swal.fire({
-                        icon: 'success',
-                        title: 'Success!',
-                        text: response.message,
-                        timer: 2000,
-                        showConfirmButton: false
-                    });
-                    $('#editProductModal').modal('hide');
-                    clearFieldErrors();
-                    loadProducts();
+                    // If product updated successfully and new image was uploaded, upload image separately
+                    const imageFile = $('#editProductImage')[0].files[0];
+                    if (imageFile) {
+                        const productId = $('#editProductId').val();
+                        uploadProductImage(productId, imageFile);
+                    } else {
+                        hideLoading();
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Success!',
+                            text: response.message,
+                            timer: 2000,
+                            showConfirmButton: false
+                        });
+                        $('#editProductModal').modal('hide');
+                        clearFieldErrors();
+                        loadProducts();
+                    }
                 } else {
+                    hideLoading();
                     Swal.fire({
                         icon: 'error',
                         title: 'Error!',
