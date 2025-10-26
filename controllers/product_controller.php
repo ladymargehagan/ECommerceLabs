@@ -1,5 +1,5 @@
 <?php
-require_once __DIR__ . '/../classes/product_class.php';
+require_once '../classes/product_class.php';
 
 class product_controller extends product_class
 {
@@ -134,58 +134,6 @@ class product_controller extends product_class
     {
         $brands = $this->get_brands();
         return array('success' => true, 'data' => $brands);
-    }
-
-    // Lab required controller methods
-    public function view_all_products_ctr()
-    {
-        $products = $this->view_all_products();
-        return array('success' => true, 'data' => $products);
-    }
-
-    public function search_products_ctr($query)
-    {
-        if (empty(trim($query))) {
-            return array('success' => false, 'message' => 'Search query is required');
-        }
-        
-        $products = $this->search_products($query);
-        return array('success' => true, 'data' => $products, 'query' => $query);
-    }
-
-    public function filter_products_by_category_ctr($cat_id)
-    {
-        if (empty($cat_id) || !is_numeric($cat_id)) {
-            return array('success' => false, 'message' => 'Valid category ID is required');
-        }
-        
-        $products = $this->filter_products_by_category($cat_id);
-        return array('success' => true, 'data' => $products, 'filter_type' => 'category', 'filter_id' => $cat_id);
-    }
-
-    public function filter_products_by_brand_ctr($brand_id)
-    {
-        if (empty($brand_id) || !is_numeric($brand_id)) {
-            return array('success' => false, 'message' => 'Valid brand ID is required');
-        }
-        
-        $products = $this->filter_products_by_brand($brand_id);
-        return array('success' => true, 'data' => $products, 'filter_type' => 'brand', 'filter_id' => $brand_id);
-    }
-
-    public function view_single_product_ctr($product_id)
-    {
-        if (empty($product_id) || !is_numeric($product_id)) {
-            return array('success' => false, 'message' => 'Valid product ID is required');
-        }
-        
-        $product = $this->view_single_product($product_id);
-        
-        if ($product) {
-            return array('success' => true, 'data' => $product);
-        } else {
-            return array('success' => false, 'message' => 'Product not found');
-        }
     }
 
 }

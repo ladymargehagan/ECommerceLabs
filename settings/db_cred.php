@@ -17,10 +17,11 @@ if (!defined("USERNAME")) {
 }
 
 if (!defined("PASSWD")) {
-    define("PASSWD", "password"); 
+    define("PASSWD", "");
 }
 
 if (!defined("DATABASE")) {
+    // Use the database name from the provided SQL dump
     define("DATABASE", "shoppn");
 }
 ?>

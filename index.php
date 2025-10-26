@@ -42,45 +42,13 @@ session_start();
 			</a>
 		<?php else: ?>
 			<span class="me-2">Menu:</span>
-			<a href="login/register.php" class="btn btn-sm btn-outline-primary me-2">
+			<a href="login/register.php" class="btn btn-sm btn-outline-primary">
 				<i class="fa fa-user-plus me-1"></i>Register
 			</a>
-			<a href="login/login.php" class="btn btn-sm btn-outline-secondary me-2">
+			<a href="login/login.php" class="btn btn-sm btn-outline-secondary">
 				<i class="fa fa-sign-in-alt me-1"></i>Login
 			</a>
 		<?php endif; ?>
-		
-		<!-- Lab Required Menu Items -->
-		<div class="mt-2">
-			<a href="all_product.php" class="btn btn-sm btn-outline-info me-2">
-				<i class="fa fa-box me-1"></i>All Products
-			</a>
-		</div>
-		
-		<!-- Search Box -->
-		<div class="mt-2">
-			<form class="d-flex" method="GET" action="actions/product_actions.php">
-				<input type="hidden" name="action" value="search_products">
-				<input class="form-control form-control-sm me-2" type="search" name="query" 
-					   placeholder="Search products..." aria-label="Search" style="width: 200px;">
-				<button class="btn btn-outline-success btn-sm" type="submit">
-					<i class="fa fa-search"></i>
-				</button>
-			</form>
-		</div>
-		
-		<!-- Category and Brand Filters -->
-		<div class="mt-2">
-			<div class="d-flex gap-2">
-				<select class="form-select form-select-sm" style="width: 150px;" onchange="filterByCategory(this.value)">
-					<option value="">All Categories</option>
-				</select>
-				
-				<select class="form-select form-select-sm" style="width: 150px;" onchange="filterByBrand(this.value)">
-					<option value="">All Brands</option>
-				</select>
-			</div>
-		</div>
 	</div>
 
 	<div class="container" style="padding-top:120px;">
@@ -113,7 +81,7 @@ session_start();
 				</div>
 				
 				<div class="mt-4">
-					<a href="all_product.php" class="btn btn-custom btn-lg me-3">
+					<a href="#" class="btn btn-custom btn-lg me-3">
 						<i class="fa fa-shopping-cart me-2"></i>Start Shopping
 					</a>
 					<a href="#" class="btn btn-outline-light btn-lg">
@@ -152,23 +120,6 @@ session_start();
 				console.log('Login successful!');
 			}
 		});
-
-		// Filter functions
-		function filterByCategory(catId) {
-			if (catId) {
-				window.location.href = 'actions/product_actions.php?action=filter_by_category&cat_id=' + catId;
-			} else {
-				window.location.href = 'actions/product_actions.php?action=view_all_products';
-			}
-		}
-
-		function filterByBrand(brandId) {
-			if (brandId) {
-				window.location.href = 'actions/product_actions.php?action=filter_by_brand&brand_id=' + brandId;
-			} else {
-				window.location.href = 'actions/product_actions.php?action=view_all_products';
-			}
-		}
 	</script>
 </body>
 </html>
