@@ -1,4 +1,8 @@
 <?php
+// Enable error reporting to see exact errors
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
+
 require_once 'settings/db_class.php';
 require_once 'classes/product_class.php';
 require_once 'controllers/product_controller.php';
@@ -73,13 +77,21 @@ try {
             break;
 
         case 'get_categories':
-            $result = $product_controller->get_categories_ctr();
-            echo json_encode($result);
+            try {
+                $result = $product_controller->get_categories_ctr();
+                echo json_encode($result);
+            } catch (Exception $e) {
+                echo json_encode(array('success' => false, 'message' => 'Categories error: ' . $e->getMessage()));
+            }
             break;
 
         case 'get_brands':
-            $result = $product_controller->get_brands_ctr();
-            echo json_encode($result);
+            try {
+                $result = $product_controller->get_brands_ctr();
+                echo json_encode($result);
+            } catch (Exception $e) {
+                echo json_encode(array('success' => false, 'message' => 'Brands error: ' . $e->getMessage()));
+            }
             break;
 
         case 'get_product_count':
