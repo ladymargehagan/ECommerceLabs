@@ -108,7 +108,7 @@ $total_pages = ceil($total_count / $limit);
     <div class="menu-tray">
         <?php if (isset($_SESSION['user_id'])): ?>
             <span class="me-2">Welcome, <?php echo htmlspecialchars($_SESSION['name']); ?>!</span>
-            <?php if ($_SESSION['role'] == 1): // Admin users ?>
+            <?php if (isset($_SESSION['role']) && $_SESSION['role'] == 1): // ONLY Admin users ?>
                 <a href="admin/dashboard.php" class="btn btn-sm btn-outline-primary me-2">
                     <i class="fa fa-tachometer-alt me-1"></i>Dashboard
                 </a>
