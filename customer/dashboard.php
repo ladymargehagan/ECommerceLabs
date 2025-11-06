@@ -1,10 +1,5 @@
 <?php
-// Fix session permission issues by setting custom session path
-$sessionPath = dirname(__DIR__) . '/sessions';
-if (!is_dir($sessionPath)) {
-    mkdir($sessionPath, 0755, true);
-}
-ini_set('session.save_path', $sessionPath);
+// Start session (using default session path to match index.php)
 session_start();
 
 // Check if user is logged in
@@ -13,11 +8,13 @@ if (!isset($_SESSION['user_id'])) {
     exit;
 }
 
-// Check if user is a regular customer (not admin)
-if (isset($_SESSION['role']) && $_SESSION['role'] == 1) {
-    header('Location: ../admin/dashboard.php');
-    exit;
-}
+// Allow both admin and regular customers to view their account
+// Admin users can still access this page to see their account info
+// If you want to redirect admins to admin dashboard, uncomment below:
+// if (isset($_SESSION['role']) && $_SESSION['role'] == 1) {
+//     header('Location: ../admin/dashboard.php');
+//     exit;
+// }
 ?>
 <!DOCTYPE html>
 <html lang="en">
