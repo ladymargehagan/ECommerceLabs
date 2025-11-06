@@ -77,7 +77,11 @@ if ($result['success'] && isset($_FILES['categoryImage']) && $_FILES['categoryIm
             'cat_image' => $category_image
         );
         
-        $category_controller->update_category_ctr($update_kwargs);
+        $update_result = $category_controller->update_category_ctr($update_kwargs);
+        if ($update_result['success']) {
+            // Update the result to include the image path
+            $result['cat_image'] = $category_image;
+        }
     }
 }
 

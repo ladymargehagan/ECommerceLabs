@@ -73,39 +73,44 @@ if ($result['success'] && isset($_FILES['productImage']) && $_FILES['productImag
     $extension = pathinfo($originalName, PATHINFO_EXTENSION);
     $sanitizedName = preg_replace('/[^a-zA-Z0-9._-]/', '_', pathinfo($originalName, PATHINFO_FILENAME));
     
-    // Create directory structure: product/{product_id}/
-    $upload_dir = "../product/{$product_id}/";
+    // Create directory structure: uploads/product/{product_id}/
+    $upload_dir = "../uploads/product/{$product_id}/";
+    $product_image = '';
     
-    // Ensure directory exists (product/ folder should exist on server)
+    // Ensure directory exists
     if (!is_dir($upload_dir)) {
         if (!mkdir($upload_dir, 0777, true)) {
-            echo json_encode(array('success' => false, 'message' => 'Failed to create upload directory'));
-            exit;
+            // Don't exit here - product was already created, just log the error
+            error_log("Failed to create upload directory: {$upload_dir}");
+            // Continue without image - product was already created successfully
         }
     }
     
-    // Generate filename with timestamp
-    $timestamp = time();
-    $filename = "img_{$sanitizedName}_{$timestamp}.{$extension}";
-    $file_path = $upload_dir . $filename;
-    
-    // Move uploaded file
-    if (move_uploaded_file($_FILES['productImage']['tmp_name'], $file_path)) {
-        $product_image = "product/{$product_id}/{$filename}";
+    // Proceed with upload if directory exists or was created
+    if (is_dir($upload_dir)) {
+        // Generate filename with timestamp
+        $timestamp = time();
+        $filename = "img_{$sanitizedName}_{$timestamp}.{$extension}";
+        $file_path = $upload_dir . $filename;
         
-        // Update the product with the image path
-        $update_kwargs = array(
-            'product_id' => $product_id,
-            'product_cat' => $product_cat,
-            'product_brand' => $product_brand,
-            'product_title' => $product_title,
-            'product_price' => $product_price,
-            'product_desc' => $product_desc,
-            'product_image' => $product_image,
-            'product_keywords' => $product_keywords
-        );
-        
-        $product_controller->update_product_ctr($update_kwargs);
+        // Move uploaded file
+        if (move_uploaded_file($_FILES['productImage']['tmp_name'], $file_path)) {
+            $product_image = "uploads/product/{$product_id}/{$filename}";
+            
+            // Update the product with the image path
+            $update_kwargs = array(
+                'product_id' => $product_id,
+                'product_cat' => $product_cat,
+                'product_brand' => $product_brand,
+                'product_title' => $product_title,
+                'product_price' => $product_price,
+                'product_desc' => $product_desc,
+                'product_image' => $product_image,
+                'product_keywords' => $product_keywords
+            );
+            
+            $product_controller->update_product_ctr($update_kwargs);
+        }
     }
 }
 

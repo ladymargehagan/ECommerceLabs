@@ -283,17 +283,16 @@ function displayBrandsGroupedByCategories(brands, categories) {
         
         // Display all brands under each category (since brands can produce across categories)
         brands.forEach(function(brand) {
+            const imageSrc = brand.brand_image ? `../${brand.brand_image}` : '../uploads/placeholder.png';
+            
             html += `
                 <div class="col-md-6 col-lg-4 mb-3">
                     <div class="card brand-card h-100">
-                        <div class="card-body">
-                            <div class="d-flex justify-content-between align-items-start mb-3">
-                                <h5 class="card-title mb-0">
-                                    <i class="fa fa-star text-warning me-2"></i>
-                                    ${brand.brand_name}
-                                </h5>
+                        <div class="brand-image-container">
+                            <img src="${imageSrc}" class="card-img-top brand-image" alt="${escapeHtml(brand.brand_name)}" onerror="this.src='../uploads/placeholder.png'">
+                            <div class="brand-overlay">
                                 <div class="action-buttons">
-                                    <button class="btn btn-sm btn-outline-primary me-1" onclick="editBrand(${brand.brand_id}, '${brand.brand_name}')" title="Edit Brand">
+                                    <button class="btn btn-sm btn-outline-primary me-1" onclick="editBrand(${brand.brand_id}, '${escapeHtml(brand.brand_name)}', '${brand.brand_image || ''}')" title="Edit Brand">
                                         <i class="fa fa-edit"></i>
                                     </button>
                                     <button class="btn btn-sm btn-outline-danger" onclick="deleteBrand(${brand.brand_id})" title="Delete Brand">
@@ -301,6 +300,12 @@ function displayBrandsGroupedByCategories(brands, categories) {
                                     </button>
                                 </div>
                             </div>
+                        </div>
+                        <div class="card-body">
+                            <h5 class="card-title">
+                                <i class="fa fa-star text-warning me-2"></i>
+                                ${escapeHtml(brand.brand_name)}
+                            </h5>
                             <p class="card-text text-muted">
                                 <small><strong>Brand ID:</strong> ${brand.brand_id}</small>
                             </p>
@@ -405,6 +410,18 @@ function clearFieldError(fieldId) {
 function clearFieldErrors() {
     $('.form-control').removeClass('is-invalid');
     $('.invalid-feedback').text('');
+}
+
+function escapeHtml(text) {
+    if (!text) return '';
+    const map = {
+        '&': '&amp;',
+        '<': '&lt;',
+        '>': '&gt;',
+        '"': '&quot;',
+        "'": '&#039;'
+    };
+    return String(text).replace(/[&<>"']/g, function(m) { return map[m]; });
 }
 
 // Image preview function

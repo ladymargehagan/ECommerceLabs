@@ -186,6 +186,7 @@ $total_pages = $limit > 0 ? ceil($total_count / $limit) : 0;
         <?php endif; ?>
 
         <!-- Search and Filter Section -->
+        <?php if (isset($_SESSION['user_id'])): ?>
         <div class="filter-section">
             <h4 class="text-center mb-4"><i class="fa fa-search me-2"></i>Search Products</h4>
             <form method="GET" id="filterForm">
@@ -237,6 +238,7 @@ $total_pages = $limit > 0 ? ceil($total_count / $limit) : 0;
                 <?php endif; ?>
             </form>
         </div>
+        <?php endif; ?>
 
         <!-- Error Message -->
         <?php if ($error_message): ?>
@@ -246,7 +248,7 @@ $total_pages = $limit > 0 ? ceil($total_count / $limit) : 0;
         <?php endif; ?>
 
         <!-- Results Summary -->
-        <?php if (isset($_SESSION['user_id']) || !empty($products)): ?>
+        <?php if (isset($_SESSION['user_id']) && !empty($products)): ?>
             <div class="row mb-3">
                 <div class="col-12">
                     <p class="text-muted">
@@ -266,14 +268,16 @@ $total_pages = $limit > 0 ? ceil($total_count / $limit) : 0;
         <?php endif; ?>
 
         <!-- Products Grid -->
-        <?php if (empty($products) && isset($_SESSION['user_id'])): ?>
+        <?php if (!isset($_SESSION['user_id'])): ?>
+            <!-- Products are hidden for non-logged-in users - they only see the welcome message above -->
+        <?php elseif (empty($products) && isset($_SESSION['user_id'])): ?>
             <div class="no-products">
                 <i class="fa fa-box fa-3x mb-3"></i>
                 <h3>No Products Found</h3>
                 <p>Try adjusting your search criteria or browse all products.</p>
                 <a href="index.php" class="btn btn-custom">View All Products</a>
             </div>
-        <?php elseif (!empty($products)): ?>
+        <?php elseif (!empty($products) && isset($_SESSION['user_id'])): ?>
             <div class="row" id="productsContainer">
                 <?php foreach ($products as $product): ?>
                     <div class="col-lg-3 col-md-4 col-sm-6 mb-4">

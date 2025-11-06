@@ -75,7 +75,11 @@ if ($result['success'] && isset($_FILES['brandImage']) && $_FILES['brandImage'][
             'brand_image' => $brand_image
         );
         
-        $brand_controller->update_brand_ctr($update_kwargs);
+        $update_result = $brand_controller->update_brand_ctr($update_kwargs);
+        if ($update_result['success']) {
+            // Update the result to include the image path
+            $result['brand_image'] = $brand_image;
+        }
     }
 }
 

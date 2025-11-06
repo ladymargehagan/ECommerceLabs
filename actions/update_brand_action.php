@@ -30,7 +30,10 @@ $brand_controller = new brand_controller();
 
 // Get current brand to preserve existing image if no new image uploaded
 $current_brand = $brand_controller->get_brand_by_id_ctr($brand_id);
-$brand_image = $current_brand['success'] ? $current_brand['data']['brand_image'] : '';
+$brand_image = '';
+if ($current_brand['success'] && isset($current_brand['data']['brand_image'])) {
+    $brand_image = $current_brand['data']['brand_image'];
+}
 
 // Handle new image upload
 if (isset($_FILES['brandImage']) && $_FILES['brandImage']['error'] === UPLOAD_ERR_OK) {
@@ -60,6 +63,11 @@ if (isset($_FILES['brandImage']) && $_FILES['brandImage']['error'] === UPLOAD_ER
     // Move uploaded file
     if (move_uploaded_file($_FILES['brandImage']['tmp_name'], $file_path)) {
         $brand_image = "uploads/u{$user_id}/b{$brand_id}/{$filename}";
+    } else {
+        // If file move failed, keep existing image
+        if (empty($brand_image) && $current_brand['success'] && isset($current_brand['data']['brand_image'])) {
+            $brand_image = $current_brand['data']['brand_image'];
+        }
     }
 }
 
