@@ -178,12 +178,9 @@ function loadBrands() {
         method: 'GET',
         dataType: 'json',
         success: function(response) {
-            console.log('Brands response:', response);
-            if (response && response.success && response.data) {
-                console.log('Brands data:', response.data);
+            if (response.success) {
                 displayBrands(response.data);
             } else {
-                console.log('No brands in response');
                 $('#brandsContainer').html(`
                     <div class="col-12 text-center py-5">
                         <i class="fa fa-exclamation-triangle fa-3x text-warning mb-3"></i>
@@ -193,14 +190,12 @@ function loadBrands() {
                 `);
             }
         },
-        error: function(xhr, status, error) {
-            console.error('Error loading brands:', error, xhr.responseText);
+        error: function() {
             $('#brandsContainer').html(`
                 <div class="col-12 text-center py-5">
                     <i class="fa fa-exclamation-triangle fa-3x text-danger mb-3"></i>
                     <h4>Error Loading Brands</h4>
                     <p class="text-muted">Please refresh the page and try again.</p>
-                    <p class="text-muted"><small>Error: ${error}</small></p>
                 </div>
             `);
         }
@@ -239,11 +234,9 @@ function populateCategorySelects(categories) {
     });
 }
 
-// Display brands function - organized by categories
-function displayBrands(data) {
-    console.log('Display brands called with:', data);
-    if (!data || !Array.isArray(data) || data.length === 0) {
-        console.log('No data to display');
+// Display brands function with visual grouping by categories
+function displayBrands(brands) {
+    if (!brands || brands.length === 0) {
         $('#brandsContainer').html(`
             <div class="col-12 text-center py-5">
                 <i class="fa fa-star fa-3x text-muted mb-3"></i>
@@ -254,78 +247,53 @@ function displayBrands(data) {
         return;
     }
 
-    // Group data by category
-    const categoriesMap = {};
-    data.forEach(function(item) {
-        if (!item) return;
-        const catId = item.cat_id !== null && item.cat_id !== undefined ? item.cat_id : 0;
-        if (!categoriesMap[catId]) {
-            categoriesMap[catId] = {
-                cat_id: item.cat_id,
-                cat_name: item.cat_name || 'All Brands',
-                cat_image: item.cat_image,
-                brands: []
-            };
-        }
-        if (item.brand_id) {
-            categoriesMap[catId].brands.push({
-                brand_id: item.brand_id,
-                brand_name: item.brand_name,
-                brand_image: item.brand_image
-            });
+    // Get categories for grouping
+    $.ajax({
+        url: '../actions/fetch_category_action.php',
+        method: 'GET',
+        dataType: 'json',
+        success: function(response) {
+            if (response.success) {
+                displayBrandsGroupedByCategories(brands, response.data);
+            } else {
+                displayBrandsSimple(brands);
+            }
+        },
+        error: function() {
+            displayBrandsSimple(brands);
         }
     });
-
-    console.log('Categories map:', categoriesMap);
-    // Display organized by categories
-    displayBrandsGroupedByCategories(categoriesMap);
 }
 
 // Display brands grouped by categories
-function displayBrandsGroupedByCategories(categoriesMap) {
+function displayBrandsGroupedByCategories(brands, categories) {
     let html = '';
-    const categories = Object.values(categoriesMap);
     
-    if (categories.length === 0) {
-        $('#brandsContainer').html(`
-            <div class="col-12 text-center py-5">
-                <i class="fa fa-star fa-3x text-muted mb-3"></i>
-                <h4>No Brands Found</h4>
-                <p class="text-muted">Start by adding your first brand.</p>
-            </div>
-        `);
-        return;
-    }
-    
+    // Group brands by categories (visual grouping only)
     categories.forEach(function(category) {
-        if (category.brands.length === 0) {
-            return; // Skip categories with no brands
-        }
-        
         html += `
             <div class="col-12 mb-4">
                 <div class="category-section">
                     <h4 class="category-header">
                         <i class="fa fa-tags text-primary me-2"></i>
-                        ${escapeHtml(category.cat_name)}
+                        ${category.cat_name}
                     </h4>
                     <div class="row">
         `;
         
-        // Display brands under this category
-        category.brands.forEach(function(brand) {
-            const imageSrc = brand.brand_image ? `../${brand.brand_image}` : '../uploads/placeholder.png';
-            const escapedBrandName = escapeHtml(brand.brand_name);
-            const escapedBrandImage = brand.brand_image ? escapeHtml(brand.brand_image) : '';
-            
+        // Display all brands under each category (since brands can produce across categories)
+        brands.forEach(function(brand) {
             html += `
                 <div class="col-md-6 col-lg-4 mb-3">
                     <div class="card brand-card h-100">
-                        <div class="brand-image-container">
-                            <img src="${imageSrc}" class="card-img-top brand-image" alt="${escapedBrandName}" onerror="this.src='../uploads/placeholder.png'">
-                            <div class="brand-overlay">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-start mb-3">
+                                <h5 class="card-title mb-0">
+                                    <i class="fa fa-star text-warning me-2"></i>
+                                    ${brand.brand_name}
+                                </h5>
                                 <div class="action-buttons">
-                                    <button class="btn btn-sm btn-outline-primary me-1" onclick="editBrand(${brand.brand_id}, '${escapedBrandName}', '${escapedBrandImage}')" title="Edit Brand">
+                                    <button class="btn btn-sm btn-outline-primary me-1" onclick="editBrand(${brand.brand_id}, '${brand.brand_name}')" title="Edit Brand">
                                         <i class="fa fa-edit"></i>
                                     </button>
                                     <button class="btn btn-sm btn-outline-danger" onclick="deleteBrand(${brand.brand_id})" title="Delete Brand">
@@ -333,12 +301,6 @@ function displayBrandsGroupedByCategories(categoriesMap) {
                                     </button>
                                 </div>
                             </div>
-                        </div>
-                        <div class="card-body">
-                            <h5 class="card-title">
-                                <i class="fa fa-star text-warning me-2"></i>
-                                ${escapedBrandName}
-                            </h5>
                             <p class="card-text text-muted">
                                 <small><strong>Brand ID:</strong> ${brand.brand_id}</small>
                             </p>
@@ -358,23 +320,20 @@ function displayBrandsGroupedByCategories(categoriesMap) {
     $('#brandsContainer').html(html);
 }
 
-// Simple display without grouping - always show images (exact same pattern as categories)
+// Simple display without grouping
 function displayBrandsSimple(brands) {
     let html = '';
     brands.forEach(function(brand) {
-        // Use exact same pattern as categories - simple and works
         const imageSrc = brand.brand_image ? `../${brand.brand_image}` : '../uploads/placeholder.png';
-        const escapedBrandName = escapeHtml(brand.brand_name);
-        const escapedBrandImage = brand.brand_image ? escapeHtml(brand.brand_image) : '';
         
         html += `
             <div class="col-md-6 col-lg-4 mb-4">
                 <div class="card brand-card h-100">
                     <div class="brand-image-container">
-                        <img src="${imageSrc}" class="card-img-top brand-image" alt="${escapedBrandName}" onerror="this.src='../uploads/placeholder.png'">
+                        <img src="${imageSrc}" class="card-img-top brand-image" alt="${brand.brand_name}" onerror="this.src='../uploads/placeholder.png'">
                         <div class="brand-overlay">
                             <div class="action-buttons">
-                                <button class="btn btn-sm btn-outline-primary me-1" onclick="editBrand(${brand.brand_id}, '${escapedBrandName}', '${escapedBrandImage}')" title="Edit Brand">
+                                <button class="btn btn-sm btn-outline-primary me-1" onclick="editBrand(${brand.brand_id}, '${brand.brand_name}', '${brand.brand_image || ''}')" title="Edit Brand">
                                     <i class="fa fa-edit"></i>
                                 </button>
                                 <button class="btn btn-sm btn-outline-danger" onclick="deleteBrand(${brand.brand_id})" title="Delete Brand">
@@ -386,7 +345,7 @@ function displayBrandsSimple(brands) {
                     <div class="card-body">
                         <h5 class="card-title">
                             <i class="fa fa-star text-warning me-2"></i>
-                            ${escapedBrandName}
+                            ${brand.brand_name}
                         </h5>
                         <p class="card-text text-muted">
                             <small><strong>Brand ID:</strong> ${brand.brand_id}</small>
@@ -483,17 +442,4 @@ function validateBrandForm(formData) {
     }
     
     return isValid;
-}
-
-// Escape HTML function
-function escapeHtml(text) {
-    if (!text) return '';
-    const map = {
-        '&': '&amp;',
-        '<': '&lt;',
-        '>': '&gt;',
-        '"': '&quot;',
-        "'": '&#039;'
-    };
-    return String(text).replace(/[&<>"']/g, function(m) { return map[m]; });
 }

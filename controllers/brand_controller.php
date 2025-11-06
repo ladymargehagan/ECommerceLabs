@@ -7,7 +7,6 @@ class brand_controller extends brand_class
     {
         $brand_name = $kwargs['brand_name'];
         $brand_image = $kwargs['brand_image'] ?? '';
-        $created_by = $kwargs['created_by'] ?? null;
         
         if (empty($brand_name)) {
             return array('success' => false, 'message' => 'Brand name is required');
@@ -18,7 +17,7 @@ class brand_controller extends brand_class
             return array('success' => false, 'message' => 'Brand name already exists');
         }
         
-        $result = $this->add_brand($brand_name, $brand_image, $created_by);
+        $result = $this->add_brand($brand_name, $brand_image);
         
         if ($result) {
             return array('success' => true, 'message' => 'Brand added successfully', 'brand_id' => $result);
@@ -29,18 +28,8 @@ class brand_controller extends brand_class
     
     public function get_brands_by_user_ctr($user_id)
     {
-        $brands = $this->get_brands_by_user($user_id);
+        $brands = $this->get_all_brands();
         return array('success' => true, 'data' => $brands);
-    }
-    
-    public function get_brands_by_category_for_user_ctr($user_id)
-    {
-        $data = $this->get_brands_by_category_for_user($user_id);
-        // Ensure we always return success with data (even if empty array)
-        if ($data === false) {
-            $data = array();
-        }
-        return array('success' => true, 'data' => $data);
     }
     
     public function get_all_brands_ctr()
@@ -154,14 +143,12 @@ class brand_controller extends brand_class
         $sanitizedName = preg_replace('/[^a-zA-Z0-9._-]/', '_', pathinfo($originalName, PATHINFO_FILENAME));
         
         // Create directory structure: uploads/u{user_id}/b{brand_id}/
-        // Use absolute path based on controller file location (same as categories)
-        $base_dir = dirname(dirname(__FILE__)); // Go from controllers/ to project root
-        $upload_dir = "{$base_dir}/uploads/u{$user_id}/b{$brand_id}/";
+        $upload_dir = "../uploads/u{$user_id}/b{$brand_id}/";
         
         // Ensure directory exists
         if (!is_dir($upload_dir)) {
             if (!mkdir($upload_dir, 0777, true)) {
-                return array('success' => false, 'message' => 'Failed to create upload directory: ' . $upload_dir);
+                return array('success' => false, 'message' => 'Failed to create upload directory');
             }
         }
         

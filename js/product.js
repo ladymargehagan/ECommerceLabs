@@ -8,17 +8,9 @@ $(document).ready(function() {
         previewImage(this, '#previewImg', '#imagePreview');
     });
 
-    // Image preview for edit form - show new image preview when file is selected
+    // Image preview for edit form
     $('#editProductImage').on('change', function() {
-        if (this.files && this.files[0]) {
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                // Show the new selected image preview
-                $('#editPreviewImg').attr('src', e.target.result);
-                $('#editImagePreview').show();
-            };
-            reader.readAsDataURL(this.files[0]);
-        }
+        previewImage(this, '#editPreviewImg', '#editImagePreview');
     });
 
     // Add Product Form Submission
@@ -43,25 +35,18 @@ $(document).ready(function() {
             success: function(response) {
                 hideLoading();
                 if (response.success) {
-                    let message = response.message;
-                    if (response.image_warning) {
-                        message += '\n\n' + response.image_warning;
-                    }
-                    
                     Swal.fire({
-                        icon: response.image_warning ? 'warning' : 'success',
-                        title: response.image_warning ? 'Product Created with Warning' : 'Success!',
-                        text: message,
-                        timer: response.image_warning ? 4000 : 2000,
-                        showConfirmButton: !response.image_warning
-                    }).then(() => {
-                        $('#addProductModal').modal('hide');
-                        $('#addProductForm')[0].reset();
-                        clearFieldErrors();
-                        $('#imagePreview').hide();
-                        // Force reload products to show the new image
-                        loadProducts();
+                        icon: 'success',
+                        title: 'Success!',
+                        text: response.message,
+                        timer: 2000,
+                        showConfirmButton: false
                     });
+                    $('#addProductModal').modal('hide');
+                    $('#addProductForm')[0].reset();
+                    clearFieldErrors();
+                    $('#imagePreview').hide();
+                    loadProducts();
                 } else {
                     Swal.fire({
                         icon: 'error',
@@ -109,14 +94,10 @@ $(document).ready(function() {
                         text: response.message,
                         timer: 2000,
                         showConfirmButton: false
-                    }).then(() => {
-                        $('#editProductModal').modal('hide');
-                        clearFieldErrors();
-                        // Reset the image input
-                        $('#editProductImage').val('');
-                        // Force reload products to show updated image
-                        loadProducts();
                     });
+                    $('#editProductModal').modal('hide');
+                    clearFieldErrors();
+                    loadProducts();
                 } else {
                     Swal.fire({
                         icon: 'error',
@@ -300,14 +281,13 @@ function displayProducts(products) {
 
     let html = '';
     products.forEach(function(product) {
-        // Use exact same pattern as categories - simple and works
         const imageSrc = product.product_image ? `../${product.product_image}` : '../uploads/placeholder.png';
         
         html += `
             <div class="col-md-6 col-lg-4 mb-4">
                 <div class="card product-card h-100">
                     <div class="product-image-container">
-                        <img src="${imageSrc}" class="card-img-top product-image" alt="${escapeHtml(product.product_title)}" onerror="this.src='../uploads/placeholder.png'">
+                        <img src="${imageSrc}" class="card-img-top product-image" alt="${product.product_title}" onerror="this.src='../uploads/placeholder.png'">
                         <div class="product-overlay">
                             <div class="action-buttons">
                                 <button class="btn btn-sm btn-outline-primary me-1" onclick="editProduct(${product.product_id})" title="Edit Product">
@@ -355,10 +335,9 @@ function editProduct(productId) {
                     $('#editProductDescription').val(product.product_desc || '');
                     $('#editProductKeywords').val(product.product_keywords || '');
                     
-                    // Set current image - use same pattern as categories
+                    // Set current image
                     const imageSrc = product.product_image ? `../${product.product_image}` : '../uploads/placeholder.png';
                     $('#editPreviewImg').attr('src', imageSrc);
-                    $('#editImagePreview').show();
                     
                     $('#editProductModal').modal('show');
                 }
@@ -390,19 +369,6 @@ function previewImage(input, previewId, containerId) {
         };
         reader.readAsDataURL(input.files[0]);
     }
-}
-
-// Escape HTML function
-function escapeHtml(text) {
-    if (!text) return '';
-    const map = {
-        '&': '&amp;',
-        '<': '&lt;',
-        '>': '&gt;',
-        '"': '&quot;',
-        "'": '&#039;'
-    };
-    return String(text).replace(/[&<>"']/g, function(m) { return map[m]; });
 }
 
 // Validate product form

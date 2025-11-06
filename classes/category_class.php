@@ -18,12 +18,7 @@ class category_class extends db_connection
             $result = $this->db_write_query($sql);
         }
         
-        // Return the category ID (last insert id)
-        if ($result) {
-            return mysqli_insert_id($this->db);
-        }
-        
-        return false;
+        return true;
     }
 
     public function get_categories_by_user($user_id)

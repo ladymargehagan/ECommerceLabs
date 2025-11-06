@@ -44,11 +44,30 @@ if ($result['success'] && isset($_FILES['categoryImage']) && $_FILES['categoryIm
     // Get the category ID from the result
     $category_id = $result['category_id'];
     
-    // Use the upload_image_ctr method for consistent image handling
-    $upload_result = $category_controller->upload_image_ctr($_FILES['categoryImage'], $category_id);
+    // Process filename
+    $originalName = $_FILES['categoryImage']['name'];
+    $extension = pathinfo($originalName, PATHINFO_EXTENSION);
+    $sanitizedName = preg_replace('/[^a-zA-Z0-9._-]/', '_', pathinfo($originalName, PATHINFO_FILENAME));
     
-    if ($upload_result['success']) {
-        $category_image = $upload_result['data'];
+    // Create directory structure: uploads/u{user_id}/c{category_id}/
+    $upload_dir = "../uploads/u{$user_id}/c{$category_id}/";
+    
+    // Ensure directory exists
+    if (!is_dir($upload_dir)) {
+        if (!mkdir($upload_dir, 0777, true)) {
+            echo json_encode(array('success' => false, 'message' => 'Failed to create upload directory'));
+            exit;
+        }
+    }
+    
+    // Generate filename with timestamp
+    $timestamp = time();
+    $filename = "img_{$sanitizedName}_{$timestamp}.{$extension}";
+    $file_path = $upload_dir . $filename;
+    
+    // Move uploaded file
+    if (move_uploaded_file($_FILES['categoryImage']['tmp_name'], $file_path)) {
+        $category_image = "uploads/u{$user_id}/c{$category_id}/{$filename}";
         
         // Update the category with the image path
         $update_kwargs = array(
@@ -58,12 +77,7 @@ if ($result['success'] && isset($_FILES['categoryImage']) && $_FILES['categoryIm
             'cat_image' => $category_image
         );
         
-        $update_result = $category_controller->update_category_ctr($update_kwargs);
-        
-        // Update the result to include the image path
-        if ($update_result['success']) {
-            $result['cat_image'] = $category_image;
-        }
+        $category_controller->update_category_ctr($update_kwargs);
     }
 }
 
