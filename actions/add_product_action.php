@@ -89,13 +89,15 @@ if ($result['success'] && isset($result['product_id'])) {
             
             $update_result = $product_controller->update_product_ctr($update_kwargs);
             
-            // Update the result to include the image path (but don't fail if update fails)
+            // Update the result to include the image path
             if ($update_result['success']) {
                 $result['product_image'] = $product_image;
+                $result['message'] = 'Product created successfully with image.';
             } else {
-                // Image upload/update failed, but product was created
-                // Add a warning message but keep success status
-                $result['image_warning'] = 'Product created but image update failed. You can update the image later.';
+                // Image upload succeeded but database update failed
+                // This is a critical error - log it
+                error_log("Product image upload succeeded but database update failed for product ID: {$product_id}. Error: " . ($update_result['message'] ?? 'Unknown error'));
+                $result['image_warning'] = 'Product created but image could not be saved to database. Error: ' . ($update_result['message'] ?? 'Unknown error') . '. Please update the image manually.';
             }
         } else {
             // Image upload failed, but product was created

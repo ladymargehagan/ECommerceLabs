@@ -8,9 +8,17 @@ $(document).ready(function() {
         previewImage(this, '#previewImg', '#imagePreview');
     });
 
-    // Image preview for edit form
+    // Image preview for edit form - show new image preview when file is selected
     $('#editProductImage').on('change', function() {
-        previewImage(this, '#editPreviewImg', '#editImagePreview');
+        if (this.files && this.files[0]) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                // Show the new selected image preview
+                $('#editPreviewImg').attr('src', e.target.result);
+                $('#editImagePreview').show();
+            };
+            reader.readAsDataURL(this.files[0]);
+        }
     });
 
     // Add Product Form Submission
@@ -46,12 +54,14 @@ $(document).ready(function() {
                         text: message,
                         timer: response.image_warning ? 4000 : 2000,
                         showConfirmButton: !response.image_warning
+                    }).then(() => {
+                        $('#addProductModal').modal('hide');
+                        $('#addProductForm')[0].reset();
+                        clearFieldErrors();
+                        $('#imagePreview').hide();
+                        // Force reload products to show the new image
+                        loadProducts();
                     });
-                    $('#addProductModal').modal('hide');
-                    $('#addProductForm')[0].reset();
-                    clearFieldErrors();
-                    $('#imagePreview').hide();
-                    loadProducts();
                 } else {
                     Swal.fire({
                         icon: 'error',
@@ -99,10 +109,14 @@ $(document).ready(function() {
                         text: response.message,
                         timer: 2000,
                         showConfirmButton: false
+                    }).then(() => {
+                        $('#editProductModal').modal('hide');
+                        clearFieldErrors();
+                        // Reset the image input
+                        $('#editProductImage').val('');
+                        // Force reload products to show updated image
+                        loadProducts();
                     });
-                    $('#editProductModal').modal('hide');
-                    clearFieldErrors();
-                    loadProducts();
                 } else {
                     Swal.fire({
                         icon: 'error',
@@ -286,13 +300,28 @@ function displayProducts(products) {
 
     let html = '';
     products.forEach(function(product) {
-        const imageSrc = product.product_image ? `../${product.product_image}` : '../uploads/placeholder.png';
+        // Construct image path - product_image should be like "uploads/u{user_id}/p{product_id}/filename"
+        let imageSrc = '../uploads/placeholder.png';
+        if (product.product_image && product.product_image.trim() !== '') {
+            // Ensure the path doesn't already start with ../
+            if (product.product_image.startsWith('../')) {
+                imageSrc = product.product_image;
+            } else if (product.product_image.startsWith('uploads/')) {
+                imageSrc = '../' + product.product_image;
+            } else {
+                imageSrc = '../uploads/' + product.product_image;
+            }
+            // Debug logging
+            console.log('Product ID:', product.product_id, 'Image path:', product.product_image, 'Display path:', imageSrc);
+        } else {
+            console.log('Product ID:', product.product_id, 'No image - using placeholder');
+        }
         
         html += `
             <div class="col-md-6 col-lg-4 mb-4">
                 <div class="card product-card h-100">
                     <div class="product-image-container">
-                        <img src="${imageSrc}" class="card-img-top product-image" alt="${product.product_title}" onerror="this.src='../uploads/placeholder.png'">
+                        <img src="${imageSrc}" class="card-img-top product-image" alt="${escapeHtml(product.product_title)}" onerror="console.error('Image failed to load:', '${imageSrc}'); this.src='../uploads/placeholder.png';">
                         <div class="product-overlay">
                             <div class="action-buttons">
                                 <button class="btn btn-sm btn-outline-primary me-1" onclick="editProduct(${product.product_id})" title="Edit Product">
@@ -341,8 +370,19 @@ function editProduct(productId) {
                     $('#editProductKeywords').val(product.product_keywords || '');
                     
                     // Set current image
-                    const imageSrc = product.product_image ? `../${product.product_image}` : '../uploads/placeholder.png';
+                    let imageSrc = '../uploads/placeholder.png';
+                    if (product.product_image && product.product_image.trim() !== '') {
+                        // Ensure the path doesn't already start with ../
+                        if (product.product_image.startsWith('../')) {
+                            imageSrc = product.product_image;
+                        } else if (product.product_image.startsWith('uploads/')) {
+                            imageSrc = '../' + product.product_image;
+                        } else {
+                            imageSrc = '../uploads/' + product.product_image;
+                        }
+                    }
                     $('#editPreviewImg').attr('src', imageSrc);
+                    $('#editImagePreview').show();
                     
                     $('#editProductModal').modal('show');
                 }
@@ -374,6 +414,19 @@ function previewImage(input, previewId, containerId) {
         };
         reader.readAsDataURL(input.files[0]);
     }
+}
+
+// Escape HTML function
+function escapeHtml(text) {
+    if (!text) return '';
+    const map = {
+        '&': '&amp;',
+        '<': '&lt;',
+        '>': '&gt;',
+        '"': '&quot;',
+        "'": '&#039;'
+    };
+    return String(text).replace(/[&<>"']/g, function(m) { return map[m]; });
 }
 
 // Validate product form

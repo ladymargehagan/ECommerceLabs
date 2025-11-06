@@ -167,20 +167,30 @@ class product_controller extends product_class
         $sanitizedName = preg_replace('/[^a-zA-Z0-9._-]/', '_', pathinfo($originalName, PATHINFO_FILENAME));
         
         // Create directory structure: uploads/u{user_id}/p{product_id}/
-        $upload_dir = "../uploads/u{$user_id}/p{$product_id}/";
+        // Get the base directory (project root) - controllers are in controllers/, so go up one level
+        $base_dir = dirname(dirname(__FILE__));
+        $upload_dir = "{$base_dir}/uploads/u{$user_id}/p{$product_id}/";
+        
+        // Ensure uploads directory exists
+        $uploads_base = "{$base_dir}/uploads/";
+        if (!is_dir($uploads_base)) {
+            if (!mkdir($uploads_base, 0777, true)) {
+                return array('success' => false, 'message' => 'Failed to create uploads directory. Please check server permissions.');
+            }
+        }
         
         // Ensure parent directory exists first
-        $parent_dir = "../uploads/u{$user_id}/";
+        $parent_dir = "{$base_dir}/uploads/u{$user_id}/";
         if (!is_dir($parent_dir)) {
             if (!mkdir($parent_dir, 0777, true)) {
-                return array('success' => false, 'message' => 'Failed to create parent upload directory');
+                return array('success' => false, 'message' => 'Failed to create parent upload directory. Please check server permissions.');
             }
         }
         
         // Ensure product directory exists
         if (!is_dir($upload_dir)) {
             if (!mkdir($upload_dir, 0777, true)) {
-                return array('success' => false, 'message' => 'Failed to create upload directory. Please check server permissions.');
+                return array('success' => false, 'message' => 'Failed to create upload directory: ' . $upload_dir . '. Please check server permissions.');
             }
         }
         
