@@ -5,9 +5,10 @@ class brand_class extends db_connection
 {
     public function add_brand($brand_name, $brand_image = '')
     {
-        // Ensure database connection
+        // Get database connection for escaping
         $db = $this->db_conn();
         if (!$db) {
+            error_log("Add brand: Database connection failed");
             return false;
         }
         
@@ -18,32 +19,72 @@ class brand_class extends db_connection
         // Check if brand name already exists
         $check_sql = "SELECT brand_id FROM brands WHERE brand_name = '$brand_name'";
         if ($this->db_fetch_one($check_sql)) {
+            error_log("Add brand: Brand name '$brand_name' already exists");
             return false;
         }
 
+        // Execute INSERT - db_write_query will establish its own connection
         $sql = "INSERT INTO brands (brand_name, brand_image) VALUES ('$brand_name', '$brand_image')";
         $result = $this->db_write_query($sql);
         
-        // Return the brand ID (last insert id) - db_write_query sets $this->db
-        if ($result) {
-            return mysqli_insert_id($this->db);
+        if (!$result) {
+            // db_write_query sets $this->db, so we can check for errors
+            $error_msg = (isset($this->db) && $this->db) ? mysqli_error($this->db) : "Unknown error";
+            error_log("Add brand: INSERT query failed - $error_msg");
+            return false;
         }
         
-        return false;
+        // Return the brand ID (last insert id) - db_write_query sets $this->db
+        if (!isset($this->db) || !$this->db) {
+            error_log("Add brand: Database connection lost after INSERT");
+            return false;
+        }
+        
+        $brand_id = mysqli_insert_id($this->db);
+        if ($brand_id) {
+            error_log("Add brand: Successfully added brand ID $brand_id");
+            return $brand_id;
+        } else {
+            error_log("Add brand: INSERT succeeded but no insert ID returned. Last error: " . mysqli_error($this->db));
+            return false;
+        }
     }
 
     public function get_brands_by_user($user_id)
     {
+        // Ensure database connection
+        if (!$this->db_connect()) {
+            error_log("Get brands: Database connection failed");
+            return array();
+        }
+        
         $sql = "SELECT * FROM brands ORDER BY brand_name ASC";
         $result = $this->db_fetch_all($sql);
         
-        return $result ? $result : array();
+        if ($result === false) {
+            error_log("Get brands: Query failed - " . (isset($this->db) && $this->db ? mysqli_error($this->db) : "No DB connection"));
+            return array();
+        }
+        
+        error_log("Get brands: Found " . (is_array($result) ? count($result) : 0) . " brands");
+        return is_array($result) ? $result : array();
     }
 
     public function get_all_brands()
     {
+        // Ensure database connection
+        if (!$this->db_connect()) {
+            error_log("Get all brands: Database connection failed");
+            return array();
+        }
+        
         $sql = "SELECT * FROM brands ORDER BY brand_name ASC";
         $result = $this->db_fetch_all($sql);
+        
+        if ($result === false) {
+            error_log("Get all brands: Query failed - " . (isset($this->db) ? mysqli_error($this->db) : "No DB connection"));
+            return array();
+        }
         
         return $result ? $result : array();
     }
