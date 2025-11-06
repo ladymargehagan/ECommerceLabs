@@ -1,6 +1,70 @@
 <?php
-// Start session to check if user is logged in
+// Enable error reporting for debugging (remove in production)
+error_reporting(E_ALL);
+ini_set('display_errors', 0);
+ini_set('log_errors', 1);
+
 session_start();
+
+// Initialize empty arrays
+$products = array();
+$categories = array();
+$brands = array();
+$total_count = 0;
+$total_pages = 0;
+$error_message = '';
+
+// Get current page and filters
+$page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
+$category_id = isset($_GET['category']) ? (int)$_GET['category'] : null;
+$brand_id = isset($_GET['brand']) ? (int)$_GET['brand'] : null;
+$search_query = isset($_GET['q']) ? trim($_GET['q']) : (isset($_GET['search']) ? trim($_GET['search']) : null);
+
+$limit = 10;
+$offset = ($page - 1) * $limit;
+
+// Try to load data from database
+if (file_exists('settings/db_class.php') && file_exists('classes/product_class.php')) {
+    try {
+        require_once 'settings/db_class.php';
+        require_once 'classes/product_class.php';
+        
+        $product_class = new product_class();
+        
+        if ($product_class->db_connect()) {
+            // Get products based on filters
+            if ($category_id || $brand_id || $search_query) {
+                $products = $product_class->get_products_with_filters($category_id, $brand_id, $search_query, $limit, $offset);
+                $total_count = $product_class->get_filtered_count($category_id, $brand_id, $search_query);
+            } else {
+                $products = $product_class->view_all_products($limit, $offset);
+                $total_count = $product_class->get_products_count();
+            }
+            
+            // Get categories and brands for filters
+            $categories = $product_class->get_categories();
+            $brands = $product_class->get_brands();
+            
+            // Ensure we have arrays
+            if (!is_array($products)) $products = array();
+            if (!is_array($categories)) $categories = array();
+            if (!is_array($brands)) $brands = array();
+        } else {
+            $error_message = 'Failed to connect to database.';
+        }
+    } catch (Exception $e) {
+        $error_message = 'Error loading product data: ' . $e->getMessage();
+        error_log("Error loading product data: " . $e->getMessage());
+    } catch (Error $e) {
+        $error_message = 'Fatal error: ' . $e->getMessage();
+        error_log("Fatal error loading product data: " . $e->getMessage());
+    }
+} else {
+    $error_message = 'Required files not found.';
+}
+
+// Calculate pagination (avoid division by zero)
+$total_pages = $limit > 0 ? ceil($total_count / $limit) : 0;
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -12,12 +76,61 @@ session_start();
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <link href="css/main.css" rel="stylesheet">
     <link href="css/index.css" rel="stylesheet">
+    <style>
+        .product-card {
+            transition: transform 0.3s ease;
+            height: 100%;
+        }
+        .product-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+        }
+        .product-image {
+            height: 200px;
+            object-fit: cover;
+            width: 100%;
+        }
+        .filter-section {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 30px;
+        }
+        .pagination-wrapper {
+            display: flex;
+            justify-content: center;
+            margin-top: 30px;
+        }
+        .no-products {
+            text-align: center;
+            padding: 60px 20px;
+            color: #6c757d;
+        }
+        .product-price {
+            font-size: 1.2em;
+            font-weight: bold;
+            color: #28a745;
+        }
+        .product-category, .product-brand {
+            font-size: 0.9em;
+            color: #6c757d;
+        }
+        .welcome-header {
+            text-align: center;
+            padding: 30px 0;
+            margin-bottom: 30px;
+        }
+        .welcome-header h1 {
+            color: #D19C97;
+            font-weight: bold;
+        }
+    </style>
 </head>
 <body>
     <div class="menu-tray">
         <?php if (isset($_SESSION['user_id'])): ?>
             <span class="me-2">Welcome, <?php echo htmlspecialchars($_SESSION['name']); ?>!</span>
-            <?php if ($_SESSION['role'] == 1): // Admin users ?>
+            <?php if (isset($_SESSION['role']) && $_SESSION['role'] == 1): // Admin users ?>
                 <a href="admin/dashboard.php" class="btn btn-sm btn-outline-primary me-2">
                     <i class="fa fa-tachometer-alt me-1"></i>Dashboard
                 </a>
@@ -46,91 +159,17 @@ session_start();
                 <i class="fa fa-sign-in-alt me-1"></i>Login
             </a>
         <?php endif; ?>
-        
-        <!-- All Products Link -->
-        <a href="all_product.php" class="btn btn-sm btn-outline-primary me-2">
-            <i class="fa fa-box me-1"></i>All Products
-        </a>
     </div>
 
-    <!-- Search and Filter Section -->
-    <div class="search-section" style="background: #f8f9fa; padding: 20px 0; margin-top: 60px;">
-        <div class="container">
-            <div class="row">
-                <div class="col-12">
-                    <h4 class="text-center mb-4"><i class="fa fa-search me-2"></i>Search Products</h4>
-                    <form method="GET" action="product_search_result.php" id="searchForm">
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="input-group">
-                                    <input type="text" class="form-control" name="q" id="searchQuery" 
-                                           placeholder="Search by product name, description, or keywords..." 
-                                           value="<?php echo isset($_GET['q']) ? htmlspecialchars($_GET['q']) : ''; ?>">
-                                    <button class="btn btn-custom" type="submit">
-                                        <i class="fa fa-search"></i>
-                                    </button>
-                                </div>
-                            </div>
-                            <div class="col-md-3">
-                                <select class="form-control" name="category" id="categoryFilter">
-                                    <option value="">All Categories</option>
-                                    <!-- Categories will be loaded via JavaScript -->
-                                </select>
-                            </div>
-                            <div class="col-md-3">
-                                <select class="form-control" name="brand" id="brandFilter">
-                                    <option value="">All Brands</option>
-                                    <!-- Brands will be loaded via JavaScript -->
-                                </select>
-                            </div>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="container" style="padding-top: 20px;">
+    <div class="container" style="padding-top: 120px;">
         <?php if (isset($_SESSION['user_id'])): ?>
-            <!-- Logged in user content -->
-            <div class="welcome-card text-center">
-                <h1><i class="fa fa-home me-2"></i>Welcome to Taste of Africa!</h1>
-                <p class="lead">You have successfully logged in to your account.</p>
-                
-                <div class="user-info">
-                    <h4><i class="fa fa-user me-2"></i>Your Account Information</h4>
-                    <div class="row">
-                        <div class="col-md-6">
-                            <p><strong>Name:</strong> <?php echo htmlspecialchars($_SESSION['name']); ?></p>
-                            <p><strong>Email:</strong> <?php echo htmlspecialchars($_SESSION['email']); ?></p>
-                        </div>
-                        <div class="col-md-6">
-                            <p><strong>Location:</strong> <?php echo htmlspecialchars($_SESSION['city'] . ', ' . $_SESSION['country']); ?></p>
-                            <p><strong>Role:</strong> 
-                                <?php 
-                                if ($_SESSION['role'] == 1) {
-                                    echo '<span class="badge bg-warning">Administrator</span>';
-                                } else {
-                                    echo '<span class="badge bg-info">Customer</span>';
-                                }
-                                ?>
-                            </p>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="mt-4">
-                    <a href="all_product.php" class="btn btn-custom btn-lg me-3">
-                        <i class="fa fa-shopping-cart me-2"></i>Start Shopping
-                    </a>
-                    <a href="customer/dashboard.php" class="btn btn-outline-light btn-lg">
-                        <i class="fa fa-user-edit me-2"></i>My Account
-                    </a>
-                </div>
+            <!-- Welcome Message for Logged In Users -->
+            <div class="welcome-header">
+                <h1><i class="fa fa-home me-2"></i>Welcome, <?php echo htmlspecialchars($_SESSION['name']); ?>!</h1>
             </div>
         <?php else: ?>
-            <!-- Guest user content -->
-            <div class="text-center">
+            <!-- Guest user welcome -->
+            <div class="welcome-header">
                 <h1><i class="fa fa-home me-2"></i>Welcome to Taste of Africa</h1>
                 <p class="lead text-muted">Discover the authentic flavors of Africa</p>
                 <p class="text-muted">Please login or register to access your account and start shopping.</p>
@@ -145,69 +184,212 @@ session_start();
                 </div>
             </div>
         <?php endif; ?>
+
+        <!-- Search and Filter Section -->
+        <div class="filter-section">
+            <h4 class="text-center mb-4"><i class="fa fa-search me-2"></i>Search Products</h4>
+            <form method="GET" id="filterForm">
+                <div class="row">
+                    <div class="col-md-6">
+                        <label for="search" class="form-label">Search Products</label>
+                        <div class="input-group">
+                            <input type="text" class="form-control" id="search" name="q" 
+                                   value="<?php echo htmlspecialchars($search_query); ?>" 
+                                   placeholder="Search by product name, description, or keywords...">
+                            <button class="btn btn-custom" type="submit">
+                                <i class="fa fa-search"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <label for="category" class="form-label">Category</label>
+                        <select class="form-control" id="category" name="category">
+                            <option value="">All Categories</option>
+                            <?php foreach ($categories as $category): ?>
+                                <option value="<?php echo $category['cat_id']; ?>" 
+                                        <?php echo ($category_id == $category['cat_id']) ? 'selected' : ''; ?>>
+                                    <?php echo htmlspecialchars($category['cat_name']); ?>
+                                </option>
+                            <?php endforeach; ?>
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <label for="brand" class="form-label">Brand</label>
+                        <select class="form-control" id="brand" name="brand">
+                            <option value="">All Brands</option>
+                            <?php foreach ($brands as $brand): ?>
+                                <option value="<?php echo $brand['brand_id']; ?>" 
+                                        <?php echo ($brand_id == $brand['brand_id']) ? 'selected' : ''; ?>>
+                                    <?php echo htmlspecialchars($brand['brand_name']); ?>
+                                </option>
+                            <?php endforeach; ?>
+                        </select>
+                    </div>
+                </div>
+                <?php if ($category_id || $brand_id || $search_query): ?>
+                    <div class="row mt-2">
+                        <div class="col-12">
+                            <a href="index.php" class="btn btn-sm btn-outline-secondary">
+                                <i class="fa fa-times me-1"></i>Clear Filters
+                            </a>
+                        </div>
+                    </div>
+                <?php endif; ?>
+            </form>
+        </div>
+
+        <!-- Error Message -->
+        <?php if ($error_message): ?>
+            <div class="alert alert-danger" role="alert">
+                <i class="fa fa-exclamation-triangle me-2"></i><?php echo htmlspecialchars($error_message); ?>
+            </div>
+        <?php endif; ?>
+
+        <!-- Results Summary -->
+        <?php if (isset($_SESSION['user_id']) || !empty($products)): ?>
+            <div class="row mb-3">
+                <div class="col-12">
+                    <p class="text-muted">
+                        Showing <?php echo count($products); ?> of <?php echo $total_count; ?> products
+                        <?php if ($search_query): ?>
+                            for "<strong><?php echo htmlspecialchars($search_query); ?></strong>"
+                        <?php endif; ?>
+                        <?php if ($category_id): ?>
+                            in category "<strong><?php echo htmlspecialchars(array_column($categories, 'cat_name', 'cat_id')[$category_id] ?? 'Unknown'); ?></strong>"
+                        <?php endif; ?>
+                        <?php if ($brand_id): ?>
+                            from brand "<strong><?php echo htmlspecialchars(array_column($brands, 'brand_name', 'brand_id')[$brand_id] ?? 'Unknown'); ?></strong>"
+                        <?php endif; ?>
+                    </p>
+                </div>
+            </div>
+        <?php endif; ?>
+
+        <!-- Products Grid -->
+        <?php if (empty($products) && isset($_SESSION['user_id'])): ?>
+            <div class="no-products">
+                <i class="fa fa-box fa-3x mb-3"></i>
+                <h3>No Products Found</h3>
+                <p>Try adjusting your search criteria or browse all products.</p>
+                <a href="index.php" class="btn btn-custom">View All Products</a>
+            </div>
+        <?php elseif (!empty($products)): ?>
+            <div class="row" id="productsContainer">
+                <?php foreach ($products as $product): ?>
+                    <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
+                        <div class="card product-card h-100">
+                            <div class="position-relative">
+                                <?php if ($product['product_image']): ?>
+                                    <img src="<?php echo htmlspecialchars($product['product_image']); ?>" 
+                                         class="card-img-top product-image" 
+                                         alt="<?php echo htmlspecialchars($product['product_title']); ?>"
+                                         onerror="this.src='uploads/placeholder.png'">
+                                <?php else: ?>
+                                    <img src="uploads/placeholder.png" 
+                                         class="card-img-top product-image" 
+                                         alt="No image available">
+                                <?php endif; ?>
+                                <div class="position-absolute top-0 end-0 m-2">
+                                    <span class="badge bg-primary">ID: <?php echo $product['product_id']; ?></span>
+                                </div>
+                            </div>
+                            <div class="card-body d-flex flex-column">
+                                <h5 class="card-title"><?php echo htmlspecialchars($product['product_title']); ?></h5>
+                                <div class="product-price mb-2">$<?php echo number_format($product['product_price'], 2); ?></div>
+                                <div class="product-category mb-1">
+                                    <i class="fa fa-tag me-1"></i><?php echo htmlspecialchars($product['cat_name'] ?? 'No Category'); ?>
+                                </div>
+                                <div class="product-brand mb-3">
+                                    <i class="fa fa-star me-1"></i><?php echo htmlspecialchars($product['brand_name'] ?? 'No Brand'); ?>
+                                </div>
+                                <?php if ($product['product_desc']): ?>
+                                    <p class="card-text text-muted small flex-grow-1">
+                                        <?php echo htmlspecialchars(substr($product['product_desc'], 0, 100)) . (strlen($product['product_desc']) > 100 ? '...' : ''); ?>
+                                    </p>
+                                <?php endif; ?>
+                                <div class="mt-auto">
+                                    <div class="d-grid gap-2">
+                                        <a href="single_product.php?id=<?php echo $product['product_id']; ?>" 
+                                           class="btn btn-outline-primary">
+                                            <i class="fa fa-eye me-1"></i>View Details
+                                        </a>
+                                        <button class="btn btn-custom add-to-cart" 
+                                                data-product-id="<?php echo $product['product_id']; ?>">
+                                            <i class="fa fa-cart-plus me-1"></i>Add to Cart
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                <?php endforeach; ?>
+            </div>
+
+            <!-- Pagination -->
+            <?php if ($total_pages > 1): ?>
+                <div class="pagination-wrapper">
+                    <nav aria-label="Products pagination">
+                        <ul class="pagination">
+                            <?php if ($page > 1): ?>
+                                <li class="page-item">
+                                    <a class="page-link" href="?<?php echo http_build_query(array_merge($_GET, ['page' => $page - 1])); ?>">
+                                        <i class="fa fa-chevron-left"></i> Previous
+                                    </a>
+                                </li>
+                            <?php endif; ?>
+
+                            <?php for ($i = max(1, $page - 2); $i <= min($total_pages, $page + 2); $i++): ?>
+                                <li class="page-item <?php echo ($i == $page) ? 'active' : ''; ?>">
+                                    <a class="page-link" href="?<?php echo http_build_query(array_merge($_GET, ['page' => $i])); ?>">
+                                        <?php echo $i; ?>
+                                    </a>
+                                </li>
+                            <?php endfor; ?>
+
+                            <?php if ($page < $total_pages): ?>
+                                <li class="page-item">
+                                    <a class="page-link" href="?<?php echo http_build_query(array_merge($_GET, ['page' => $page + 1])); ?>">
+                                        Next <i class="fa fa-chevron-right"></i>
+                                    </a>
+                                </li>
+                            <?php endif; ?>
+                        </ul>
+                    </nav>
+                </div>
+            <?php endif; ?>
+        <?php endif; ?>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="js/product-search.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     
     <script>
         $(document).ready(function() {
-            // Load categories and brands dynamically
-            loadCategoriesAndBrands();
-            
-            // Show welcome message if just logged in
-            const urlParams = new URLSearchParams(window.location.search);
-            if (urlParams.get('login') === 'success') {
-                console.log('Login successful!');
-            }
+            // Auto-submit form on filter change
+            $('#category, #brand').change(function() {
+                $('#filterForm').submit();
+            });
 
-            // Search form validation
-            $('#searchForm').submit(function(e) {
-                const query = $('#searchQuery').val().trim();
-                if (query.length === 0) {
-                    e.preventDefault();
-                    alert('Please enter a search term.');
-                    $('#searchQuery').focus();
+            // Search with Enter key
+            $('#search').keypress(function(e) {
+                if (e.which == 13) {
+                    $('#filterForm').submit();
                 }
+            });
+
+            // Add to cart functionality
+            $('.add-to-cart').click(function() {
+                const productId = $(this).data('product-id');
+                
+                Swal.fire({
+                    title: 'Add to Cart',
+                    text: 'This feature will be implemented soon!',
+                    icon: 'info',
+                    confirmButtonText: 'OK'
+                });
             });
         });
-
-        function loadCategoriesAndBrands() {
-            // Load categories
-            $.ajax({
-                url: 'product_actions.php',
-                method: 'GET',
-                data: { action: 'get_categories' },
-                dataType: 'json',
-                success: function(response) {
-                    if (response.success) {
-                        let options = '<option value="">All Categories</option>';
-                        response.data.forEach(function(category) {
-                            options += '<option value="' + category.cat_id + '">' + category.cat_name + '</option>';
-                        });
-                        $('#categoryFilter').html(options);
-                    }
-                }
-            });
-
-            // Load brands
-            $.ajax({
-                url: 'product_actions.php',
-                method: 'GET',
-                data: { action: 'get_brands' },
-                dataType: 'json',
-                success: function(response) {
-                    if (response.success) {
-                        let options = '<option value="">All Brands</option>';
-                        response.data.forEach(function(brand) {
-                            options += '<option value="' + brand.brand_id + '">' + brand.brand_name + '</option>';
-                        });
-                        $('#brandFilter').html(options);
-                    }
-                }
-            });
-        }
     </script>
 </body>
 </html>

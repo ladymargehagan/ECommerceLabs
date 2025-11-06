@@ -36,7 +36,7 @@ if (isset($_SESSION['role']) && $_SESSION['role'] == 1) {
         <div class="card mb-4">
             <div class="card-header d-flex justify-content-between align-items-center">
                 <div>
-                    <h4><i class="fa fa-user me-2"></i>Customer Dashboard</h4>
+                    <h4><i class="fa fa-user me-2"></i>My Account</h4>
                     <p class="mb-0">Welcome back, <?php echo htmlspecialchars($_SESSION['name']); ?>!</p>
                 </div>
                 <div>
@@ -52,7 +52,7 @@ if (isset($_SESSION['role']) && $_SESSION['role'] == 1) {
 
         <!-- Customer Information -->
         <div class="row">
-            <div class="col-lg-8">
+            <div class="col-lg-12">
                 <div class="card">
                     <div class="card-header">
                         <h5><i class="fa fa-user-circle me-2"></i>Your Account Information</h5>
@@ -62,56 +62,53 @@ if (isset($_SESSION['role']) && $_SESSION['role'] == 1) {
                             <div class="col-md-6">
                                 <p><strong>Name:</strong> <?php echo htmlspecialchars($_SESSION['name']); ?></p>
                                 <p><strong>Email:</strong> <?php echo htmlspecialchars($_SESSION['email']); ?></p>
-                                <p><strong>Contact:</strong> <?php echo htmlspecialchars($_SESSION['contact']); ?></p>
+                                <?php if (isset($_SESSION['contact'])): ?>
+                                    <p><strong>Contact:</strong> <?php echo htmlspecialchars($_SESSION['contact']); ?></p>
+                                <?php endif; ?>
                             </div>
                             <div class="col-md-6">
                                 <p><strong>Location:</strong> <?php echo htmlspecialchars($_SESSION['city'] . ', ' . $_SESSION['country']); ?></p>
-                                <p><strong>Member Since:</strong> <?php echo date('F Y', $_SESSION['login_time']); ?></p>
-                                <p><strong>Account Type:</strong> <span class="badge bg-info">Customer</span></p>
+                                <?php if (isset($_SESSION['login_time'])): ?>
+                                    <p><strong>Member Since:</strong> <?php echo date('F Y', $_SESSION['login_time']); ?></p>
+                                <?php endif; ?>
+                                <p><strong>Role:</strong> 
+                                    <?php 
+                                    if (isset($_SESSION['role']) && $_SESSION['role'] == 1) {
+                                        echo '<span class="badge bg-warning">Administrator</span>';
+                                    } else {
+                                        echo '<span class="badge bg-info">Customer</span>';
+                                    }
+                                    ?>
+                                </p>
                             </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="col-lg-4">
-                <div class="card">
-                    <div class="card-header">
-                        <h5><i class="fa fa-shopping-cart me-2"></i>Quick Actions</h5>
-                    </div>
-                    <div class="card-body">
-                        <div class="d-grid gap-2">
-                            <a href="../index.php" class="btn btn-primary">
-                                <i class="fa fa-shopping-bag me-2"></i>Start Shopping
-                            </a>
-                            <a href="#" class="btn btn-outline-secondary">
-                                <i class="fa fa-box me-2"></i>My Orders
-                            </a>
-                            <a href="#" class="btn btn-outline-info">
-                                <i class="fa fa-heart me-2"></i>Wishlist
-                            </a>
-                            <a href="#" class="btn btn-outline-warning">
-                                <i class="fa fa-cog me-2"></i>Account Settings
-                            </a>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- Recent Activity -->
+        <!-- Quick Actions -->
         <div class="row mt-4">
             <div class="col-12">
                 <div class="card">
                     <div class="card-header">
-                        <h5><i class="fa fa-clock me-2"></i>Recent Activity</h5>
+                        <h5><i class="fa fa-shopping-cart me-2"></i>Quick Actions</h5>
                     </div>
                     <div class="card-body">
-                        <div class="alert alert-info">
-                            <i class="fa fa-info-circle me-2"></i>
-                            Welcome to your customer dashboard! This is where you can manage your account, view orders, and access your shopping features.
+                        <div class="d-grid gap-2 d-md-flex">
+                            <a href="../index.php" class="btn btn-primary me-2">
+                                <i class="fa fa-shopping-bag me-2"></i>Start Shopping
+                            </a>
+                            <a href="#" class="btn btn-outline-secondary me-2">
+                                <i class="fa fa-box me-2"></i>My Orders
+                            </a>
+                            <a href="#" class="btn btn-outline-info me-2">
+                                <i class="fa fa-heart me-2"></i>Wishlist
+                            </a>
+                            <a href="#" class="btn btn-outline-warning">
+                                <i class="fa fa-cog me-2"></i>Account Settings
+                            </a>
                         </div>
-                        <p class="text-muted">More features coming soon...</p>
                     </div>
                 </div>
             </div>
