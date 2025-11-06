@@ -34,32 +34,15 @@ $brand_image = $current_brand['success'] ? $current_brand['data']['brand_image']
 
 // Handle new image upload
 if (isset($_FILES['brandImage']) && $_FILES['brandImage']['error'] === UPLOAD_ERR_OK) {
-    $user_id = $_SESSION['user_id'];
+    // Use the upload_image_ctr method for consistent image handling
+    $upload_result = $brand_controller->upload_image_ctr($_FILES['brandImage'], $brand_id);
     
-    // Process filename
-    $originalName = $_FILES['brandImage']['name'];
-    $extension = pathinfo($originalName, PATHINFO_EXTENSION);
-    $sanitizedName = preg_replace('/[^a-zA-Z0-9._-]/', '_', pathinfo($originalName, PATHINFO_FILENAME));
-    
-    // Create directory structure: uploads/u{user_id}/b{brand_id}/
-    $upload_dir = "../uploads/u{$user_id}/b{$brand_id}/";
-    
-    // Ensure directory exists
-    if (!is_dir($upload_dir)) {
-        if (!mkdir($upload_dir, 0777, true)) {
-            echo json_encode(array('success' => false, 'message' => 'Failed to create upload directory'));
-            exit;
-        }
-    }
-    
-    // Generate filename with timestamp
-    $timestamp = time();
-    $filename = "img_{$sanitizedName}_{$timestamp}.{$extension}";
-    $file_path = $upload_dir . $filename;
-    
-    // Move uploaded file
-    if (move_uploaded_file($_FILES['brandImage']['tmp_name'], $file_path)) {
-        $brand_image = "uploads/u{$user_id}/b{$brand_id}/{$filename}";
+    if ($upload_result['success']) {
+        $brand_image = $upload_result['data'];
+    } else {
+        // Image upload failed, but keep existing image
+        // Don't fail the entire update if image upload fails
+        error_log("Brand image upload failed: " . $upload_result['message']);
     }
 }
 

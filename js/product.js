@@ -35,12 +35,17 @@ $(document).ready(function() {
             success: function(response) {
                 hideLoading();
                 if (response.success) {
+                    let message = response.message;
+                    if (response.image_warning) {
+                        message += '\n\n' + response.image_warning;
+                    }
+                    
                     Swal.fire({
-                        icon: 'success',
-                        title: 'Success!',
-                        text: response.message,
-                        timer: 2000,
-                        showConfirmButton: false
+                        icon: response.image_warning ? 'warning' : 'success',
+                        title: response.image_warning ? 'Product Created with Warning' : 'Success!',
+                        text: message,
+                        timer: response.image_warning ? 4000 : 2000,
+                        showConfirmButton: !response.image_warning
                     });
                     $('#addProductModal').modal('hide');
                     $('#addProductForm')[0].reset();
