@@ -237,7 +237,7 @@ function populateCategorySelects(categories) {
     });
 }
 
-// Display brands function with visual grouping by categories
+// Display brands function - simple display without category grouping
 function displayBrands(brands) {
     if (!brands || brands.length === 0) {
         $('#brandsContainer').html(`
@@ -250,22 +250,8 @@ function displayBrands(brands) {
         return;
     }
 
-    // Get categories for grouping
-    $.ajax({
-        url: '../actions/fetch_category_action.php',
-        method: 'GET',
-        dataType: 'json',
-        success: function(response) {
-            if (response.success) {
-                displayBrandsGroupedByCategories(brands, response.data);
-            } else {
-                displayBrandsSimple(brands);
-            }
-        },
-        error: function() {
-            displayBrandsSimple(brands);
-        }
-    });
+    // Display brands simply without category grouping
+    displayBrandsSimple(brands);
 }
 
 // Get proper image path
