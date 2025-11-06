@@ -6,13 +6,14 @@ class brand_class extends db_connection
     public function add_brand($brand_name, $brand_image = '')
     {
         // Ensure database connection
-        if (!$this->db_connect()) {
+        $db = $this->db_conn();
+        if (!$db) {
             return false;
         }
         
         // Escape input to prevent SQL injection
-        $brand_name = $this->db->real_escape_string($brand_name);
-        $brand_image = $this->db->real_escape_string($brand_image);
+        $brand_name = $db->real_escape_string($brand_name);
+        $brand_image = $db->real_escape_string($brand_image);
         
         // Check if brand name already exists
         $check_sql = "SELECT brand_id FROM brands WHERE brand_name = '$brand_name'";
@@ -21,9 +22,9 @@ class brand_class extends db_connection
         }
 
         $sql = "INSERT INTO brands (brand_name, brand_image) VALUES ('$brand_name', '$brand_image')";
-        $result = mysqli_query($this->db, $sql);
+        $result = $this->db_write_query($sql);
         
-        // Return the brand ID (last insert id) - must use same connection
+        // Return the brand ID (last insert id) - db_write_query sets $this->db
         if ($result) {
             return mysqli_insert_id($this->db);
         }
@@ -49,10 +50,11 @@ class brand_class extends db_connection
 
     public function get_brand_by_id($brand_id)
     {
-        if (!$this->db_connect()) {
+        $db = $this->db_conn();
+        if (!$db) {
             return false;
         }
-        $brand_id = $this->db->real_escape_string($brand_id);
+        $brand_id = $db->real_escape_string($brand_id);
         
         $sql = "SELECT * FROM brands WHERE brand_id = '$brand_id'";
         $result = $this->db_fetch_one($sql);
@@ -62,14 +64,15 @@ class brand_class extends db_connection
 
     public function update_brand($brand_id, $brand_name, $brand_image = '')
     {
-        if (!$this->db_connect()) {
+        $db = $this->db_conn();
+        if (!$db) {
             return false;
         }
         
         // Escape input to prevent SQL injection
-        $brand_id = $this->db->real_escape_string($brand_id);
-        $brand_name = $this->db->real_escape_string($brand_name);
-        $brand_image = $this->db->real_escape_string($brand_image);
+        $brand_id = $db->real_escape_string($brand_id);
+        $brand_name = $db->real_escape_string($brand_name);
+        $brand_image = $db->real_escape_string($brand_image);
         
         // Check if brand exists
         $check_sql = "SELECT brand_id FROM brands WHERE brand_id = '$brand_id'";
@@ -93,12 +96,13 @@ class brand_class extends db_connection
 
     public function delete_brand($brand_id)
     {
-        if (!$this->db_connect()) {
+        $db = $this->db_conn();
+        if (!$db) {
             return false;
         }
         
         // Escape input to prevent SQL injection
-        $brand_id = $this->db->real_escape_string($brand_id);
+        $brand_id = $db->real_escape_string($brand_id);
 
         // Check if brand exists
         $check_sql = "SELECT brand_id FROM brands WHERE brand_id = '$brand_id'";
@@ -135,15 +139,16 @@ class brand_class extends db_connection
 
     public function brand_name_exists($brand_name, $exclude_id = null)
     {
-        if (!$this->db_connect()) {
+        $db = $this->db_conn();
+        if (!$db) {
             return false;
         }
         
         // Escape input to prevent SQL injection
-        $brand_name = $this->db->real_escape_string($brand_name);
+        $brand_name = $db->real_escape_string($brand_name);
         $sql = "SELECT brand_id FROM brands WHERE brand_name = '$brand_name'";
         if ($exclude_id) {
-            $exclude_id = $this->db->real_escape_string($exclude_id);
+            $exclude_id = $db->real_escape_string($exclude_id);
             $sql .= " AND brand_id != '$exclude_id'";
         }
         return $this->db_fetch_one($sql) ? true : false;
