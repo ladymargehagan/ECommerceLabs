@@ -221,17 +221,20 @@
 .brand-image-container {
     position: relative;
     width: 100%;
+    height: 200px;
     overflow: hidden;
     background-color: #f8f9fa;
     border-radius: 10px 10px 0 0;
+    display: block;
 }
 
 .brand-image {
     width: 100%;
-    height: 200px;
+    height: 100%;
     object-fit: cover;
     display: block;
     transition: transform 0.3s ease;
+    min-height: 200px;
 }
 
 .brand-card:hover .brand-image {

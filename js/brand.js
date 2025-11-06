@@ -283,7 +283,14 @@ function displayBrandsGroupedByCategories(brands, categories) {
         
         // Display all brands under each category (since brands can produce across categories)
         brands.forEach(function(brand) {
-            const imageSrc = brand.brand_image ? `../${brand.brand_image}` : '../uploads/placeholder.png';
+            // Handle brand_image field (check multiple possible field names for compatibility)
+            let brandImage = brand.brand_image || brand.BRAND_IMAGE || brand.brand_Image || null;
+            if (brandImage && String(brandImage).trim() !== '') {
+                brandImage = String(brandImage).trim();
+            } else {
+                brandImage = null;
+            }
+            const imageSrc = brandImage ? `../${brandImage}` : '../uploads/placeholder.png';
             
             html += `
                 <div class="col-md-6 col-lg-4 mb-3">
@@ -329,7 +336,14 @@ function displayBrandsGroupedByCategories(brands, categories) {
 function displayBrandsSimple(brands) {
     let html = '';
     brands.forEach(function(brand) {
-        const imageSrc = brand.brand_image ? `../${brand.brand_image}` : '../uploads/placeholder.png';
+        // Handle brand_image field (check multiple possible field names for compatibility)
+        let brandImage = brand.brand_image || brand.BRAND_IMAGE || brand.brand_Image || null;
+        if (brandImage && String(brandImage).trim() !== '') {
+            brandImage = String(brandImage).trim();
+        } else {
+            brandImage = null;
+        }
+        const imageSrc = brandImage ? `../${brandImage}` : '../uploads/placeholder.png';
         
         html += `
             <div class="col-md-6 col-lg-4 mb-4">
