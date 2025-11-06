@@ -234,9 +234,9 @@ function populateCategorySelects(categories) {
     });
 }
 
-// Display brands function - always show images like categories do
-function displayBrands(brands) {
-    if (!brands || brands.length === 0) {
+// Display brands function - organized by categories
+function displayBrands(data) {
+    if (!data || data.length === 0) {
         $('#brandsContainer').html(`
             <div class="col-12 text-center py-5">
                 <i class="fa fa-star fa-3x text-muted mb-3"></i>
@@ -247,28 +247,64 @@ function displayBrands(brands) {
         return;
     }
 
-    // Always use simple display to ensure images show (like categories)
-    displayBrandsSimple(brands);
+    // Group data by category
+    const categoriesMap = {};
+    data.forEach(function(item) {
+        const catId = item.cat_id;
+        if (!categoriesMap[catId]) {
+            categoriesMap[catId] = {
+                cat_id: item.cat_id,
+                cat_name: item.cat_name,
+                cat_image: item.cat_image,
+                brands: []
+            };
+        }
+        if (item.brand_id) {
+            categoriesMap[catId].brands.push({
+                brand_id: item.brand_id,
+                brand_name: item.brand_name,
+                brand_image: item.brand_image
+            });
+        }
+    });
+
+    // Display organized by categories
+    displayBrandsGroupedByCategories(categoriesMap);
 }
 
 // Display brands grouped by categories
-function displayBrandsGroupedByCategories(brands, categories) {
+function displayBrandsGroupedByCategories(categoriesMap) {
     let html = '';
+    const categories = Object.values(categoriesMap);
     
-    // Group brands by categories (visual grouping only)
+    if (categories.length === 0) {
+        $('#brandsContainer').html(`
+            <div class="col-12 text-center py-5">
+                <i class="fa fa-star fa-3x text-muted mb-3"></i>
+                <h4>No Brands Found</h4>
+                <p class="text-muted">Start by adding your first brand.</p>
+            </div>
+        `);
+        return;
+    }
+    
     categories.forEach(function(category) {
+        if (category.brands.length === 0) {
+            return; // Skip categories with no brands
+        }
+        
         html += `
             <div class="col-12 mb-4">
                 <div class="category-section">
                     <h4 class="category-header">
                         <i class="fa fa-tags text-primary me-2"></i>
-                        ${category.cat_name}
+                        ${escapeHtml(category.cat_name)}
                     </h4>
                     <div class="row">
         `;
         
-        // Display all brands under each category (since brands can produce across categories)
-        brands.forEach(function(brand) {
+        // Display brands under this category
+        category.brands.forEach(function(brand) {
             const imageSrc = brand.brand_image ? `../${brand.brand_image}` : '../uploads/placeholder.png';
             const escapedBrandName = escapeHtml(brand.brand_name);
             const escapedBrandImage = brand.brand_image ? escapeHtml(brand.brand_image) : '';

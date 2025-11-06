@@ -28,11 +28,13 @@ if (empty($brand_name)) {
 }
 
 $brand_name = htmlspecialchars($brand_name, ENT_QUOTES, 'UTF-8');
+$user_id = $_SESSION['user_id'];
 $brand_controller = new brand_controller();
 
 $kwargs = array(
     'brand_name' => $brand_name,
-    'brand_image' => ''
+    'brand_image' => '',
+    'created_by' => $user_id
 );
 
 $result = $brand_controller->add_brand_ctr($kwargs);

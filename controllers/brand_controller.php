@@ -7,6 +7,7 @@ class brand_controller extends brand_class
     {
         $brand_name = $kwargs['brand_name'];
         $brand_image = $kwargs['brand_image'] ?? '';
+        $created_by = $kwargs['created_by'] ?? null;
         
         if (empty($brand_name)) {
             return array('success' => false, 'message' => 'Brand name is required');
@@ -17,7 +18,7 @@ class brand_controller extends brand_class
             return array('success' => false, 'message' => 'Brand name already exists');
         }
         
-        $result = $this->add_brand($brand_name, $brand_image);
+        $result = $this->add_brand($brand_name, $brand_image, $created_by);
         
         if ($result) {
             return array('success' => true, 'message' => 'Brand added successfully', 'brand_id' => $result);
@@ -28,8 +29,14 @@ class brand_controller extends brand_class
     
     public function get_brands_by_user_ctr($user_id)
     {
-        $brands = $this->get_all_brands();
+        $brands = $this->get_brands_by_user($user_id);
         return array('success' => true, 'data' => $brands);
+    }
+    
+    public function get_brands_by_category_for_user_ctr($user_id)
+    {
+        $data = $this->get_brands_by_category_for_user($user_id);
+        return array('success' => true, 'data' => $data);
     }
     
     public function get_all_brands_ctr()
