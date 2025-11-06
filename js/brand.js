@@ -44,6 +44,7 @@ $(document).ready(function() {
                     });
                     $('#addBrandModal').modal('hide');
                     $('#addBrandForm')[0].reset();
+                    $('#brandImagePreview').hide();
                     clearFieldErrors();
                     loadBrands();
                 } else {
@@ -162,6 +163,7 @@ $(document).ready(function() {
     // Clear form when modal is closed
     $('#addBrandModal').on('hidden.bs.modal', function() {
         $('#addBrandForm')[0].reset();
+        $('#brandImagePreview').hide();
         clearFieldErrors();
     });
 
@@ -178,6 +180,7 @@ function loadBrands() {
         method: 'GET',
         dataType: 'json',
         success: function(response) {
+            console.log('Brands response:', response);
             if (response.success && response.data) {
                 displayBrands(response.data);
             } else {
@@ -265,6 +268,29 @@ function displayBrands(brands) {
     });
 }
 
+// Get proper image path
+function getImagePath(brandImage) {
+    if (!brandImage || brandImage.trim() === '') {
+        return '../uploads/placeholder.png';
+    }
+    
+    // Clean the path
+    const cleanPath = brandImage.trim();
+    
+    // If path already starts with http or /, use as is
+    if (cleanPath.startsWith('http') || cleanPath.startsWith('/')) {
+        return cleanPath;
+    }
+    
+    // If path starts with 'uploads/', prepend ../
+    if (cleanPath.startsWith('uploads/')) {
+        return `../${cleanPath}`;
+    }
+    
+    // Otherwise, assume it's a relative path from root
+    return `../${cleanPath}`;
+}
+
 // Display brands grouped by categories
 function displayBrandsGroupedByCategories(brands, categories) {
     let html = '';
@@ -283,20 +309,28 @@ function displayBrandsGroupedByCategories(brands, categories) {
         
         // Display all brands under each category (since brands can produce across categories)
         brands.forEach(function(brand) {
-            const brandImage = brand.brand_image ? String(brand.brand_image).trim() : '';
-            const imageSrc = brandImage && brandImage !== '' ? `../${brandImage}` : '../uploads/placeholder.png';
+            const imageSrc = getImagePath(brand.brand_image);
+            
+            console.log('Brand:', brand.brand_name, 'DB Image:', brand.brand_image, 'Final Path:', imageSrc);
             
             html += `
                 <div class="col-md-6 col-lg-4 mb-3">
                     <div class="card brand-card h-100">
                         <div class="brand-image-container">
-                            <img src="${imageSrc}" class="card-img-top brand-image" alt="${escapeHtml(brand.brand_name)}" onerror="this.onerror=null; this.src='../uploads/placeholder.png';">
+                            <img src="${imageSrc}" 
+                                 class="card-img-top brand-image" 
+                                 alt="${escapeHtml(brand.brand_name)}" 
+                                 onerror="this.onerror=null; this.src='../uploads/placeholder.png';">
                             <div class="brand-overlay">
                                 <div class="action-buttons">
-                                    <button class="btn btn-sm btn-outline-primary me-1" onclick="editBrand(${brand.brand_id}, '${escapeHtml(brand.brand_name)}', '${brand.brand_image || ''}')" title="Edit Brand">
+                                    <button class="btn btn-sm btn-outline-primary me-1" 
+                                            onclick="editBrand(${brand.brand_id}, '${escapeHtml(brand.brand_name)}', '${escapeHtml(brand.brand_image || '')}')" 
+                                            title="Edit Brand">
                                         <i class="fa fa-edit"></i>
                                     </button>
-                                    <button class="btn btn-sm btn-outline-danger" onclick="deleteBrand(${brand.brand_id})" title="Delete Brand">
+                                    <button class="btn btn-sm btn-outline-danger" 
+                                            onclick="deleteBrand(${brand.brand_id})" 
+                                            title="Delete Brand">
                                         <i class="fa fa-trash"></i>
                                     </button>
                                 </div>
@@ -330,20 +364,28 @@ function displayBrandsGroupedByCategories(brands, categories) {
 function displayBrandsSimple(brands) {
     let html = '';
     brands.forEach(function(brand) {
-        const brandImage = brand.brand_image ? String(brand.brand_image).trim() : '';
-        const imageSrc = brandImage && brandImage !== '' ? `../${brandImage}` : '../uploads/placeholder.png';
+        const imageSrc = getImagePath(brand.brand_image);
+        
+        console.log('Brand:', brand.brand_name, 'DB Image:', brand.brand_image, 'Final Path:', imageSrc);
         
         html += `
             <div class="col-md-6 col-lg-4 mb-4">
                 <div class="card brand-card h-100">
                     <div class="brand-image-container">
-                        <img src="${imageSrc}" class="card-img-top brand-image" alt="${escapeHtml(brand.brand_name)}" onerror="this.onerror=null; this.src='../uploads/placeholder.png';">
+                        <img src="${imageSrc}" 
+                             class="card-img-top brand-image" 
+                             alt="${escapeHtml(brand.brand_name)}" 
+                             onerror="this.onerror=null; this.src='../uploads/placeholder.png';">
                         <div class="brand-overlay">
                             <div class="action-buttons">
-                                <button class="btn btn-sm btn-outline-primary me-1" onclick="editBrand(${brand.brand_id}, '${escapeHtml(brand.brand_name)}', '${brand.brand_image || ''}')" title="Edit Brand">
+                                <button class="btn btn-sm btn-outline-primary me-1" 
+                                        onclick="editBrand(${brand.brand_id}, '${escapeHtml(brand.brand_name)}', '${escapeHtml(brand.brand_image || '')}')" 
+                                        title="Edit Brand">
                                     <i class="fa fa-edit"></i>
                                 </button>
-                                <button class="btn btn-sm btn-outline-danger" onclick="deleteBrand(${brand.brand_id})" title="Delete Brand">
+                                <button class="btn btn-sm btn-outline-danger" 
+                                        onclick="deleteBrand(${brand.brand_id})" 
+                                        title="Delete Brand">
                                     <i class="fa fa-trash"></i>
                                 </button>
                             </div>
@@ -372,13 +414,9 @@ function editBrand(brandId, brandName, brandImage = '') {
     $('#editBrandName').val(brandName);
     
     // Set current image preview
-    if (brandImage) {
-        $('#editPreviewBrandImg').attr('src', `../${brandImage}`);
-        $('#editBrandImagePreview').show();
-    } else {
-        $('#editPreviewBrandImg').attr('src', '../uploads/placeholder.png');
-        $('#editBrandImagePreview').show();
-    }
+    const imageSrc = getImagePath(brandImage);
+    $('#editPreviewBrandImg').attr('src', imageSrc);
+    $('#editBrandImagePreview').show();
     
     $('#editBrandModal').modal('show');
 }
@@ -391,7 +429,7 @@ function deleteBrand(brandId) {
 
 // Utility functions
 function showLoading() {
-    $('#loadingOverlay').show();
+    $('#loadingOverlay').css('display', 'flex');
 }
 
 function hideLoading() {
@@ -406,7 +444,7 @@ function showFieldError(fieldId, message) {
 function clearFieldError(fieldId) {
     const field = $(fieldId);
     field.removeClass('is-invalid');
-    field.siblings('.invalid-feedback').remove();
+    field.siblings('.invalid-feedback').text('');
 }
 
 function clearFieldErrors() {
@@ -442,7 +480,7 @@ function previewImage(input, previewId, containerId) {
 function validateBrandForm(formData) {
     let isValid = true;
     
-    // Check required fields
+    // Check brand name in add form
     const brandName = formData.get('brandName');
     if (!brandName || brandName.trim() === '') {
         showFieldError('#brandName', 'Brand name is required');
@@ -451,12 +489,12 @@ function validateBrandForm(formData) {
         clearFieldError('#brandName');
     }
     
-    // Check edit form required fields
-    const editBrandName = formData.get('brandName');
-    if ($('#editBrandId').length && (!editBrandName || editBrandName.trim() === '')) {
+    // Check brand name in edit form
+    const editBrandName = $('#editBrandName').val();
+    if ($('#editBrandModal').hasClass('show') && (!editBrandName || editBrandName.trim() === '')) {
         showFieldError('#editBrandName', 'Brand name is required');
         isValid = false;
-    } else if ($('#editBrandId').length) {
+    } else if ($('#editBrandModal').hasClass('show')) {
         clearFieldError('#editBrandName');
     }
     
