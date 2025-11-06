@@ -1,7 +1,5 @@
 $(document).ready(function() {
-    // Load brands and categories on page load
     loadBrands();
-    loadCategories();
 
     // Image preview for add form
     $('#brandImage').on('change', function() {
@@ -13,333 +11,58 @@ $(document).ready(function() {
         previewImage(this, '#editPreviewBrandImg', '#editBrandImagePreview');
     });
 
-    // Add Brand Form Submission
     $('#addBrandForm').on('submit', function(e) {
         e.preventDefault();
-        
-        const formData = new FormData(this);
-
-        if (!validateBrandForm(formData)) {
-            return;
-        }
-
-        showLoading();
-        
-        $.ajax({
-            url: '../actions/add_brand_action.php',
-            method: 'POST',
-            data: formData,
-            processData: false,
-            contentType: false,
-            dataType: 'json',
-            success: function(response) {
-                hideLoading();
-                if (response.success) {
-                    Swal.fire({
-                        icon: 'success',
-                        title: 'Success!',
-                        text: response.message,
-                        timer: 2000,
-                        showConfirmButton: false
-                    });
-                    $('#addBrandModal').modal('hide');
-                    $('#addBrandForm')[0].reset();
-                    clearFieldErrors();
-                    loadBrands();
-                } else {
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Error!',
-                        text: response.message
-                    });
-                }
-            },
-            error: function() {
-                hideLoading();
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Error!',
-                    text: 'An error occurred while adding the brand'
-                });
-            }
-        });
+        addBrand();
     });
 
-    // Edit Brand Form Submission
     $('#editBrandForm').on('submit', function(e) {
         e.preventDefault();
-        
-        const formData = new FormData(this);
-
-        if (!validateBrandForm(formData)) {
-            return;
-        }
-
-        showLoading();
-        
-        $.ajax({
-            url: '../actions/update_brand_action.php',
-            method: 'POST',
-            data: formData,
-            processData: false,
-            contentType: false,
-            dataType: 'json',
-            success: function(response) {
-                hideLoading();
-                if (response.success) {
-                    Swal.fire({
-                        icon: 'success',
-                        title: 'Success!',
-                        text: response.message,
-                        timer: 2000,
-                        showConfirmButton: false
-                    });
-                    $('#editBrandModal').modal('hide');
-                    clearFieldErrors();
-                    loadBrands();
-                } else {
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Error!',
-                        text: response.message
-                    });
-                }
-            },
-            error: function() {
-                hideLoading();
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Error!',
-                    text: 'An error occurred while updating the brand'
-                });
-            }
-        });
+        updateBrand();
     });
 
-    // Delete Brand Confirmation
     $('#confirmDelete').on('click', function() {
-        const brandId = $('#deleteBrandId').val();
-        
-        showLoading();
-        
-        $.ajax({
-            url: '../actions/delete_brand_action.php',
-            method: 'POST',
-            data: { brandId: brandId },
-            dataType: 'json',
-            success: function(response) {
-                hideLoading();
-                if (response.success) {
-                    Swal.fire({
-                        icon: 'success',
-                        title: 'Success!',
-                        text: response.message,
-                        timer: 2000,
-                        showConfirmButton: false
-                    });
-                    $('#deleteBrandModal').modal('hide');
-                    loadBrands();
-                } else {
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Error!',
-                        text: response.message
-                    });
-                }
-            },
-            error: function(xhr, status, error) {
-                hideLoading();
-                console.error('Delete brand error:', xhr.responseText);
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Error!',
-                    text: 'An error occurred while deleting the brand. Please check the console for details.'
-                });
-            }
-        });
+        deleteBrand();
     });
 
-    // Clear form when modal is closed
     $('#addBrandModal').on('hidden.bs.modal', function() {
         $('#addBrandForm')[0].reset();
-        clearFieldErrors();
+        clearValidationErrors('#addBrandForm');
+        $('#brandImagePreview').hide();
     });
 
     $('#editBrandModal').on('hidden.bs.modal', function() {
         $('#editBrandForm')[0].reset();
-        clearFieldErrors();
+        clearValidationErrors('#editBrandForm');
     });
 });
 
-// Load brands function
 function loadBrands() {
+    showLoading();
+    
     $.ajax({
         url: '../actions/fetch_brand_action.php',
-        method: 'GET',
+        type: 'GET',
         dataType: 'json',
         success: function(response) {
-            // Debug: log the response
-            console.log('Brands response:', response);
-            
-            if (response && response.success && response.data) {
-                // Ensure data is an array - exactly like categories
-                const brands = Array.isArray(response.data) ? response.data : [];
-                console.log('Brands array:', brands);
-                displayBrands(brands);
+            hideLoading();
+            if (response.success) {
+                displayBrands(response.data);
             } else {
-                // Show empty state with button
-                console.log('No brands found or response error');
-                $('#brandsContainer').html(`
-                    <div class="col-12 text-center py-5">
-                        <i class="fa fa-star fa-3x text-muted mb-3"></i>
-                        <h4 class="text-muted">No Brands Found</h4>
-                        <p class="text-muted">Start by adding your first brand!</p>
-                        <button class="btn btn-custom" data-bs-toggle="modal" data-bs-target="#addBrandModal">
-                            <i class="fa fa-plus me-1"></i>Add Brand
-                        </button>
-                    </div>
-                `);
+                displayBrands([]);
             }
         },
         error: function(xhr, status, error) {
-            console.error('Brands AJAX error:', status, error, xhr.responseText);
-            $('#brandsContainer').html(`
-                <div class="col-12 text-center py-5">
-                    <i class="fa fa-exclamation-triangle fa-3x text-danger mb-3"></i>
-                    <h4>Error Loading Brands</h4>
-                    <p class="text-muted">Please refresh the page and try again.</p>
-                    <button class="btn btn-outline-primary mt-3" onclick="loadBrands()">
-                        <i class="fa fa-refresh me-1"></i>Retry
-                    </button>
-                </div>
-            `);
+            hideLoading();
+            displayBrands([]);
         }
     });
 }
 
-// Load categories function
-function loadCategories() {
-    $.ajax({
-        url: '../actions/fetch_category_action.php',
-        method: 'GET',
-        dataType: 'json',
-        success: function(response) {
-            if (response.success) {
-                populateCategorySelects(response.data);
-            }
-        },
-        error: function() {
-            console.error('Error loading categories');
-        }
-    });
-}
-
-// Populate category dropdowns
-function populateCategorySelects(categories) {
-    const addSelect = $('#categoryId');
-    const editSelect = $('#editCategoryId');
-    
-    // Clear existing options except the first one
-    addSelect.find('option:not(:first)').remove();
-    editSelect.find('option:not(:first)').remove();
-    
-    categories.forEach(function(category) {
-        addSelect.append(`<option value="${category.cat_id}">${category.cat_name}</option>`);
-        editSelect.append(`<option value="${category.cat_id}">${category.cat_name}</option>`);
-    });
-}
-
-// Display brands function - always show images like categories do
 function displayBrands(brands) {
-    console.log('displayBrands called with:', brands);
-    
-    // Ensure brands is an array
-    if (!Array.isArray(brands)) {
-        console.warn('Brands is not an array:', brands);
-        brands = [];
-    }
-    
-    console.log('Calling displayBrandsSimple with', brands.length, 'brands');
-    // Always use simple display to ensure images show (like categories)
-    displayBrandsSimple(brands);
-}
-
-// Display brands grouped by categories
-function displayBrandsGroupedByCategories(brands, categories) {
-    let html = '';
-    
-    // Group brands by categories (visual grouping only)
-    categories.forEach(function(category) {
-        html += `
-            <div class="col-12 mb-4">
-                <div class="category-section">
-                    <h4 class="category-header">
-                        <i class="fa fa-tags text-primary me-2"></i>
-                        ${category.cat_name}
-                    </h4>
-                    <div class="row">
-        `;
-        
-        // Display all brands under each category (since brands can produce across categories)
-        brands.forEach(function(brand) {
-            const imageSrc = brand.brand_image ? `../${brand.brand_image}` : '../uploads/placeholder.png';
-            const escapedBrandName = escapeHtml(brand.brand_name);
-            const escapedBrandImage = brand.brand_image ? escapeHtml(brand.brand_image) : '';
-            
-            html += `
-                <div class="col-md-6 col-lg-4 mb-3">
-                    <div class="card brand-card h-100">
-                        <div class="brand-image-container">
-                            <img src="${imageSrc}" class="card-img-top brand-image" alt="${escapedBrandName}" onerror="this.src='../uploads/placeholder.png'">
-                            <div class="brand-overlay">
-                                <div class="action-buttons">
-                                    <button class="btn btn-sm btn-outline-primary me-1" onclick="editBrand(${brand.brand_id}, '${escapedBrandName}', '${escapedBrandImage}')" title="Edit Brand">
-                                        <i class="fa fa-edit"></i>
-                                    </button>
-                                    <button class="btn btn-sm btn-outline-danger" onclick="deleteBrand(${brand.brand_id})" title="Delete Brand">
-                                        <i class="fa fa-trash"></i>
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="card-body">
-                            <h5 class="card-title">
-                                <i class="fa fa-star text-warning me-2"></i>
-                                ${escapedBrandName}
-                            </h5>
-                            <p class="card-text text-muted">
-                                <small><strong>Brand ID:</strong> ${brand.brand_id}</small>
-                            </p>
-                        </div>
-                    </div>
-                </div>
-            `;
-        });
-        
-        html += `
-                    </div>
-                </div>
-            </div>
-        `;
-    });
-
-    $('#brandsContainer').html(html);
-}
-
-// Simple display without grouping - always show images (exact same pattern as categories)
-function displayBrandsSimple(brands) {
-    console.log('displayBrandsSimple called with', brands);
     const container = $('#brandsContainer');
     
-    if (!container.length) {
-        console.error('brandsContainer not found!');
-        return;
-    }
-    
-    console.log('Container found, brands length:', brands ? brands.length : 'null');
-    
-    if (!brands || brands.length === 0) {
-        console.log('No brands, showing empty state');
+    if (brands.length === 0) {
         container.html(`
             <div class="col-12 text-center py-5">
                 <i class="fa fa-star fa-3x text-muted mb-3"></i>
@@ -352,27 +75,22 @@ function displayBrandsSimple(brands) {
         `);
         return;
     }
-    
-    console.log('Building HTML for', brands.length, 'brands');
+
     let html = '';
-    brands.forEach(function(brand, index) {
-        console.log('Processing brand', index, ':', brand);
-        // Use exact same pattern as categories - simple and works
+    brands.forEach(function(brand) {
         const imageSrc = brand.brand_image ? `../${brand.brand_image}` : '../uploads/placeholder.png';
-        const escapedBrandName = escapeHtml(brand.brand_name);
-        const escapedBrandImage = brand.brand_image ? escapeHtml(brand.brand_image) : '';
         
         html += `
             <div class="col-md-6 col-lg-4 mb-4">
                 <div class="card brand-card h-100">
                     <div class="brand-image-container">
-                        <img src="${imageSrc}" class="card-img-top brand-image" alt="${escapedBrandName}" onerror="this.src='../uploads/placeholder.png'">
+                        <img src="${imageSrc}" class="card-img-top brand-image" alt="${escapeHtml(brand.brand_name)}" onerror="this.src='../uploads/placeholder.png'">
                         <div class="brand-overlay">
                             <div class="action-buttons">
-                                <button class="btn btn-sm btn-outline-primary me-1" onclick="editBrand(${brand.brand_id}, '${escapedBrandName.replace(/'/g, "\\'")}', '${escapedBrandImage.replace(/'/g, "\\'")}')" title="Edit Brand">
+                                <button class="btn btn-sm btn-outline-primary me-1" onclick="editBrand(${brand.brand_id}, '${escapeHtml(brand.brand_name)}', '${brand.brand_image || ''}')" title="Edit">
                                     <i class="fa fa-edit"></i>
                                 </button>
-                                <button class="btn btn-sm btn-outline-danger" onclick="deleteBrand(${brand.brand_id})" title="Delete Brand">
+                                <button class="btn btn-sm btn-outline-danger" onclick="confirmDelete(${brand.brand_id}, '${escapeHtml(brand.brand_name)}')" title="Delete">
                                     <i class="fa fa-trash"></i>
                                 </button>
                             </div>
@@ -381,7 +99,7 @@ function displayBrandsSimple(brands) {
                     <div class="card-body">
                         <h5 class="card-title">
                             <i class="fa fa-star text-warning me-2"></i>
-                            ${escapedBrandName}
+                            ${escapeHtml(brand.brand_name)}
                         </h5>
                         <p class="card-text text-muted">
                             <small><strong>Brand ID:</strong> ${brand.brand_id}</small>
@@ -392,12 +110,110 @@ function displayBrandsSimple(brands) {
         `;
     });
     
-    console.log('Setting HTML, length:', html.length);
     container.html(html);
-    console.log('HTML set, container now has', container.children().length, 'children');
 }
 
-// Edit brand function
+function addBrand() {
+    const form = $('#addBrandForm');
+    const formData = new FormData(form[0]);
+    
+    if (!validateBrandForm(form)) {
+        return;
+    }
+
+    showLoading();
+    
+    $.ajax({
+        url: '../actions/add_brand_action.php',
+        type: 'POST',
+        data: formData,
+        processData: false,
+        contentType: false,
+        dataType: 'json',
+        success: function(response) {
+            hideLoading();
+            if (response.success) {
+                showAlert('success', 'Success', response.message);
+                $('#addBrandModal').modal('hide');
+                loadBrands();
+            } else {
+                showAlert('error', 'Error', response.message);
+            }
+        },
+        error: function(xhr, status, error) {
+            hideLoading();
+            showAlert('error', 'Error', 'Failed to add brand. Please try again.');
+        }
+    });
+}
+
+function updateBrand() {
+    const form = $('#editBrandForm');
+    const formData = new FormData(form[0]);
+    
+    if (!validateBrandForm(form)) {
+        return;
+    }
+
+    showLoading();
+    
+    $.ajax({
+        url: '../actions/update_brand_action.php',
+        type: 'POST',
+        data: formData,
+        processData: false,
+        contentType: false,
+        dataType: 'json',
+        success: function(response) {
+            hideLoading();
+            if (response.success) {
+                showAlert('success', 'Success', response.message);
+                $('#editBrandModal').modal('hide');
+                loadBrands();
+            } else {
+                showAlert('error', 'Error', response.message);
+            }
+        },
+        error: function(xhr, status, error) {
+            hideLoading();
+            showAlert('error', 'Error', 'Failed to update brand. Please try again.');
+        }
+    });
+}
+
+function deleteBrand() {
+    const brandId = $('#deleteBrandId').val();
+    
+    if (!brandId) {
+        showAlert('error', 'Error', 'Brand ID not found.');
+        return;
+    }
+
+    showLoading();
+    
+    $.ajax({
+        url: '../actions/delete_brand_action.php',
+        type: 'POST',
+        data: { brandId: brandId },
+        dataType: 'json',
+        success: function(response) {
+            hideLoading();
+            if (response.success) {
+                showAlert('success', 'Success', response.message);
+                $('#deleteBrandModal').modal('hide');
+                loadBrands();
+            } else {
+                showAlert('error', 'Error', response.message);
+            }
+        },
+        error: function(xhr, status, error) {
+            hideLoading();
+            console.error('Delete brand error:', xhr.responseText);
+            showAlert('error', 'Error', 'Failed to delete brand. Please check the console for details.');
+        }
+    });
+}
+
 function editBrand(brandId, brandName, brandImage = '') {
     $('#editBrandId').val(brandId);
     $('#editBrandName').val(brandName);
@@ -414,13 +230,43 @@ function editBrand(brandId, brandName, brandImage = '') {
     $('#editBrandModal').modal('show');
 }
 
-// Delete brand function
-function deleteBrand(brandId) {
+function confirmDelete(brandId, brandName) {
     $('#deleteBrandId').val(brandId);
+    $('#deleteBrandModal .modal-body p').html(`Are you sure you want to delete the brand "<strong>${escapeHtml(brandName)}</strong>"?`);
     $('#deleteBrandModal').modal('show');
 }
 
-// Utility functions
+function validateBrandForm(form) {
+    let isValid = true;
+    const brandName = form.find('input[name="brandName"]');
+    
+    clearValidationErrors(form);
+    
+    if (!brandName.val().trim()) {
+        showFieldError(brandName, 'Brand name is required');
+        isValid = false;
+    } else if (brandName.val().trim().length < 2) {
+        showFieldError(brandName, 'Brand name must be at least 2 characters');
+        isValid = false;
+    } else if (brandName.val().trim().length > 100) {
+        showFieldError(brandName, 'Brand name must be less than 100 characters');
+        isValid = false;
+    }
+    
+    return isValid;
+}
+
+function showFieldError(field, message) {
+    field.addClass('is-invalid');
+    field.siblings('.invalid-feedback').text(message);
+}
+
+function clearValidationErrors(form) {
+    const $form = typeof form === 'string' ? $(form) : form;
+    $form.find('.is-invalid').removeClass('is-invalid');
+    $form.find('.invalid-feedback').text('');
+}
+
 function showLoading() {
     $('#loadingOverlay').show();
 }
@@ -429,20 +275,30 @@ function hideLoading() {
     $('#loadingOverlay').hide();
 }
 
-function showFieldError(fieldId, message) {
-    $(fieldId).addClass('is-invalid');
-    $(fieldId).siblings('.invalid-feedback').text(message);
+function showAlert(type, title, message) {
+    const icon = type === 'success' ? 'success' : 'error';
+    const color = type === 'success' ? '#28a745' : '#dc3545';
+    
+    Swal.fire({
+        icon: icon,
+        title: title,
+        text: message,
+        confirmButtonColor: color,
+        timer: type === 'success' ? 3000 : null,
+        timerProgressBar: type === 'success'
+    });
 }
 
-function clearFieldError(fieldId) {
-    const field = $(fieldId);
-    field.removeClass('is-invalid');
-    field.siblings('.invalid-feedback').remove();
-}
-
-function clearFieldErrors() {
-    $('.form-control').removeClass('is-invalid');
-    $('.invalid-feedback').text('');
+function escapeHtml(text) {
+    if (!text) return '';
+    const map = {
+        '&': '&amp;',
+        '<': '&lt;',
+        '>': '&gt;',
+        '"': '&quot;',
+        "'": '&#039;'
+    };
+    return String(text).replace(/[&<>"']/g, function(m) { return map[m]; });
 }
 
 // Image preview function
@@ -455,42 +311,4 @@ function previewImage(input, previewId, containerId) {
         };
         reader.readAsDataURL(input.files[0]);
     }
-}
-
-// Validate brand form
-function validateBrandForm(formData) {
-    let isValid = true;
-    
-    // Check required fields
-    const brandName = formData.get('brandName');
-    if (!brandName || brandName.trim() === '') {
-        showFieldError('#brandName', 'Brand name is required');
-        isValid = false;
-    } else {
-        clearFieldError('#brandName');
-    }
-    
-    // Check edit form required fields
-    const editBrandName = formData.get('brandName');
-    if ($('#editBrandId').length && (!editBrandName || editBrandName.trim() === '')) {
-        showFieldError('#editBrandName', 'Brand name is required');
-        isValid = false;
-    } else if ($('#editBrandId').length) {
-        clearFieldError('#editBrandName');
-    }
-    
-    return isValid;
-}
-
-// Escape HTML function
-function escapeHtml(text) {
-    if (!text) return '';
-    const map = {
-        '&': '&amp;',
-        '<': '&lt;',
-        '>': '&gt;',
-        '"': '&quot;',
-        "'": '&#039;'
-    };
-    return String(text).replace(/[&<>"']/g, function(m) { return map[m]; });
 }
