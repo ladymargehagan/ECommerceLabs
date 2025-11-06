@@ -1,18 +1,24 @@
 <?php
-require_once '../settings/core.php';
+require_once '../settings/db_class.php';
+require_once '../classes/brand_class.php';
 require_once '../controllers/brand_controller.php';
 
+session_start();
+
 if (!isset($_SESSION['user_id'])) {
+    header('Content-Type: application/json');
     echo json_encode(array('success' => false, 'message' => 'User not logged in'));
     exit;
 }
 
 if ($_SESSION['role'] != 1) {
+    header('Content-Type: application/json');
     echo json_encode(array('success' => false, 'message' => 'Access denied. Admin privileges required.'));
     exit;
 }
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+    header('Content-Type: application/json');
     echo json_encode(array('success' => false, 'message' => 'Invalid request method'));
     exit;
 }
@@ -21,6 +27,7 @@ $brand_id = trim($_POST['brandId'] ?? '');
 $brand_name = trim($_POST['brandName'] ?? '');
 
 if (empty($brand_id) || empty($brand_name)) {
+    header('Content-Type: application/json');
     echo json_encode(array('success' => false, 'message' => 'Brand ID and name are required'));
     exit;
 }
@@ -50,6 +57,7 @@ if (isset($_FILES['brandImage']) && $_FILES['brandImage']['error'] === UPLOAD_ER
     // Ensure directory exists
     if (!is_dir($upload_dir)) {
         if (!mkdir($upload_dir, 0777, true)) {
+            header('Content-Type: application/json');
             echo json_encode(array('success' => false, 'message' => 'Failed to create upload directory'));
             exit;
         }

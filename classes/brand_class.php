@@ -5,6 +5,11 @@ class brand_class extends db_connection
 {
     public function add_brand($brand_name, $brand_image = '')
     {
+        // Ensure database connection is established
+        if (!$this->db_connect()) {
+            return false;
+        }
+        
         // Escape inputs to prevent SQL injection
         $brand_name = $this->db->real_escape_string($brand_name);
         $brand_image = $this->db->real_escape_string($brand_image);
@@ -18,7 +23,12 @@ class brand_class extends db_connection
         $sql = "INSERT INTO brands (brand_name, brand_image) VALUES ('$brand_name', '$brand_image')";
         $result = $this->db_write_query($sql);
         
-        return $result;
+        if ($result) {
+            // Return the inserted brand_id
+            return $this->last_insert_id();
+        }
+        
+        return false;
     }
 
     public function get_brands_by_user($user_id)
