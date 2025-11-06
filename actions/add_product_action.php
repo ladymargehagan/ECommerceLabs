@@ -73,10 +73,10 @@ if ($result['success'] && isset($_FILES['productImage']) && $_FILES['productImag
     $extension = pathinfo($originalName, PATHINFO_EXTENSION);
     $sanitizedName = preg_replace('/[^a-zA-Z0-9._-]/', '_', pathinfo($originalName, PATHINFO_FILENAME));
     
-    // Create directory structure: uploads/u{user_id}/p{product_id}/
-    $upload_dir = "../uploads/u{$user_id}/p{$product_id}/";
+    // Create directory structure: product/{product_id}/
+    $upload_dir = "../product/{$product_id}/";
     
-    // Ensure directory exists (uploads/ folder already exists on server)
+    // Ensure directory exists (product/ folder should exist on server)
     if (!is_dir($upload_dir)) {
         if (!mkdir($upload_dir, 0777, true)) {
             echo json_encode(array('success' => false, 'message' => 'Failed to create upload directory'));
@@ -91,7 +91,7 @@ if ($result['success'] && isset($_FILES['productImage']) && $_FILES['productImag
     
     // Move uploaded file
     if (move_uploaded_file($_FILES['productImage']['tmp_name'], $file_path)) {
-        $product_image = "uploads/u{$user_id}/p{$product_id}/{$filename}";
+        $product_image = "product/{$product_id}/{$filename}";
         
         // Update the product with the image path
         $update_kwargs = array(

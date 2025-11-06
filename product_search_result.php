@@ -259,7 +259,8 @@ $total_pages = ceil($total_count / $limit);
                                 <?php if ($product['product_image']): ?>
                                     <img src="<?php echo htmlspecialchars($product['product_image']); ?>" 
                                          class="card-img-top product-image" 
-                                         alt="<?php echo htmlspecialchars($product['product_title']); ?>">
+                                         alt="<?php echo htmlspecialchars($product['product_title']); ?>"
+                                         onerror="this.src='uploads/placeholder.png'">
                                 <?php else: ?>
                                     <img src="uploads/placeholder.png" 
                                          class="card-img-top product-image" 

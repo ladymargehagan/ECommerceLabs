@@ -166,8 +166,8 @@ class product_controller extends product_class
         $extension = pathinfo($originalName, PATHINFO_EXTENSION);
         $sanitizedName = preg_replace('/[^a-zA-Z0-9._-]/', '_', pathinfo($originalName, PATHINFO_FILENAME));
         
-        // Create directory structure: uploads/u{user_id}/p{product_id}/
-        $upload_dir = "../uploads/u{$user_id}/p{$product_id}/";
+        // Create directory structure: product/{product_id}/
+        $upload_dir = "../product/{$product_id}/";
         
         // Ensure directory exists
         if (!is_dir($upload_dir)) {
@@ -183,7 +183,7 @@ class product_controller extends product_class
         
         // Move uploaded file
         if (move_uploaded_file($file['tmp_name'], $file_path)) {
-            $image_path = "uploads/u{$user_id}/p{$product_id}/{$filename}";
+            $image_path = "product/{$product_id}/{$filename}";
             return array('success' => true, 'data' => $image_path);
         } else {
             return array('success' => false, 'message' => 'Failed to move uploaded file');

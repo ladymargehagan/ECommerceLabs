@@ -145,7 +145,8 @@ if (!$product) {
                         <?php if ($product['product_image']): ?>
                             <img src="<?php echo htmlspecialchars($product['product_image']); ?>" 
                                  class="product-image" 
-                                 alt="<?php echo htmlspecialchars($product['product_title']); ?>">
+                                 alt="<?php echo htmlspecialchars($product['product_title']); ?>"
+                                 onerror="this.src='uploads/placeholder.png'">
                         <?php else: ?>
                             <img src="uploads/placeholder.png" 
                                  class="product-image" 
