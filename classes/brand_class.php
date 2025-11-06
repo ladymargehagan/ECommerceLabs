@@ -113,18 +113,82 @@ class brand_class extends db_connection
 
     public function get_brands_by_category_for_user($user_id)
     {
-        // Get categories created by user, with their associated brands
-        $sql = "SELECT c.cat_id, c.cat_name, c.cat_image, 
-                       b.brand_id, b.brand_name, b.brand_image
-                FROM categories c
-                LEFT JOIN products p ON c.cat_id = p.product_cat
-                LEFT JOIN brands b ON p.product_brand = b.brand_id
-                WHERE c.created_by = '$user_id'
-                GROUP BY c.cat_id, b.brand_id
-                ORDER BY c.cat_name ASC, b.brand_name ASC";
-        $result = $this->db_fetch_all($sql);
+        // Get user's categories
+        $categories_sql = "SELECT cat_id, cat_name, cat_image 
+                           FROM categories 
+                           WHERE created_by = '$user_id'";
+        $user_categories = $this->db_fetch_all($categories_sql);
+        if (!$user_categories) {
+            $user_categories = array();
+        }
         
-        return $result ? $result : array();
+        // Get brands organized by categories through products
+        $result = array();
+        if (count($user_categories) > 0) {
+            $cat_ids = array();
+            foreach ($user_categories as $cat) {
+                $cat_ids[] = $cat['cat_id'];
+            }
+            $cat_ids_str = implode(',', $cat_ids);
+            
+            $sql = "SELECT c.cat_id, c.cat_name, c.cat_image, 
+                           b.brand_id, b.brand_name, b.brand_image
+                    FROM categories c
+                    LEFT JOIN products p ON c.cat_id = p.product_cat
+                    LEFT JOIN brands b ON p.product_brand = b.brand_id
+                    WHERE c.created_by = '$user_id' AND b.brand_id IS NOT NULL
+                    GROUP BY c.cat_id, b.brand_id
+                    ORDER BY c.cat_name ASC, b.brand_name ASC";
+            $result = $this->db_fetch_all($sql);
+            if (!$result) {
+                $result = array();
+            }
+        }
+        
+        // Get all brands (created_by may not exist, so get all for now)
+        $brands_sql = "SELECT brand_id, brand_name, brand_image FROM brands ORDER BY brand_name ASC";
+        $all_brands = $this->db_fetch_all($brands_sql);
+        if (!$all_brands) {
+            $all_brands = array();
+        }
+        
+        // Track which brands are already in categories
+        $brands_in_categories = array();
+        foreach ($result as $item) {
+            if ($item['brand_id']) {
+                $brands_in_categories[$item['brand_id']] = true;
+            }
+        }
+        
+        // Add brands that aren't in any category yet
+        // If user has categories, add to first one. Otherwise create "All Brands" section
+        foreach ($all_brands as $brand) {
+            if (!isset($brands_in_categories[$brand['brand_id']])) {
+                if (count($user_categories) > 0) {
+                    $first_cat = $user_categories[0];
+                    $result[] = array(
+                        'cat_id' => $first_cat['cat_id'],
+                        'cat_name' => $first_cat['cat_name'],
+                        'cat_image' => $first_cat['cat_image'],
+                        'brand_id' => $brand['brand_id'],
+                        'brand_name' => $brand['brand_name'],
+                        'brand_image' => $brand['brand_image']
+                    );
+                } else {
+                    // No categories, show in "All Brands" section
+                    $result[] = array(
+                        'cat_id' => 0,
+                        'cat_name' => 'All Brands',
+                        'cat_image' => null,
+                        'brand_id' => $brand['brand_id'],
+                        'brand_name' => $brand['brand_name'],
+                        'brand_image' => $brand['brand_image']
+                    );
+                }
+            }
+        }
+        
+        return $result;
     }
 
     public function get_categories_by_user($user_id)
