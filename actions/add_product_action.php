@@ -68,7 +68,7 @@ if ($result['success'] && isset($_FILES['productImage']) && $_FILES['productImag
     $product_id = $result['product_id'];
     $user_id = $_SESSION['user_id'];
     
-    // Use the same pattern as user registration
+    // Process filename
     $originalName = $_FILES['productImage']['name'];
     $extension = pathinfo($originalName, PATHINFO_EXTENSION);
     $sanitizedName = preg_replace('/[^a-zA-Z0-9._-]/', '_', pathinfo($originalName, PATHINFO_FILENAME));
@@ -76,7 +76,7 @@ if ($result['success'] && isset($_FILES['productImage']) && $_FILES['productImag
     // Create directory structure: product/{product_id}/
     $upload_dir = "../product/{$product_id}/";
     
-    // Ensure directory exists (product/ folder should exist on server)
+    // Ensure directory exists
     if (!is_dir($upload_dir)) {
         if (!mkdir($upload_dir, 0777, true)) {
             echo json_encode(array('success' => false, 'message' => 'Failed to create upload directory'));
@@ -105,7 +105,12 @@ if ($result['success'] && isset($_FILES['productImage']) && $_FILES['productImag
             'product_keywords' => $product_keywords
         );
         
-        $product_controller->update_product_ctr($update_kwargs);
+        $update_result = $product_controller->update_product_ctr($update_kwargs);
+        
+        // Update the result to include the image path
+        if ($update_result['success']) {
+            $result['product_image'] = $product_image;
+        }
     }
 }
 
