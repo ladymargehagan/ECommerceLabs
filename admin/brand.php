@@ -21,44 +21,6 @@ if ($_SESSION['role'] != 1) {
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <link href="../css/main.css" rel="stylesheet">
     <link href="../css/brand.css" rel="stylesheet">
-    <style>
-        .brand-card {
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-        }
-        .brand-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
-        }
-        .brand-image-container {
-            position: relative;
-            overflow: hidden;
-        }
-        .brand-overlay {
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0, 0, 0, 0.5);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            opacity: 0;
-            transition: opacity 0.3s ease;
-        }
-        .brand-card:hover .brand-overlay {
-            opacity: 1;
-        }
-        .brand-image {
-            width: 100%;
-            height: 200px;
-            object-fit: cover;
-            transition: transform 0.3s ease;
-        }
-        .brand-card:hover .brand-image {
-            transform: scale(1.1);
-        }
-    </style>
 </head>
 <body>
     <div class="container-fluid">
@@ -89,17 +51,6 @@ if ($_SESSION['role'] != 1) {
                 <p class="mt-2">Loading brands...</p>
             </div>
         </div>
-        
-        <!-- Fallback: Show empty state if JS fails -->
-        <noscript>
-            <div class="row">
-                <div class="col-12 text-center py-5">
-                    <i class="fa fa-star fa-3x text-muted mb-3"></i>
-                    <h4 class="text-muted">No Brands Found</h4>
-                    <p class="text-muted">Please enable JavaScript to manage brands.</p>
-                </div>
-            </div>
-        </noscript>
 
         <!-- Add Brand Modal -->
         <div class="modal fade" id="addBrandModal" tabindex="-1">
