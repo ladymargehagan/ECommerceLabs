@@ -23,8 +23,8 @@ $search_query = isset($_GET['q']) ? trim($_GET['q']) : (isset($_GET['search']) ?
 $limit = 10;
 $offset = ($page - 1) * $limit;
 
-// Try to load data from database
-if (file_exists('settings/db_class.php') && file_exists('classes/product_class.php')) {
+// Try to load data from database (only for logged-in users)
+if (isset($_SESSION['user_id']) && file_exists('settings/db_class.php') && file_exists('classes/product_class.php')) {
     try {
         require_once 'settings/db_class.php';
         require_once 'classes/product_class.php';
@@ -59,6 +59,13 @@ if (file_exists('settings/db_class.php') && file_exists('classes/product_class.p
         $error_message = 'Fatal error: ' . $e->getMessage();
         error_log("Fatal error loading product data: " . $e->getMessage());
     }
+} elseif (!isset($_SESSION['user_id'])) {
+    // Guest users - don't load products, just set empty arrays
+    $products = array();
+    $categories = array();
+    $brands = array();
+    $total_count = 0;
+    $total_pages = 0;
 } else {
     $error_message = 'Required files not found.';
 }
@@ -167,86 +174,68 @@ $total_pages = $limit > 0 ? ceil($total_count / $limit) : 0;
             <div class="welcome-header">
                 <h1><i class="fa fa-home me-2"></i>Welcome, <?php echo htmlspecialchars($_SESSION['name']); ?>!</h1>
             </div>
-        <?php else: ?>
-            <!-- Guest user welcome -->
-            <div class="welcome-header">
-                <h1><i class="fa fa-home me-2"></i>Welcome to Taste of Africa</h1>
-                <p class="lead text-muted">Discover the authentic flavors of Africa</p>
-                <p class="text-muted">Please login or register to access your account and start shopping.</p>
-                
-                <div class="mt-4">
-                    <a href="login/login.php" class="btn btn-custom btn-lg me-3">
-                        <i class="fa fa-sign-in-alt me-2"></i>Login
-                    </a>
-                    <a href="login/register.php" class="btn btn-outline-primary btn-lg">
-                        <i class="fa fa-user-plus me-2"></i>Register
-                    </a>
-                </div>
-            </div>
-        <?php endif; ?>
 
-        <!-- Search and Filter Section -->
-        <div class="filter-section">
-            <h4 class="text-center mb-4"><i class="fa fa-search me-2"></i>Search Products</h4>
-            <form method="GET" id="filterForm">
-                <div class="row">
-                    <div class="col-md-6">
-                        <label for="search" class="form-label">Search Products</label>
-                        <div class="input-group">
-                            <input type="text" class="form-control" id="search" name="q" 
-                                   value="<?php echo htmlspecialchars($search_query); ?>" 
-                                   placeholder="Search by product name, description, or keywords...">
-                            <button class="btn btn-custom" type="submit">
-                                <i class="fa fa-search"></i>
-                            </button>
+            <!-- Search and Filter Section (Only for Logged In Users) -->
+            <div class="filter-section">
+                <h4 class="text-center mb-4"><i class="fa fa-search me-2"></i>Search Products</h4>
+                <form method="GET" id="filterForm">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <label for="search" class="form-label">Search Products</label>
+                            <div class="input-group">
+                                <input type="text" class="form-control" id="search" name="q" 
+                                       value="<?php echo htmlspecialchars($search_query); ?>" 
+                                       placeholder="Search by product name, description, or keywords...">
+                                <button class="btn btn-custom" type="submit">
+                                    <i class="fa fa-search"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <label for="category" class="form-label">Category</label>
+                            <select class="form-control" id="category" name="category">
+                                <option value="">All Categories</option>
+                                <?php foreach ($categories as $category): ?>
+                                    <option value="<?php echo $category['cat_id']; ?>" 
+                                            <?php echo ($category_id == $category['cat_id']) ? 'selected' : ''; ?>>
+                                        <?php echo htmlspecialchars($category['cat_name']); ?>
+                                    </option>
+                                <?php endforeach; ?>
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <label for="brand" class="form-label">Brand</label>
+                            <select class="form-control" id="brand" name="brand">
+                                <option value="">All Brands</option>
+                                <?php foreach ($brands as $brand): ?>
+                                    <option value="<?php echo $brand['brand_id']; ?>" 
+                                            <?php echo ($brand_id == $brand['brand_id']) ? 'selected' : ''; ?>>
+                                        <?php echo htmlspecialchars($brand['brand_name']); ?>
+                                    </option>
+                                <?php endforeach; ?>
+                            </select>
                         </div>
                     </div>
-                    <div class="col-md-3">
-                        <label for="category" class="form-label">Category</label>
-                        <select class="form-control" id="category" name="category">
-                            <option value="">All Categories</option>
-                            <?php foreach ($categories as $category): ?>
-                                <option value="<?php echo $category['cat_id']; ?>" 
-                                        <?php echo ($category_id == $category['cat_id']) ? 'selected' : ''; ?>>
-                                    <?php echo htmlspecialchars($category['cat_name']); ?>
-                                </option>
-                            <?php endforeach; ?>
-                        </select>
-                    </div>
-                    <div class="col-md-3">
-                        <label for="brand" class="form-label">Brand</label>
-                        <select class="form-control" id="brand" name="brand">
-                            <option value="">All Brands</option>
-                            <?php foreach ($brands as $brand): ?>
-                                <option value="<?php echo $brand['brand_id']; ?>" 
-                                        <?php echo ($brand_id == $brand['brand_id']) ? 'selected' : ''; ?>>
-                                    <?php echo htmlspecialchars($brand['brand_name']); ?>
-                                </option>
-                            <?php endforeach; ?>
-                        </select>
-                    </div>
-                </div>
-                <?php if ($category_id || $brand_id || $search_query): ?>
-                    <div class="row mt-2">
-                        <div class="col-12">
-                            <a href="index.php" class="btn btn-sm btn-outline-secondary">
-                                <i class="fa fa-times me-1"></i>Clear Filters
-                            </a>
+                    <?php if ($category_id || $brand_id || $search_query): ?>
+                        <div class="row mt-2">
+                            <div class="col-12">
+                                <a href="index.php" class="btn btn-sm btn-outline-secondary">
+                                    <i class="fa fa-times me-1"></i>Clear Filters
+                                </a>
+                            </div>
                         </div>
-                    </div>
-                <?php endif; ?>
-            </form>
-        </div>
-
-        <!-- Error Message -->
-        <?php if ($error_message): ?>
-            <div class="alert alert-danger" role="alert">
-                <i class="fa fa-exclamation-triangle me-2"></i><?php echo htmlspecialchars($error_message); ?>
+                    <?php endif; ?>
+                </form>
             </div>
-        <?php endif; ?>
 
-        <!-- Results Summary -->
-        <?php if (isset($_SESSION['user_id']) || !empty($products)): ?>
+            <!-- Error Message -->
+            <?php if ($error_message): ?>
+                <div class="alert alert-danger" role="alert">
+                    <i class="fa fa-exclamation-triangle me-2"></i><?php echo htmlspecialchars($error_message); ?>
+                </div>
+            <?php endif; ?>
+
+            <!-- Results Summary -->
             <div class="row mb-3">
                 <div class="col-12">
                     <p class="text-muted">
@@ -263,17 +252,16 @@ $total_pages = $limit > 0 ? ceil($total_count / $limit) : 0;
                     </p>
                 </div>
             </div>
-        <?php endif; ?>
 
-        <!-- Products Grid -->
-        <?php if (empty($products) && isset($_SESSION['user_id'])): ?>
-            <div class="no-products">
-                <i class="fa fa-box fa-3x mb-3"></i>
-                <h3>No Products Found</h3>
-                <p>Try adjusting your search criteria or browse all products.</p>
-                <a href="index.php" class="btn btn-custom">View All Products</a>
-            </div>
-        <?php elseif (!empty($products)): ?>
+            <!-- Products Grid (Only for Logged In Users) -->
+            <?php if (empty($products)): ?>
+                <div class="no-products">
+                    <i class="fa fa-box fa-3x mb-3"></i>
+                    <h3>No Products Found</h3>
+                    <p>Try adjusting your search criteria or browse all products.</p>
+                    <a href="index.php" class="btn btn-custom">View All Products</a>
+                </div>
+            <?php else: ?>
             <div class="row" id="productsContainer">
                 <?php foreach ($products as $product): ?>
                     <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
@@ -357,6 +345,53 @@ $total_pages = $limit > 0 ? ceil($total_count / $limit) : 0;
                     </nav>
                 </div>
             <?php endif; ?>
+        <?php else: ?>
+            <!-- Guest user welcome (Landing Page - No Products) -->
+            <div class="welcome-header">
+                <h1><i class="fa fa-home me-2"></i>Welcome to Taste of Africa</h1>
+                <p class="lead text-muted">Discover the authentic flavors of Africa</p>
+                <p class="text-muted">Please login or register to access your account and start shopping.</p>
+                
+                <div class="mt-4">
+                    <a href="login/login.php" class="btn btn-custom btn-lg me-3">
+                        <i class="fa fa-sign-in-alt me-2"></i>Login
+                    </a>
+                    <a href="login/register.php" class="btn btn-outline-primary btn-lg">
+                        <i class="fa fa-user-plus me-2"></i>Register
+                    </a>
+                </div>
+            </div>
+            
+            <!-- Information Section for Guests -->
+            <div class="row mt-5">
+                <div class="col-md-4 mb-4">
+                    <div class="card text-center h-100">
+                        <div class="card-body">
+                            <i class="fa fa-shopping-bag fa-3x mb-3 text-primary"></i>
+                            <h5 class="card-title">Browse Products</h5>
+                            <p class="card-text">Explore our wide selection of authentic African products</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-4">
+                    <div class="card text-center h-100">
+                        <div class="card-body">
+                            <i class="fa fa-heart fa-3x mb-3 text-danger"></i>
+                            <h5 class="card-title">Create Wishlist</h5>
+                            <p class="card-text">Save your favorite items for later purchase</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-4">
+                    <div class="card text-center h-100">
+                        <div class="card-body">
+                            <i class="fa fa-truck fa-3x mb-3 text-success"></i>
+                            <h5 class="card-title">Fast Delivery</h5>
+                            <p class="card-text">Quick and reliable shipping to your doorstep</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
         <?php endif; ?>
     </div>
 
