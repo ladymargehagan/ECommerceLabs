@@ -43,16 +43,61 @@ $product_controller = new product_controller();
 
 // Get current product to preserve existing image if no new image uploaded
 $current_product = $product_controller->get_product_by_id_ctr($product_id);
-$product_image = $current_product['success'] ? $current_product['data']['product_image'] : '';
+$product_image = '';
+if ($current_product['success'] && isset($current_product['data']['product_image'])) {
+    $product_image = $current_product['data']['product_image'];
+}
 
 // Handle new image upload
 if (isset($_FILES['productImage']) && $_FILES['productImage']['error'] === UPLOAD_ERR_OK) {
-    $upload_result = $product_controller->upload_image_ctr($_FILES['productImage'], $product_id);
-    if ($upload_result['success']) {
-        $product_image = $upload_result['data'];
+    $user_id = $_SESSION['user_id'];
+    
+    // Process filename
+    $originalName = $_FILES['productImage']['name'];
+    $extension = pathinfo($originalName, PATHINFO_EXTENSION);
+    $sanitizedName = preg_replace('/[^a-zA-Z0-9._-]/', '_', pathinfo($originalName, PATHINFO_FILENAME));
+    
+    // Create directory structure: uploads/product/{product_id}/
+    $upload_dir = "../uploads/product/{$product_id}/";
+    
+    // Ensure directory exists
+    if (!is_dir($upload_dir)) {
+        if (!mkdir($upload_dir, 0777, true)) {
+            // If directory creation fails, keep existing image
+            if (empty($product_image) && $current_product['success'] && isset($current_product['data']['product_image'])) {
+                $product_image = $current_product['data']['product_image'];
+            }
+        } else {
+            // Directory created, proceed with upload
+            $timestamp = time();
+            $filename = "img_{$sanitizedName}_{$timestamp}.{$extension}";
+            $file_path = $upload_dir . $filename;
+            
+            // Move uploaded file
+            if (move_uploaded_file($_FILES['productImage']['tmp_name'], $file_path)) {
+                $product_image = "uploads/product/{$product_id}/{$filename}";
+            } else {
+                // If file move failed, keep existing image
+                if (empty($product_image) && $current_product['success'] && isset($current_product['data']['product_image'])) {
+                    $product_image = $current_product['data']['product_image'];
+                }
+            }
+        }
     } else {
-        echo json_encode($upload_result);
-        exit;
+        // Directory exists, proceed with upload
+        $timestamp = time();
+        $filename = "img_{$sanitizedName}_{$timestamp}.{$extension}";
+        $file_path = $upload_dir . $filename;
+        
+        // Move uploaded file
+        if (move_uploaded_file($_FILES['productImage']['tmp_name'], $file_path)) {
+            $product_image = "uploads/product/{$product_id}/{$filename}";
+        } else {
+            // If file move failed, keep existing image
+            if (empty($product_image) && $current_product['success'] && isset($current_product['data']['product_image'])) {
+                $product_image = $current_product['data']['product_image'];
+            }
+        }
     }
 }
 
