@@ -143,12 +143,14 @@ class brand_controller extends brand_class
         $sanitizedName = preg_replace('/[^a-zA-Z0-9._-]/', '_', pathinfo($originalName, PATHINFO_FILENAME));
         
         // Create directory structure: uploads/u{user_id}/b{brand_id}/
-        $upload_dir = "../uploads/u{$user_id}/b{$brand_id}/";
+        // Use absolute path based on controller file location (same as categories)
+        $base_dir = dirname(dirname(__FILE__)); // Go from controllers/ to project root
+        $upload_dir = "{$base_dir}/uploads/u{$user_id}/b{$brand_id}/";
         
         // Ensure directory exists
         if (!is_dir($upload_dir)) {
             if (!mkdir($upload_dir, 0777, true)) {
-                return array('success' => false, 'message' => 'Failed to create upload directory');
+                return array('success' => false, 'message' => 'Failed to create upload directory: ' . $upload_dir);
             }
         }
         

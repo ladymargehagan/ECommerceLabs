@@ -234,7 +234,7 @@ function populateCategorySelects(categories) {
     });
 }
 
-// Display brands function with visual grouping by categories
+// Display brands function - always show images like categories do
 function displayBrands(brands) {
     if (!brands || brands.length === 0) {
         $('#brandsContainer').html(`
@@ -247,22 +247,8 @@ function displayBrands(brands) {
         return;
     }
 
-    // Get categories for grouping
-    $.ajax({
-        url: '../actions/fetch_category_action.php',
-        method: 'GET',
-        dataType: 'json',
-        success: function(response) {
-            if (response.success) {
-                displayBrandsGroupedByCategories(brands, response.data);
-            } else {
-                displayBrandsSimple(brands);
-            }
-        },
-        error: function() {
-            displayBrandsSimple(brands);
-        }
-    });
+    // Always use simple display to ensure images show (like categories)
+    displayBrandsSimple(brands);
 }
 
 // Display brands grouped by categories
@@ -327,20 +313,23 @@ function displayBrandsGroupedByCategories(brands, categories) {
     $('#brandsContainer').html(html);
 }
 
-// Simple display without grouping
+// Simple display without grouping - always show images (exact same pattern as categories)
 function displayBrandsSimple(brands) {
     let html = '';
     brands.forEach(function(brand) {
+        // Use exact same pattern as categories - simple and works
         const imageSrc = brand.brand_image ? `../${brand.brand_image}` : '../uploads/placeholder.png';
+        const escapedBrandName = escapeHtml(brand.brand_name);
+        const escapedBrandImage = brand.brand_image ? escapeHtml(brand.brand_image) : '';
         
         html += `
             <div class="col-md-6 col-lg-4 mb-4">
                 <div class="card brand-card h-100">
                     <div class="brand-image-container">
-                        <img src="${imageSrc}" class="card-img-top brand-image" alt="${brand.brand_name}" onerror="this.src='../uploads/placeholder.png'">
+                        <img src="${imageSrc}" class="card-img-top brand-image" alt="${escapedBrandName}" onerror="this.src='../uploads/placeholder.png'">
                         <div class="brand-overlay">
                             <div class="action-buttons">
-                                <button class="btn btn-sm btn-outline-primary me-1" onclick="editBrand(${brand.brand_id}, '${brand.brand_name}', '${brand.brand_image || ''}')" title="Edit Brand">
+                                <button class="btn btn-sm btn-outline-primary me-1" onclick="editBrand(${brand.brand_id}, '${escapedBrandName}', '${escapedBrandImage}')" title="Edit Brand">
                                     <i class="fa fa-edit"></i>
                                 </button>
                                 <button class="btn btn-sm btn-outline-danger" onclick="deleteBrand(${brand.brand_id})" title="Delete Brand">
@@ -352,7 +341,7 @@ function displayBrandsSimple(brands) {
                     <div class="card-body">
                         <h5 class="card-title">
                             <i class="fa fa-star text-warning me-2"></i>
-                            ${brand.brand_name}
+                            ${escapedBrandName}
                         </h5>
                         <p class="card-text text-muted">
                             <small><strong>Brand ID:</strong> ${brand.brand_id}</small>

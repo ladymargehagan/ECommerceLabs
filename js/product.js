@@ -300,28 +300,14 @@ function displayProducts(products) {
 
     let html = '';
     products.forEach(function(product) {
-        // Construct image path - product_image should be like "uploads/u{user_id}/p{product_id}/filename"
-        let imageSrc = '../uploads/placeholder.png';
-        if (product.product_image && product.product_image.trim() !== '') {
-            // Ensure the path doesn't already start with ../
-            if (product.product_image.startsWith('../')) {
-                imageSrc = product.product_image;
-            } else if (product.product_image.startsWith('uploads/')) {
-                imageSrc = '../' + product.product_image;
-            } else {
-                imageSrc = '../uploads/' + product.product_image;
-            }
-            // Debug logging
-            console.log('Product ID:', product.product_id, 'Image path:', product.product_image, 'Display path:', imageSrc);
-        } else {
-            console.log('Product ID:', product.product_id, 'No image - using placeholder');
-        }
+        // Use exact same pattern as categories - simple and works
+        const imageSrc = product.product_image ? `../${product.product_image}` : '../uploads/placeholder.png';
         
         html += `
             <div class="col-md-6 col-lg-4 mb-4">
                 <div class="card product-card h-100">
                     <div class="product-image-container">
-                        <img src="${imageSrc}" class="card-img-top product-image" alt="${escapeHtml(product.product_title)}" onerror="console.error('Image failed to load:', '${imageSrc}'); this.src='../uploads/placeholder.png';">
+                        <img src="${imageSrc}" class="card-img-top product-image" alt="${escapeHtml(product.product_title)}" onerror="this.src='../uploads/placeholder.png'">
                         <div class="product-overlay">
                             <div class="action-buttons">
                                 <button class="btn btn-sm btn-outline-primary me-1" onclick="editProduct(${product.product_id})" title="Edit Product">
@@ -369,18 +355,8 @@ function editProduct(productId) {
                     $('#editProductDescription').val(product.product_desc || '');
                     $('#editProductKeywords').val(product.product_keywords || '');
                     
-                    // Set current image
-                    let imageSrc = '../uploads/placeholder.png';
-                    if (product.product_image && product.product_image.trim() !== '') {
-                        // Ensure the path doesn't already start with ../
-                        if (product.product_image.startsWith('../')) {
-                            imageSrc = product.product_image;
-                        } else if (product.product_image.startsWith('uploads/')) {
-                            imageSrc = '../' + product.product_image;
-                        } else {
-                            imageSrc = '../uploads/' + product.product_image;
-                        }
-                    }
+                    // Set current image - use same pattern as categories
+                    const imageSrc = product.product_image ? `../${product.product_image}` : '../uploads/placeholder.png';
                     $('#editPreviewImg').attr('src', imageSrc);
                     $('#editImagePreview').show();
                     
