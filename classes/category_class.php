@@ -5,6 +5,16 @@ class category_class extends db_connection
 {
     public function add_category($cat_name, $created_by, $cat_image = '')
     {
+        // Ensure database connection is established
+        if (!$this->db_connect()) {
+            return false;
+        }
+        
+        // Escape inputs to prevent SQL injection
+        $cat_name = $this->db->real_escape_string($cat_name);
+        $created_by = $this->db->real_escape_string($created_by);
+        $cat_image = $this->db->real_escape_string($cat_image);
+        
         $check_sql = "SELECT cat_id FROM categories WHERE cat_name = '$cat_name'";
         if ($this->db_fetch_one($check_sql)) {
             return false;
@@ -18,7 +28,12 @@ class category_class extends db_connection
             $result = $this->db_write_query($sql);
         }
         
-        return true;
+        if ($result) {
+            // Return the inserted category_id
+            return $this->last_insert_id();
+        }
+        
+        return false;
     }
 
     public function get_categories_by_user($user_id)

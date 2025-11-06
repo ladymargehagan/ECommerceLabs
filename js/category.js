@@ -78,7 +78,7 @@ function displayCategories(categories) {
 
     let html = '';
     categories.forEach(function(category) {
-        const imageSrc = category.cat_image ? `../${category.cat_image}` : '../uploads/placeholder.png';
+        const imageSrc = getCategoryImagePath(category.cat_image);
         
         html += `
             <div class="col-md-4 col-lg-3 mb-4">
@@ -222,13 +222,9 @@ function editCategory(categoryId, categoryName, categoryImage = '') {
     $('#editCategoryName').val(categoryName);
     
     // Set current image preview
-    if (categoryImage) {
-        $('#editPreviewCategoryImg').attr('src', `../${categoryImage}`);
-        $('#editCategoryImagePreview').show();
-    } else {
-        $('#editPreviewCategoryImg').attr('src', '../uploads/placeholder.png');
-        $('#editCategoryImagePreview').show();
-    }
+    const imageSrc = getCategoryImagePath(categoryImage);
+    $('#editPreviewCategoryImg').attr('src', imageSrc);
+    $('#editCategoryImagePreview').show();
     
     $('#editCategoryModal').modal('show');
 }
@@ -322,4 +318,27 @@ function previewImage(input, previewId, containerId) {
         };
         reader.readAsDataURL(input.files[0]);
     }
+}
+
+// Get proper category image path
+function getCategoryImagePath(categoryImage) {
+    if (!categoryImage || categoryImage.trim() === '') {
+        return '../uploads/placeholder.png';
+    }
+    
+    // Clean the path
+    const cleanPath = categoryImage.trim();
+    
+    // If path already starts with http or /, use as is
+    if (cleanPath.startsWith('http') || cleanPath.startsWith('/')) {
+        return cleanPath;
+    }
+    
+    // If path starts with 'uploads/', prepend ../
+    if (cleanPath.startsWith('uploads/')) {
+        return `../${cleanPath}`;
+    }
+    
+    // Otherwise, assume it's a relative path from root
+    return `../${cleanPath}`;
 }

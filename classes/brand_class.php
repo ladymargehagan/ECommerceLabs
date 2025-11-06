@@ -33,10 +33,7 @@ class brand_class extends db_connection
 
     public function get_brands_by_user($user_id)
     {
-        if (!$this->db_connect()) {
-            return array();
-        }
-        $user_id = $this->db->real_escape_string($user_id);
+        // db_fetch_all() will handle the connection via db_query()
         $sql = "SELECT * FROM brands ORDER BY brand_name ASC";
         $result = $this->db_fetch_all($sql);
         
@@ -45,9 +42,7 @@ class brand_class extends db_connection
 
     public function get_all_brands()
     {
-        if (!$this->db_connect()) {
-            return array();
-        }
+        // db_fetch_all() will handle the connection via db_query()
         $sql = "SELECT * FROM brands ORDER BY brand_name ASC";
         $result = $this->db_fetch_all($sql);
         
@@ -56,6 +51,7 @@ class brand_class extends db_connection
 
     public function get_brand_by_id($brand_id)
     {
+        // Need connection for real_escape_string, then db_fetch_one() will handle connection
         if (!$this->db_connect()) {
             return false;
         }
@@ -136,6 +132,7 @@ class brand_class extends db_connection
 
     public function get_categories_by_user($user_id)
     {
+        // Need connection for real_escape_string, then db_fetch_all() will handle connection
         if (!$this->db_connect()) {
             return array();
         }
