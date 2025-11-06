@@ -113,18 +113,14 @@ class brand_class extends db_connection
 
     public function get_brands_by_category_for_user($user_id)
     {
-        // Get all brands first - simple and reliable
-        $brands_sql = "SELECT brand_id, brand_name, brand_image FROM brands ORDER BY brand_name ASC";
-        $all_brands = $this->db_fetch_all($brands_sql);
+        // SIMPLE: Get all brands and organize by categories
+        $all_brands = $this->get_all_brands();
         if (!$all_brands) {
             $all_brands = array();
         }
         
         // Get user's categories
-        $categories_sql = "SELECT cat_id, cat_name, cat_image 
-                           FROM categories 
-                           WHERE created_by = '$user_id'";
-        $user_categories = $this->db_fetch_all($categories_sql);
+        $user_categories = $this->get_categories_by_user($user_id);
         if (!$user_categories) {
             $user_categories = array();
         }
@@ -132,13 +128,12 @@ class brand_class extends db_connection
         // Get brands organized by categories through products
         $brands_by_category = array();
         if (count($user_categories) > 0) {
-            $sql = "SELECT c.cat_id, c.cat_name, c.cat_image, 
+            $sql = "SELECT DISTINCT c.cat_id, c.cat_name, c.cat_image, 
                            b.brand_id, b.brand_name, b.brand_image
                     FROM categories c
-                    LEFT JOIN products p ON c.cat_id = p.product_cat
-                    LEFT JOIN brands b ON p.product_brand = b.brand_id
-                    WHERE c.created_by = '$user_id' AND b.brand_id IS NOT NULL
-                    GROUP BY c.cat_id, b.brand_id
+                    INNER JOIN products p ON c.cat_id = p.product_cat
+                    INNER JOIN brands b ON p.product_brand = b.brand_id
+                    WHERE c.created_by = '$user_id'
                     ORDER BY c.cat_name ASC, b.brand_name ASC";
             $brands_by_category = $this->db_fetch_all($sql);
             if (!$brands_by_category) {
@@ -149,7 +144,7 @@ class brand_class extends db_connection
         // Track which brands are already in categories
         $brands_in_categories = array();
         foreach ($brands_by_category as $item) {
-            if ($item['brand_id']) {
+            if (isset($item['brand_id']) && $item['brand_id']) {
                 $brands_in_categories[$item['brand_id']] = true;
             }
         }
@@ -159,16 +154,17 @@ class brand_class extends db_connection
         
         // Add brands that aren't in any category yet
         foreach ($all_brands as $brand) {
-            if (!isset($brands_in_categories[$brand['brand_id']])) {
+            $brand_id = $brand['brand_id'];
+            if (!isset($brands_in_categories[$brand_id])) {
                 if (count($user_categories) > 0) {
                     $first_cat = $user_categories[0];
                     $result[] = array(
                         'cat_id' => $first_cat['cat_id'],
                         'cat_name' => $first_cat['cat_name'],
-                        'cat_image' => $first_cat['cat_image'],
-                        'brand_id' => $brand['brand_id'],
+                        'cat_image' => isset($first_cat['cat_image']) ? $first_cat['cat_image'] : null,
+                        'brand_id' => $brand_id,
                         'brand_name' => $brand['brand_name'],
-                        'brand_image' => $brand['brand_image']
+                        'brand_image' => isset($brand['brand_image']) ? $brand['brand_image'] : null
                     );
                 } else {
                     // No categories, show in "All Brands" section
@@ -176,9 +172,9 @@ class brand_class extends db_connection
                         'cat_id' => 0,
                         'cat_name' => 'All Brands',
                         'cat_image' => null,
-                        'brand_id' => $brand['brand_id'],
+                        'brand_id' => $brand_id,
                         'brand_name' => $brand['brand_name'],
-                        'brand_image' => $brand['brand_image']
+                        'brand_image' => isset($brand['brand_image']) ? $brand['brand_image'] : null
                     );
                 }
             }

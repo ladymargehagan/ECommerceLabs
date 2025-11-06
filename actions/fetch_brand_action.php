@@ -19,6 +19,11 @@ $user_id = $_SESSION['user_id'];
 $brand_controller = new brand_controller();
 $result = $brand_controller->get_brands_by_category_for_user_ctr($user_id);
 
+// Ensure proper JSON response
 header('Content-Type: application/json');
-echo json_encode($result);
+if ($result === false || !isset($result['success'])) {
+    echo json_encode(array('success' => false, 'message' => 'Failed to fetch brands', 'data' => array()));
+} else {
+    echo json_encode($result);
+}
 ?>
