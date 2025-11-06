@@ -262,88 +262,89 @@ $total_pages = $limit > 0 ? ceil($total_count / $limit) : 0;
                     <a href="index.php" class="btn btn-custom">View All Products</a>
                 </div>
             <?php else: ?>
-            <div class="row" id="productsContainer">
-                <?php foreach ($products as $product): ?>
-                    <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
-                        <div class="card product-card h-100">
-                            <div class="position-relative">
-                                <?php if ($product['product_image']): ?>
-                                    <img src="<?php echo htmlspecialchars($product['product_image']); ?>" 
-                                         class="card-img-top product-image" 
-                                         alt="<?php echo htmlspecialchars($product['product_title']); ?>"
-                                         onerror="this.src='uploads/placeholder.png'">
-                                <?php else: ?>
-                                    <img src="uploads/placeholder.png" 
-                                         class="card-img-top product-image" 
-                                         alt="No image available">
-                                <?php endif; ?>
-                                <div class="position-absolute top-0 end-0 m-2">
-                                    <span class="badge bg-primary">ID: <?php echo $product['product_id']; ?></span>
+                <div class="row" id="productsContainer">
+                    <?php foreach ($products as $product): ?>
+                        <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
+                            <div class="card product-card h-100">
+                                <div class="position-relative">
+                                    <?php if ($product['product_image']): ?>
+                                        <img src="<?php echo htmlspecialchars($product['product_image']); ?>" 
+                                             class="card-img-top product-image" 
+                                             alt="<?php echo htmlspecialchars($product['product_title']); ?>"
+                                             onerror="this.src='uploads/placeholder.png'">
+                                    <?php else: ?>
+                                        <img src="uploads/placeholder.png" 
+                                             class="card-img-top product-image" 
+                                             alt="No image available">
+                                    <?php endif; ?>
+                                    <div class="position-absolute top-0 end-0 m-2">
+                                        <span class="badge bg-primary">ID: <?php echo $product['product_id']; ?></span>
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="card-body d-flex flex-column">
-                                <h5 class="card-title"><?php echo htmlspecialchars($product['product_title']); ?></h5>
-                                <div class="product-price mb-2">$<?php echo number_format($product['product_price'], 2); ?></div>
-                                <div class="product-category mb-1">
-                                    <i class="fa fa-tag me-1"></i><?php echo htmlspecialchars($product['cat_name'] ?? 'No Category'); ?>
-                                </div>
-                                <div class="product-brand mb-3">
-                                    <i class="fa fa-star me-1"></i><?php echo htmlspecialchars($product['brand_name'] ?? 'No Brand'); ?>
-                                </div>
-                                <?php if ($product['product_desc']): ?>
-                                    <p class="card-text text-muted small flex-grow-1">
-                                        <?php echo htmlspecialchars(substr($product['product_desc'], 0, 100)) . (strlen($product['product_desc']) > 100 ? '...' : ''); ?>
-                                    </p>
-                                <?php endif; ?>
-                                <div class="mt-auto">
-                                    <div class="d-grid gap-2">
-                                        <a href="single_product.php?id=<?php echo $product['product_id']; ?>" 
-                                           class="btn btn-outline-primary">
-                                            <i class="fa fa-eye me-1"></i>View Details
-                                        </a>
-                                        <button class="btn btn-custom add-to-cart" 
-                                                data-product-id="<?php echo $product['product_id']; ?>">
-                                            <i class="fa fa-cart-plus me-1"></i>Add to Cart
-                                        </button>
+                                <div class="card-body d-flex flex-column">
+                                    <h5 class="card-title"><?php echo htmlspecialchars($product['product_title']); ?></h5>
+                                    <div class="product-price mb-2">$<?php echo number_format($product['product_price'], 2); ?></div>
+                                    <div class="product-category mb-1">
+                                        <i class="fa fa-tag me-1"></i><?php echo htmlspecialchars($product['cat_name'] ?? 'No Category'); ?>
+                                    </div>
+                                    <div class="product-brand mb-3">
+                                        <i class="fa fa-star me-1"></i><?php echo htmlspecialchars($product['brand_name'] ?? 'No Brand'); ?>
+                                    </div>
+                                    <?php if ($product['product_desc']): ?>
+                                        <p class="card-text text-muted small flex-grow-1">
+                                            <?php echo htmlspecialchars(substr($product['product_desc'], 0, 100)) . (strlen($product['product_desc']) > 100 ? '...' : ''); ?>
+                                        </p>
+                                    <?php endif; ?>
+                                    <div class="mt-auto">
+                                        <div class="d-grid gap-2">
+                                            <a href="single_product.php?id=<?php echo $product['product_id']; ?>" 
+                                               class="btn btn-outline-primary">
+                                                <i class="fa fa-eye me-1"></i>View Details
+                                            </a>
+                                            <button class="btn btn-custom add-to-cart" 
+                                                    data-product-id="<?php echo $product['product_id']; ?>">
+                                                <i class="fa fa-cart-plus me-1"></i>Add to Cart
+                                            </button>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                <?php endforeach; ?>
-            </div>
-
-            <!-- Pagination -->
-            <?php if ($total_pages > 1): ?>
-                <div class="pagination-wrapper">
-                    <nav aria-label="Products pagination">
-                        <ul class="pagination">
-                            <?php if ($page > 1): ?>
-                                <li class="page-item">
-                                    <a class="page-link" href="?<?php echo http_build_query(array_merge($_GET, ['page' => $page - 1])); ?>">
-                                        <i class="fa fa-chevron-left"></i> Previous
-                                    </a>
-                                </li>
-                            <?php endif; ?>
-
-                            <?php for ($i = max(1, $page - 2); $i <= min($total_pages, $page + 2); $i++): ?>
-                                <li class="page-item <?php echo ($i == $page) ? 'active' : ''; ?>">
-                                    <a class="page-link" href="?<?php echo http_build_query(array_merge($_GET, ['page' => $i])); ?>">
-                                        <?php echo $i; ?>
-                                    </a>
-                                </li>
-                            <?php endfor; ?>
-
-                            <?php if ($page < $total_pages): ?>
-                                <li class="page-item">
-                                    <a class="page-link" href="?<?php echo http_build_query(array_merge($_GET, ['page' => $page + 1])); ?>">
-                                        Next <i class="fa fa-chevron-right"></i>
-                                    </a>
-                                </li>
-                            <?php endif; ?>
-                        </ul>
-                    </nav>
+                    <?php endforeach; ?>
                 </div>
+
+                <!-- Pagination -->
+                <?php if ($total_pages > 1): ?>
+                    <div class="pagination-wrapper">
+                        <nav aria-label="Products pagination">
+                            <ul class="pagination">
+                                <?php if ($page > 1): ?>
+                                    <li class="page-item">
+                                        <a class="page-link" href="?<?php echo http_build_query(array_merge($_GET, ['page' => $page - 1])); ?>">
+                                            <i class="fa fa-chevron-left"></i> Previous
+                                        </a>
+                                    </li>
+                                <?php endif; ?>
+
+                                <?php for ($i = max(1, $page - 2); $i <= min($total_pages, $page + 2); $i++): ?>
+                                    <li class="page-item <?php echo ($i == $page) ? 'active' : ''; ?>">
+                                        <a class="page-link" href="?<?php echo http_build_query(array_merge($_GET, ['page' => $i])); ?>">
+                                            <?php echo $i; ?>
+                                        </a>
+                                    </li>
+                                <?php endfor; ?>
+
+                                <?php if ($page < $total_pages): ?>
+                                    <li class="page-item">
+                                        <a class="page-link" href="?<?php echo http_build_query(array_merge($_GET, ['page' => $page + 1])); ?>">
+                                            Next <i class="fa fa-chevron-right"></i>
+                                        </a>
+                                    </li>
+                                <?php endif; ?>
+                            </ul>
+                        </nav>
+                    </div>
+                <?php endif; ?>
             <?php endif; ?>
         <?php else: ?>
             <!-- Guest user welcome (Landing Page - No Products) -->
