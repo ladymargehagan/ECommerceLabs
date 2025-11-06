@@ -178,14 +178,7 @@ function loadBrands() {
         method: 'GET',
         dataType: 'json',
         success: function(response) {
-            if (response.success) {
-                // Temporary debug - check what data we're getting
-                console.log('Brands response:', response);
-                if (response.data && response.data.length > 0) {
-                    console.log('First brand data:', response.data[0]);
-                    console.log('First brand image value:', response.data[0].brand_image);
-                    console.log('First brand image type:', typeof response.data[0].brand_image);
-                }
+            if (response.success && response.data) {
                 displayBrands(response.data);
             } else {
                 $('#brandsContainer').html(`
@@ -290,23 +283,14 @@ function displayBrandsGroupedByCategories(brands, categories) {
         
         // Display all brands under each category (since brands can produce across categories)
         brands.forEach(function(brand) {
-            // Handle brand_image field (check multiple possible field names for compatibility)
-            let brandImage = brand.brand_image || brand.BRAND_IMAGE || brand.brand_Image || null;
-            if (brandImage && String(brandImage).trim() !== '') {
-                brandImage = String(brandImage).trim();
-            } else {
-                brandImage = null;
-            }
-            const imageSrc = brandImage ? `../${brandImage}` : '../uploads/placeholder.png';
-            
-            // Debug logging
-            console.log(`Brand: ${brand.brand_name}, Raw image: ${brand.brand_image}, Processed: ${brandImage}, Final src: ${imageSrc}`);
+            const brandImage = brand.brand_image ? String(brand.brand_image).trim() : '';
+            const imageSrc = brandImage && brandImage !== '' ? `../${brandImage}` : '../uploads/placeholder.png';
             
             html += `
                 <div class="col-md-6 col-lg-4 mb-3">
                     <div class="card brand-card h-100">
                         <div class="brand-image-container">
-                            <img src="${imageSrc}" class="card-img-top brand-image" alt="${escapeHtml(brand.brand_name)}" onerror="console.error('Image failed to load:', this.src); this.src='../uploads/placeholder.png';">
+                            <img src="${imageSrc}" class="card-img-top brand-image" alt="${escapeHtml(brand.brand_name)}" onerror="this.onerror=null; this.src='../uploads/placeholder.png';">
                             <div class="brand-overlay">
                                 <div class="action-buttons">
                                     <button class="btn btn-sm btn-outline-primary me-1" onclick="editBrand(${brand.brand_id}, '${escapeHtml(brand.brand_name)}', '${brand.brand_image || ''}')" title="Edit Brand">
@@ -346,23 +330,14 @@ function displayBrandsGroupedByCategories(brands, categories) {
 function displayBrandsSimple(brands) {
     let html = '';
     brands.forEach(function(brand) {
-        // Handle brand_image field (check multiple possible field names for compatibility)
-        let brandImage = brand.brand_image || brand.BRAND_IMAGE || brand.brand_Image || null;
-        if (brandImage && String(brandImage).trim() !== '') {
-            brandImage = String(brandImage).trim();
-        } else {
-            brandImage = null;
-        }
-        const imageSrc = brandImage ? `../${brandImage}` : '../uploads/placeholder.png';
-        
-        // Debug logging
-        console.log(`Brand: ${brand.brand_name}, Raw image: ${brand.brand_image}, Processed: ${brandImage}, Final src: ${imageSrc}`);
+        const brandImage = brand.brand_image ? String(brand.brand_image).trim() : '';
+        const imageSrc = brandImage && brandImage !== '' ? `../${brandImage}` : '../uploads/placeholder.png';
         
         html += `
             <div class="col-md-6 col-lg-4 mb-4">
                 <div class="card brand-card h-100">
                     <div class="brand-image-container">
-                        <img src="${imageSrc}" class="card-img-top brand-image" alt="${escapeHtml(brand.brand_name)}" onerror="console.error('Image failed to load:', this.src); this.src='../uploads/placeholder.png';">
+                        <img src="${imageSrc}" class="card-img-top brand-image" alt="${escapeHtml(brand.brand_name)}" onerror="this.onerror=null; this.src='../uploads/placeholder.png';">
                         <div class="brand-overlay">
                             <div class="action-buttons">
                                 <button class="btn btn-sm btn-outline-primary me-1" onclick="editBrand(${brand.brand_id}, '${escapeHtml(brand.brand_name)}', '${brand.brand_image || ''}')" title="Edit Brand">

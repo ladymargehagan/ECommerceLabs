@@ -225,16 +225,15 @@
     overflow: hidden;
     background-color: #f8f9fa;
     border-radius: 10px 10px 0 0;
-    display: block;
+    display: block !important;
 }
 
 .brand-image {
-    width: 100%;
-    height: 100%;
+    width: 100% !important;
+    height: 100% !important;
     object-fit: cover;
-    display: block;
+    display: block !important;
     transition: transform 0.3s ease;
-    min-height: 200px;
 }
 
 .brand-card:hover .brand-image {
