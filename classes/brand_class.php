@@ -33,6 +33,9 @@ class brand_class extends db_connection
 
     public function get_brands_by_user($user_id)
     {
+        if (!$this->db_connect()) {
+            return array();
+        }
         $user_id = $this->db->real_escape_string($user_id);
         $sql = "SELECT * FROM brands ORDER BY brand_name ASC";
         $result = $this->db_fetch_all($sql);
@@ -42,6 +45,9 @@ class brand_class extends db_connection
 
     public function get_all_brands()
     {
+        if (!$this->db_connect()) {
+            return array();
+        }
         $sql = "SELECT * FROM brands ORDER BY brand_name ASC";
         $result = $this->db_fetch_all($sql);
         
@@ -50,6 +56,9 @@ class brand_class extends db_connection
 
     public function get_brand_by_id($brand_id)
     {
+        if (!$this->db_connect()) {
+            return false;
+        }
         $brand_id = $this->db->real_escape_string($brand_id);
         $sql = "SELECT * FROM brands WHERE brand_id = '$brand_id'";
         $result = $this->db_fetch_one($sql);
@@ -59,6 +68,11 @@ class brand_class extends db_connection
 
     public function update_brand($brand_id, $brand_name, $brand_image = null)
     {
+        // Ensure database connection is established
+        if (!$this->db_connect()) {
+            return false;
+        }
+        
         // Escape inputs
         $brand_id = $this->db->real_escape_string($brand_id);
         $brand_name = $this->db->real_escape_string($brand_name);
@@ -92,13 +106,13 @@ class brand_class extends db_connection
 
     public function delete_brand($brand_id)
     {
-        // Escape input
-        $brand_id = $this->db->real_escape_string($brand_id);
-        
         // Ensure database connection
         if (!$this->db_connect()) {
             return false;
         }
+        
+        // Escape input
+        $brand_id = $this->db->real_escape_string($brand_id);
 
         // Check if brand exists
         $check_sql = "SELECT brand_id, brand_image FROM brands WHERE brand_id = '$brand_id'";
@@ -122,6 +136,9 @@ class brand_class extends db_connection
 
     public function get_categories_by_user($user_id)
     {
+        if (!$this->db_connect()) {
+            return array();
+        }
         $user_id = $this->db->real_escape_string($user_id);
         $sql = "SELECT * FROM categories WHERE created_by = '$user_id' ORDER BY cat_name ASC";
         $result = $this->db_fetch_all($sql);
@@ -136,6 +153,9 @@ class brand_class extends db_connection
 
     public function brand_name_exists($brand_name, $exclude_id = null)
     {
+        if (!$this->db_connect()) {
+            return false;
+        }
         $brand_name = $this->db->real_escape_string($brand_name);
         $sql = "SELECT brand_id FROM brands WHERE brand_name = '$brand_name'";
         if ($exclude_id) {
