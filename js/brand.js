@@ -181,19 +181,30 @@ function loadBrands() {
         dataType: 'json',
         success: function(response) {
             console.log('Brands response:', response);
-            if (response.success && response.data) {
-                displayBrands(response.data);
+            if (response.success && response.data && Array.isArray(response.data)) {
+                if (response.data.length > 0) {
+                    displayBrands(response.data);
+                } else {
+                    $('#brandsContainer').html(`
+                        <div class="col-12 text-center py-5">
+                            <i class="fa fa-star fa-3x text-muted mb-3"></i>
+                            <h4>No Brands Found</h4>
+                            <p class="text-muted">Start by adding your first brand.</p>
+                        </div>
+                    `);
+                }
             } else {
                 $('#brandsContainer').html(`
                     <div class="col-12 text-center py-5">
                         <i class="fa fa-exclamation-triangle fa-3x text-warning mb-3"></i>
                         <h4>No Brands Found</h4>
-                        <p class="text-muted">Start by adding your first brand.</p>
+                        <p class="text-muted">${response.message || 'Start by adding your first brand.'}</p>
                     </div>
                 `);
             }
         },
-        error: function() {
+        error: function(xhr, status, error) {
+            console.error('Error loading brands:', error, xhr.responseText);
             $('#brandsContainer').html(`
                 <div class="col-12 text-center py-5">
                     <i class="fa fa-exclamation-triangle fa-3x text-danger mb-3"></i>
@@ -239,7 +250,7 @@ function populateCategorySelects(categories) {
 
 // Display brands function - simple display without category grouping
 function displayBrands(brands) {
-    if (!brands || brands.length === 0) {
+    if (!brands || !Array.isArray(brands) || brands.length === 0) {
         $('#brandsContainer').html(`
             <div class="col-12 text-center py-5">
                 <i class="fa fa-star fa-3x text-muted mb-3"></i>
@@ -277,82 +288,28 @@ function getImagePath(brandImage) {
     return `../${cleanPath}`;
 }
 
-// Display brands grouped by categories
-function displayBrandsGroupedByCategories(brands, categories) {
-    let html = '';
-    
-    // Group brands by categories (visual grouping only)
-    categories.forEach(function(category) {
-        html += `
-            <div class="col-12 mb-4">
-                <div class="category-section">
-                    <h4 class="category-header">
-                        <i class="fa fa-tags text-primary me-2"></i>
-                        ${category.cat_name}
-                    </h4>
-                    <div class="row">
-        `;
-        
-        // Display all brands under each category (since brands can produce across categories)
-        brands.forEach(function(brand) {
-            const imageSrc = getImagePath(brand.brand_image);
-            
-            console.log('Brand:', brand.brand_name, 'DB Image:', brand.brand_image, 'Final Path:', imageSrc);
-            
-            html += `
-                <div class="col-md-6 col-lg-4 mb-3">
-                    <div class="card brand-card h-100">
-                        <div class="brand-image-container">
-                            <img src="${imageSrc}" 
-                                 class="card-img-top brand-image" 
-                                 alt="${escapeHtml(brand.brand_name)}" 
-                                 onerror="this.onerror=null; this.src='../uploads/placeholder.png';">
-                            <div class="brand-overlay">
-                                <div class="action-buttons">
-                                    <button class="btn btn-sm btn-outline-primary me-1" 
-                                            onclick="editBrand(${brand.brand_id}, '${escapeHtml(brand.brand_name)}', '${escapeHtml(brand.brand_image || '')}')" 
-                                            title="Edit Brand">
-                                        <i class="fa fa-edit"></i>
-                                    </button>
-                                    <button class="btn btn-sm btn-outline-danger" 
-                                            onclick="deleteBrand(${brand.brand_id})" 
-                                            title="Delete Brand">
-                                        <i class="fa fa-trash"></i>
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="card-body">
-                            <h5 class="card-title">
-                                <i class="fa fa-star text-warning me-2"></i>
-                                ${escapeHtml(brand.brand_name)}
-                            </h5>
-                            <p class="card-text text-muted">
-                                <small><strong>Brand ID:</strong> ${brand.brand_id}</small>
-                            </p>
-                        </div>
-                    </div>
-                </div>
-            `;
-        });
-        
-        html += `
-                    </div>
-                </div>
-            </div>
-        `;
-    });
-
-    $('#brandsContainer').html(html);
-}
-
 // Simple display without grouping
 function displayBrandsSimple(brands) {
+    if (!brands || !Array.isArray(brands) || brands.length === 0) {
+        $('#brandsContainer').html(`
+            <div class="col-12 text-center py-5">
+                <i class="fa fa-star fa-3x text-muted mb-3"></i>
+                <h4>No Brands Found</h4>
+                <p class="text-muted">Start by adding your first brand.</p>
+            </div>
+        `);
+        return;
+    }
+    
     let html = '';
     brands.forEach(function(brand) {
-        const imageSrc = getImagePath(brand.brand_image);
+        if (!brand || !brand.brand_id || !brand.brand_name) {
+            return; // Skip invalid brand entries
+        }
         
-        console.log('Brand:', brand.brand_name, 'DB Image:', brand.brand_image, 'Final Path:', imageSrc);
+        const imageSrc = getImagePath(brand.brand_image || '');
+        const brandName = escapeHtml(brand.brand_name || '');
+        const brandImage = escapeHtml((brand.brand_image || '').replace(/'/g, "\\'"));
         
         html += `
             <div class="col-md-6 col-lg-4 mb-4">
@@ -360,12 +317,12 @@ function displayBrandsSimple(brands) {
                     <div class="brand-image-container">
                         <img src="${imageSrc}" 
                              class="card-img-top brand-image" 
-                             alt="${escapeHtml(brand.brand_name)}" 
+                             alt="${brandName}" 
                              onerror="this.onerror=null; this.src='../uploads/placeholder.png';">
                         <div class="brand-overlay">
                             <div class="action-buttons">
                                 <button class="btn btn-sm btn-outline-primary me-1" 
-                                        onclick="editBrand(${brand.brand_id}, '${escapeHtml(brand.brand_name)}', '${escapeHtml(brand.brand_image || '')}')" 
+                                        onclick="editBrand(${brand.brand_id}, '${brandName.replace(/'/g, "\\'")}', '${brandImage}')" 
                                         title="Edit Brand">
                                     <i class="fa fa-edit"></i>
                                 </button>
@@ -380,7 +337,7 @@ function displayBrandsSimple(brands) {
                     <div class="card-body">
                         <h5 class="card-title">
                             <i class="fa fa-star text-warning me-2"></i>
-                            ${escapeHtml(brand.brand_name)}
+                            ${brandName}
                         </h5>
                         <p class="card-text text-muted">
                             <small><strong>Brand ID:</strong> ${brand.brand_id}</small>
@@ -391,7 +348,17 @@ function displayBrandsSimple(brands) {
         `;
     });
 
-    $('#brandsContainer').html(html);
+    if (html === '') {
+        $('#brandsContainer').html(`
+            <div class="col-12 text-center py-5">
+                <i class="fa fa-star fa-3x text-muted mb-3"></i>
+                <h4>No Brands Found</h4>
+                <p class="text-muted">Start by adding your first brand.</p>
+            </div>
+        `);
+    } else {
+        $('#brandsContainer').html(html);
+    }
 }
 
 // Edit brand function
