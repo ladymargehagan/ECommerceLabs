@@ -1,5 +1,5 @@
 <?php
-require_once '../classes/brand_class.php';
+require_once __DIR__ . '/../classes/brand_class.php';
 
 class brand_controller extends brand_class
 {

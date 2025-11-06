@@ -1,6 +1,6 @@
 <?php
 
-require_once '../classes/user_class.php';
+require_once __DIR__ . '/../classes/user_class.php';
 
 //Controller functions for user operations
 function register_user_ctr($name, $email, $password, $phone_number, $role, $country, $city, $image = null)
