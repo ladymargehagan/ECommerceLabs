@@ -28,7 +28,18 @@ class brand_controller extends brand_class
     
     public function get_brands_by_user_ctr($user_id)
     {
+        // Ensure database connection
+        if (!$this->db_connect()) {
+            return array('success' => false, 'message' => 'Database connection failed');
+        }
+        
         $brands = $this->get_all_brands();
+        
+        // Ensure we return an array even if empty
+        if (!is_array($brands)) {
+            $brands = array();
+        }
+        
         return array('success' => true, 'data' => $brands);
     }
     

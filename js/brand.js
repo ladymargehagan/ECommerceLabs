@@ -193,18 +193,33 @@ $(document).ready(function() {
 
 // Load brands function
 function loadBrands() {
+    console.log('Loading brands...');
+    
+    // Show loading state
+    $('#brandsContainer').html(`
+        <div class="col-12 text-center py-5">
+            <div class="spinner-border text-primary" role="status">
+                <span class="visually-hidden">Loading...</span>
+            </div>
+            <p class="mt-2">Loading brands...</p>
+        </div>
+    `);
+    
     $.ajax({
         url: '../actions/fetch_brand_action.php',
         method: 'GET',
         dataType: 'json',
+        timeout: 10000, // 10 second timeout
         success: function(response) {
             console.log('Brands response:', response);
             if (response && response.success) {
                 // Ensure data is an array
                 const brands = Array.isArray(response.data) ? response.data : [];
+                console.log('Displaying brands:', brands.length, 'brands found');
                 displayBrands(brands);
             } else {
                 // Show empty state with button
+                console.log('No brands or error in response');
                 $('#brandsContainer').html(`
                     <div class="col-12 text-center py-5">
                         <i class="fa fa-star fa-3x text-muted mb-3"></i>
@@ -218,13 +233,34 @@ function loadBrands() {
             }
         },
         error: function(xhr, status, error) {
-            console.error('Error loading brands:', status, error, xhr.responseText);
+            console.error('Error loading brands:', status, error);
+            console.error('Response text:', xhr.responseText);
+            
+            let errorMsg = 'Unknown error';
+            if (status === 'timeout') {
+                errorMsg = 'Request timed out. Please check your connection.';
+            } else if (status === 'parsererror') {
+                errorMsg = 'Invalid response from server. Check console for details.';
+            } else if (xhr.responseText) {
+                try {
+                    const errorResponse = JSON.parse(xhr.responseText);
+                    errorMsg = errorResponse.message || error;
+                } catch (e) {
+                    errorMsg = xhr.responseText.substring(0, 100);
+                }
+            } else {
+                errorMsg = error || status;
+            }
+            
             $('#brandsContainer').html(`
                 <div class="col-12 text-center py-5">
                     <i class="fa fa-exclamation-triangle fa-3x text-danger mb-3"></i>
                     <h4>Error Loading Brands</h4>
                     <p class="text-muted">Please refresh the page and try again.</p>
-                    <p class="text-danger small">Error: ${error}</p>
+                    <p class="text-danger small">Error: ${errorMsg}</p>
+                    <button class="btn btn-outline-primary mt-3" onclick="loadBrands()">
+                        <i class="fa fa-refresh me-1"></i>Retry
+                    </button>
                 </div>
             `);
         }
@@ -365,8 +401,26 @@ function displayBrandsGroupedByCategories(brands, categories) {
 
 // Simple display without grouping - always show images (exact same pattern as categories)
 function displayBrandsSimple(brands) {
-    let html = '';
+    console.log('displayBrandsSimple called with', brands.length, 'brands');
+    
+    if (!brands || brands.length === 0) {
+        console.log('No brands to display, showing empty state');
+        $('#brandsContainer').html(`
+            <div class="col-12 text-center py-5">
+                <i class="fa fa-star fa-3x text-muted mb-3"></i>
+                <h4 class="text-muted">No Brands Found</h4>
+                <p class="text-muted">Start by adding your first brand!</p>
+                <button class="btn btn-custom" data-bs-toggle="modal" data-bs-target="#addBrandModal">
+                    <i class="fa fa-plus me-1"></i>Add Brand
+                </button>
+            </div>
+        `);
+        return;
+    }
+    
+    let html = '<div class="row">';
     brands.forEach(function(brand) {
+        console.log('Processing brand:', brand);
         // Use exact same pattern as categories - simple and works
         const imageSrc = brand.brand_image ? `../${brand.brand_image}` : '../uploads/placeholder.png';
         const escapedBrandName = escapeHtml(brand.brand_name);
@@ -379,7 +433,7 @@ function displayBrandsSimple(brands) {
                         <img src="${imageSrc}" class="card-img-top brand-image" alt="${escapedBrandName}" onerror="this.src='../uploads/placeholder.png'">
                         <div class="brand-overlay">
                             <div class="action-buttons">
-                                <button class="btn btn-sm btn-outline-primary me-1" onclick="editBrand(${brand.brand_id}, '${escapedBrandName}', '${escapedBrandImage}')" title="Edit Brand">
+                                <button class="btn btn-sm btn-outline-primary me-1" onclick="editBrand(${brand.brand_id}, '${escapedBrandName.replace(/'/g, "\\'")}', '${escapedBrandImage.replace(/'/g, "\\'")}')" title="Edit Brand">
                                     <i class="fa fa-edit"></i>
                                 </button>
                                 <button class="btn btn-sm btn-outline-danger" onclick="deleteBrand(${brand.brand_id})" title="Delete Brand">
@@ -401,8 +455,17 @@ function displayBrandsSimple(brands) {
             </div>
         `;
     });
+    html += '</div>';
 
-    $('#brandsContainer').html(html);
+    console.log('Setting HTML to brandsContainer, length:', html.length);
+    const container = $('#brandsContainer');
+    if (container.length === 0) {
+        console.error('brandsContainer not found!');
+        return;
+    }
+    
+    container.html(html);
+    console.log('HTML set successfully');
 }
 
 // Edit brand function

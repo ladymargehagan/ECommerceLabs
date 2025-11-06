@@ -19,6 +19,16 @@ $user_id = $_SESSION['user_id'];
 $brand_controller = new brand_controller();
 $result = $brand_controller->get_brands_by_user_ctr($user_id);
 
+// Ensure result is always an array with proper structure
+if (!is_array($result)) {
+    $result = array('success' => false, 'message' => 'Invalid response from controller');
+}
+
+// Ensure data is always an array
+if (isset($result['data']) && !is_array($result['data'])) {
+    $result['data'] = array();
+}
+
 header('Content-Type: application/json');
 echo json_encode($result);
 ?>
