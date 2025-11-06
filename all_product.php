@@ -25,7 +25,6 @@ if (file_exists('settings/db_class.php') && file_exists('classes/product_class.p
         
         $product_class = new product_class();
         
-        // Ensure database connection is established
         if ($product_class->db_connect()) {
             // Get products based on filters
             if ($category_id || $brand_id || $search_query) {
@@ -47,15 +46,6 @@ if (file_exists('settings/db_class.php') && file_exists('classes/product_class.p
         }
     } catch (Exception $e) {
         error_log("Error loading product data: " . $e->getMessage());
-        // Display error in development (remove in production)
-        if (ini_get('display_errors')) {
-            echo "<!-- Error: " . htmlspecialchars($e->getMessage()) . " -->";
-        }
-    } catch (Error $e) {
-        error_log("Fatal error loading product data: " . $e->getMessage());
-        if (ini_get('display_errors')) {
-            echo "<!-- Fatal Error: " . htmlspecialchars($e->getMessage()) . " -->";
-        }
     }
 }
 

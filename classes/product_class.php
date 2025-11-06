@@ -15,7 +15,7 @@ class product_class extends db_connection
                 VALUES ('$product_cat', '$product_brand', '$product_title', '$product_price', '$product_desc', '$product_image', '$product_keywords')";
         $result = $this->db_write_query($sql);
         
-        if ($result && $this->db) {
+        if ($result) {
             // Return the ID of the inserted product
             return $this->db->insert_id;
         }
@@ -146,7 +146,7 @@ class product_class extends db_connection
 
     public function search_products($query, $limit = null, $offset = 0)
     {
-        if (!$this->db_connect()) {
+        if (!$this->db_conn()) {
             return array();
         }
         $search_query = $this->db->real_escape_string($query);
@@ -171,7 +171,7 @@ class product_class extends db_connection
 
     public function filter_products_by_category($cat_id, $limit = null, $offset = 0)
     {
-        if (!$this->db_connect()) {
+        if (!$this->db_conn()) {
             return array();
         }
         $cat_id = $this->db->real_escape_string($cat_id);
@@ -192,7 +192,7 @@ class product_class extends db_connection
 
     public function filter_products_by_brand($brand_id, $limit = null, $offset = 0)
     {
-        if (!$this->db_connect()) {
+        if (!$this->db_conn()) {
             return array();
         }
         $brand_id = $this->db->real_escape_string($brand_id);
@@ -213,7 +213,7 @@ class product_class extends db_connection
 
     public function view_single_product($id)
     {
-        if (!$this->db_connect()) {
+        if (!$this->db_conn()) {
             return false;
         }
         $id = $this->db->real_escape_string($id);
@@ -236,7 +236,7 @@ class product_class extends db_connection
 
     public function get_search_count($query)
     {
-        if (!$this->db_connect()) {
+        if (!$this->db_conn()) {
             return 0;
         }
         $search_query = $this->db->real_escape_string($query);
@@ -255,7 +255,7 @@ class product_class extends db_connection
 
     public function get_category_count($cat_id)
     {
-        if (!$this->db_connect()) {
+        if (!$this->db_conn()) {
             return 0;
         }
         $cat_id = $this->db->real_escape_string($cat_id);
@@ -266,7 +266,7 @@ class product_class extends db_connection
 
     public function get_brand_count($brand_id)
     {
-        if (!$this->db_connect()) {
+        if (!$this->db_conn()) {
             return 0;
         }
         $brand_id = $this->db->real_escape_string($brand_id);
@@ -277,10 +277,9 @@ class product_class extends db_connection
 
     public function get_products_with_filters($category_id = null, $brand_id = null, $search_query = null, $limit = null, $offset = 0)
     {
-        if (!$this->db_connect()) {
+        if (!$this->db_conn()) {
             return array();
         }
-        
         $sql = "SELECT p.*, c.cat_name, b.brand_name 
                 FROM products p 
                 LEFT JOIN categories c ON p.product_cat = c.cat_id 
@@ -318,10 +317,9 @@ class product_class extends db_connection
 
     public function get_filtered_count($category_id = null, $brand_id = null, $search_query = null)
     {
-        if (!$this->db_connect()) {
+        if (!$this->db_conn()) {
             return 0;
         }
-        
         $sql = "SELECT COUNT(*) as total 
                 FROM products p 
                 LEFT JOIN categories c ON p.product_cat = c.cat_id 
