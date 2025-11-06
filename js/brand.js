@@ -178,9 +178,12 @@ function loadBrands() {
         method: 'GET',
         dataType: 'json',
         success: function(response) {
-            if (response.success) {
+            console.log('Brands response:', response);
+            if (response && response.success && response.data) {
+                console.log('Brands data:', response.data);
                 displayBrands(response.data);
             } else {
+                console.log('No brands in response');
                 $('#brandsContainer').html(`
                     <div class="col-12 text-center py-5">
                         <i class="fa fa-exclamation-triangle fa-3x text-warning mb-3"></i>
@@ -190,12 +193,14 @@ function loadBrands() {
                 `);
             }
         },
-        error: function() {
+        error: function(xhr, status, error) {
+            console.error('Error loading brands:', error, xhr.responseText);
             $('#brandsContainer').html(`
                 <div class="col-12 text-center py-5">
                     <i class="fa fa-exclamation-triangle fa-3x text-danger mb-3"></i>
                     <h4>Error Loading Brands</h4>
                     <p class="text-muted">Please refresh the page and try again.</p>
+                    <p class="text-muted"><small>Error: ${error}</small></p>
                 </div>
             `);
         }
@@ -236,7 +241,9 @@ function populateCategorySelects(categories) {
 
 // Display brands function - organized by categories
 function displayBrands(data) {
-    if (!data || data.length === 0) {
+    console.log('Display brands called with:', data);
+    if (!data || !Array.isArray(data) || data.length === 0) {
+        console.log('No data to display');
         $('#brandsContainer').html(`
             <div class="col-12 text-center py-5">
                 <i class="fa fa-star fa-3x text-muted mb-3"></i>
@@ -250,11 +257,12 @@ function displayBrands(data) {
     // Group data by category
     const categoriesMap = {};
     data.forEach(function(item) {
-        const catId = item.cat_id;
+        if (!item) return;
+        const catId = item.cat_id !== null && item.cat_id !== undefined ? item.cat_id : 0;
         if (!categoriesMap[catId]) {
             categoriesMap[catId] = {
                 cat_id: item.cat_id,
-                cat_name: item.cat_name,
+                cat_name: item.cat_name || 'All Brands',
                 cat_image: item.cat_image,
                 brands: []
             };
@@ -268,6 +276,7 @@ function displayBrands(data) {
         }
     });
 
+    console.log('Categories map:', categoriesMap);
     // Display organized by categories
     displayBrandsGroupedByCategories(categoriesMap);
 }

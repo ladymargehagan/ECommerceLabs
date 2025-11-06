@@ -113,6 +113,13 @@ class brand_class extends db_connection
 
     public function get_brands_by_category_for_user($user_id)
     {
+        // Get all brands first - simple and reliable
+        $brands_sql = "SELECT brand_id, brand_name, brand_image FROM brands ORDER BY brand_name ASC";
+        $all_brands = $this->db_fetch_all($brands_sql);
+        if (!$all_brands) {
+            $all_brands = array();
+        }
+        
         // Get user's categories
         $categories_sql = "SELECT cat_id, cat_name, cat_image 
                            FROM categories 
@@ -123,14 +130,8 @@ class brand_class extends db_connection
         }
         
         // Get brands organized by categories through products
-        $result = array();
+        $brands_by_category = array();
         if (count($user_categories) > 0) {
-            $cat_ids = array();
-            foreach ($user_categories as $cat) {
-                $cat_ids[] = $cat['cat_id'];
-            }
-            $cat_ids_str = implode(',', $cat_ids);
-            
             $sql = "SELECT c.cat_id, c.cat_name, c.cat_image, 
                            b.brand_id, b.brand_name, b.brand_image
                     FROM categories c
@@ -139,29 +140,24 @@ class brand_class extends db_connection
                     WHERE c.created_by = '$user_id' AND b.brand_id IS NOT NULL
                     GROUP BY c.cat_id, b.brand_id
                     ORDER BY c.cat_name ASC, b.brand_name ASC";
-            $result = $this->db_fetch_all($sql);
-            if (!$result) {
-                $result = array();
+            $brands_by_category = $this->db_fetch_all($sql);
+            if (!$brands_by_category) {
+                $brands_by_category = array();
             }
-        }
-        
-        // Get all brands (created_by may not exist, so get all for now)
-        $brands_sql = "SELECT brand_id, brand_name, brand_image FROM brands ORDER BY brand_name ASC";
-        $all_brands = $this->db_fetch_all($brands_sql);
-        if (!$all_brands) {
-            $all_brands = array();
         }
         
         // Track which brands are already in categories
         $brands_in_categories = array();
-        foreach ($result as $item) {
+        foreach ($brands_by_category as $item) {
             if ($item['brand_id']) {
                 $brands_in_categories[$item['brand_id']] = true;
             }
         }
         
+        // Build result: brands with products (organized by category) + brands without products
+        $result = $brands_by_category;
+        
         // Add brands that aren't in any category yet
-        // If user has categories, add to first one. Otherwise create "All Brands" section
         foreach ($all_brands as $brand) {
             if (!isset($brands_in_categories[$brand['brand_id']])) {
                 if (count($user_categories) > 0) {

@@ -36,6 +36,10 @@ class brand_controller extends brand_class
     public function get_brands_by_category_for_user_ctr($user_id)
     {
         $data = $this->get_brands_by_category_for_user($user_id);
+        // Ensure we always return success with data (even if empty array)
+        if ($data === false) {
+            $data = array();
+        }
         return array('success' => true, 'data' => $data);
     }
     
