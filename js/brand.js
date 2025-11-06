@@ -1,4 +1,24 @@
 $(document).ready(function() {
+    console.log('Brand page loaded, initializing...');
+    
+    // Verify jQuery and container exist
+    if (typeof $ === 'undefined') {
+        console.error('jQuery is not loaded!');
+        $('#brandsContainer').html(`
+            <div class="col-12 text-center py-5">
+                <i class="fa fa-exclamation-triangle fa-3x text-danger mb-3"></i>
+                <h4>JavaScript Error</h4>
+                <p class="text-muted">jQuery is not loaded. Please refresh the page.</p>
+            </div>
+        `);
+        return;
+    }
+    
+    if ($('#brandsContainer').length === 0) {
+        console.error('Brands container not found!');
+        return;
+    }
+    
     // Load brands and categories on page load
     loadBrands();
     loadCategories();
@@ -178,24 +198,33 @@ function loadBrands() {
         method: 'GET',
         dataType: 'json',
         success: function(response) {
-            if (response.success) {
-                displayBrands(response.data);
+            console.log('Brands response:', response);
+            if (response && response.success) {
+                // Ensure data is an array
+                const brands = Array.isArray(response.data) ? response.data : [];
+                displayBrands(brands);
             } else {
+                // Show empty state with button
                 $('#brandsContainer').html(`
                     <div class="col-12 text-center py-5">
-                        <i class="fa fa-exclamation-triangle fa-3x text-warning mb-3"></i>
-                        <h4>No Brands Found</h4>
-                        <p class="text-muted">Start by adding your first brand.</p>
+                        <i class="fa fa-star fa-3x text-muted mb-3"></i>
+                        <h4 class="text-muted">No Brands Found</h4>
+                        <p class="text-muted">Start by adding your first brand!</p>
+                        <button class="btn btn-custom" data-bs-toggle="modal" data-bs-target="#addBrandModal">
+                            <i class="fa fa-plus me-1"></i>Add Brand
+                        </button>
                     </div>
                 `);
             }
         },
-        error: function() {
+        error: function(xhr, status, error) {
+            console.error('Error loading brands:', status, error, xhr.responseText);
             $('#brandsContainer').html(`
                 <div class="col-12 text-center py-5">
                     <i class="fa fa-exclamation-triangle fa-3x text-danger mb-3"></i>
                     <h4>Error Loading Brands</h4>
                     <p class="text-muted">Please refresh the page and try again.</p>
+                    <p class="text-danger small">Error: ${error}</p>
                 </div>
             `);
         }
@@ -236,7 +265,14 @@ function populateCategorySelects(categories) {
 
 // Display brands function - always show images like categories do
 function displayBrands(brands) {
-    if (!brands || brands.length === 0) {
+    console.log('Displaying brands:', brands);
+    
+    // Ensure brands is an array
+    if (!Array.isArray(brands)) {
+        brands = [];
+    }
+    
+    if (brands.length === 0) {
         $('#brandsContainer').html(`
             <div class="col-12 text-center py-5">
                 <i class="fa fa-star fa-3x text-muted mb-3"></i>
@@ -251,7 +287,18 @@ function displayBrands(brands) {
     }
 
     // Always use simple display to ensure images show (like categories)
-    displayBrandsSimple(brands);
+    try {
+        displayBrandsSimple(brands);
+    } catch (error) {
+        console.error('Error displaying brands:', error);
+        $('#brandsContainer').html(`
+            <div class="col-12 text-center py-5">
+                <i class="fa fa-exclamation-triangle fa-3x text-danger mb-3"></i>
+                <h4>Error Displaying Brands</h4>
+                <p class="text-muted">${error.message}</p>
+            </div>
+        `);
+    }
 }
 
 // Display brands grouped by categories
