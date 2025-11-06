@@ -248,8 +248,9 @@ function populateCategorySelects(categories) {
     });
 }
 
-// Display brands function - simple display without category grouping
+// Display brands function - SIMPLE DISPLAY ONLY, NO CATEGORY GROUPING
 function displayBrands(brands) {
+    console.log('displayBrands called with:', brands);
     if (!brands || !Array.isArray(brands) || brands.length === 0) {
         $('#brandsContainer').html(`
             <div class="col-12 text-center py-5">
@@ -261,7 +262,7 @@ function displayBrands(brands) {
         return;
     }
 
-    // Display brands simply without category grouping
+    // DIRECTLY display brands in simple grid - NO CATEGORY GROUPING
     displayBrandsSimple(brands);
 }
 
@@ -288,8 +289,9 @@ function getImagePath(brandImage) {
     return `../${cleanPath}`;
 }
 
-// Simple display without grouping
+// Simple display - NO CATEGORY GROUPING - JUST BRANDS IN A GRID
 function displayBrandsSimple(brands) {
+    console.log('displayBrandsSimple called - NO CATEGORIES');
     if (!brands || !Array.isArray(brands) || brands.length === 0) {
         $('#brandsContainer').html(`
             <div class="col-12 text-center py-5">
