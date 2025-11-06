@@ -178,12 +178,17 @@ function loadBrands() {
         method: 'GET',
         dataType: 'json',
         success: function(response) {
-            if (response && response.success) {
-                // Ensure data is an array
+            // Debug: log the response
+            console.log('Brands response:', response);
+            
+            if (response && response.success && response.data) {
+                // Ensure data is an array - exactly like categories
                 const brands = Array.isArray(response.data) ? response.data : [];
+                console.log('Brands array:', brands);
                 displayBrands(brands);
             } else {
                 // Show empty state with button
+                console.log('No brands found or response error');
                 $('#brandsContainer').html(`
                     <div class="col-12 text-center py-5">
                         <i class="fa fa-star fa-3x text-muted mb-3"></i>
@@ -197,6 +202,7 @@ function loadBrands() {
             }
         },
         error: function(xhr, status, error) {
+            console.error('Brands AJAX error:', status, error, xhr.responseText);
             $('#brandsContainer').html(`
                 <div class="col-12 text-center py-5">
                     <i class="fa fa-exclamation-triangle fa-3x text-danger mb-3"></i>
@@ -245,11 +251,15 @@ function populateCategorySelects(categories) {
 
 // Display brands function - always show images like categories do
 function displayBrands(brands) {
+    console.log('displayBrands called with:', brands);
+    
     // Ensure brands is an array
     if (!Array.isArray(brands)) {
+        console.warn('Brands is not an array:', brands);
         brands = [];
     }
     
+    console.log('Calling displayBrandsSimple with', brands.length, 'brands');
     // Always use simple display to ensure images show (like categories)
     displayBrandsSimple(brands);
 }
@@ -318,6 +328,7 @@ function displayBrandsGroupedByCategories(brands, categories) {
 
 // Simple display without grouping - always show images (exact same pattern as categories)
 function displayBrandsSimple(brands) {
+    console.log('displayBrandsSimple called with', brands);
     const container = $('#brandsContainer');
     
     if (!container.length) {
@@ -325,7 +336,10 @@ function displayBrandsSimple(brands) {
         return;
     }
     
+    console.log('Container found, brands length:', brands ? brands.length : 'null');
+    
     if (!brands || brands.length === 0) {
+        console.log('No brands, showing empty state');
         container.html(`
             <div class="col-12 text-center py-5">
                 <i class="fa fa-star fa-3x text-muted mb-3"></i>
@@ -339,8 +353,10 @@ function displayBrandsSimple(brands) {
         return;
     }
     
+    console.log('Building HTML for', brands.length, 'brands');
     let html = '';
-    brands.forEach(function(brand) {
+    brands.forEach(function(brand, index) {
+        console.log('Processing brand', index, ':', brand);
         // Use exact same pattern as categories - simple and works
         const imageSrc = brand.brand_image ? `../${brand.brand_image}` : '../uploads/placeholder.png';
         const escapedBrandName = escapeHtml(brand.brand_name);
@@ -376,7 +392,9 @@ function displayBrandsSimple(brands) {
         `;
     });
     
+    console.log('Setting HTML, length:', html.length);
     container.html(html);
+    console.log('HTML set, container now has', container.children().length, 'children');
 }
 
 // Edit brand function
