@@ -240,8 +240,11 @@ function displayBrands(brands) {
         $('#brandsContainer').html(`
             <div class="col-12 text-center py-5">
                 <i class="fa fa-star fa-3x text-muted mb-3"></i>
-                <h4>No Brands Found</h4>
-                <p class="text-muted">Start by adding your first brand.</p>
+                <h4 class="text-muted">No Brands Found</h4>
+                <p class="text-muted">Start by adding your first brand!</p>
+                <button class="btn btn-custom" data-bs-toggle="modal" data-bs-target="#addBrandModal">
+                    <i class="fa fa-plus me-1"></i>Add Brand
+                </button>
             </div>
         `);
         return;
