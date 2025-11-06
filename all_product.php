@@ -1,4 +1,9 @@
 <?php
+// Enable error reporting for debugging (remove in production)
+error_reporting(E_ALL);
+ini_set('display_errors', 0);
+ini_set('log_errors', 1);
+
 session_start();
 
 // Initialize empty arrays
@@ -7,6 +12,7 @@ $categories = array();
 $brands = array();
 $total_count = 0;
 $total_pages = 0;
+$error_message = '';
 
 // Get current page and filters
 $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
@@ -43,14 +49,22 @@ if (file_exists('settings/db_class.php') && file_exists('classes/product_class.p
             if (!is_array($products)) $products = array();
             if (!is_array($categories)) $categories = array();
             if (!is_array($brands)) $brands = array();
+        } else {
+            $error_message = 'Failed to connect to database.';
         }
     } catch (Exception $e) {
+        $error_message = 'Error loading product data: ' . $e->getMessage();
         error_log("Error loading product data: " . $e->getMessage());
+    } catch (Error $e) {
+        $error_message = 'Fatal error: ' . $e->getMessage();
+        error_log("Fatal error loading product data: " . $e->getMessage());
     }
+} else {
+    $error_message = 'Required files not found.';
 }
 
-// Calculate pagination
-$total_pages = ceil($total_count / $limit);
+// Calculate pagination (avoid division by zero)
+$total_pages = $limit > 0 ? ceil($total_count / $limit) : 0;
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -202,6 +216,13 @@ $total_pages = ceil($total_count / $limit);
                 <?php endif; ?>
             </form>
         </div>
+
+        <!-- Error Message -->
+        <?php if ($error_message): ?>
+            <div class="alert alert-danger" role="alert">
+                <i class="fa fa-exclamation-triangle me-2"></i><?php echo htmlspecialchars($error_message); ?>
+            </div>
+        <?php endif; ?>
 
         <!-- Results Summary -->
         <div class="row mb-3">

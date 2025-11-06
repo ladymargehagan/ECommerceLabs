@@ -146,10 +146,11 @@ class product_class extends db_connection
 
     public function search_products($query, $limit = null, $offset = 0)
     {
-        if (!$this->db_conn()) {
+        $db = $this->db_conn();
+        if (!$db) {
             return array();
         }
-        $search_query = $this->db->real_escape_string($query);
+        $search_query = $db->real_escape_string($query);
         $sql = "SELECT p.*, c.cat_name, b.brand_name 
                 FROM products p 
                 LEFT JOIN categories c ON p.product_cat = c.cat_id 
@@ -171,10 +172,11 @@ class product_class extends db_connection
 
     public function filter_products_by_category($cat_id, $limit = null, $offset = 0)
     {
-        if (!$this->db_conn()) {
+        $db = $this->db_conn();
+        if (!$db) {
             return array();
         }
-        $cat_id = $this->db->real_escape_string($cat_id);
+        $cat_id = $db->real_escape_string($cat_id);
         $sql = "SELECT p.*, c.cat_name, b.brand_name 
                 FROM products p 
                 LEFT JOIN categories c ON p.product_cat = c.cat_id 
@@ -192,10 +194,11 @@ class product_class extends db_connection
 
     public function filter_products_by_brand($brand_id, $limit = null, $offset = 0)
     {
-        if (!$this->db_conn()) {
+        $db = $this->db_conn();
+        if (!$db) {
             return array();
         }
-        $brand_id = $this->db->real_escape_string($brand_id);
+        $brand_id = $db->real_escape_string($brand_id);
         $sql = "SELECT p.*, c.cat_name, b.brand_name 
                 FROM products p 
                 LEFT JOIN categories c ON p.product_cat = c.cat_id 
@@ -213,10 +216,11 @@ class product_class extends db_connection
 
     public function view_single_product($id)
     {
-        if (!$this->db_conn()) {
+        $db = $this->db_conn();
+        if (!$db) {
             return false;
         }
-        $id = $this->db->real_escape_string($id);
+        $id = $db->real_escape_string($id);
         $sql = "SELECT p.*, c.cat_name, b.brand_name 
                 FROM products p 
                 LEFT JOIN categories c ON p.product_cat = c.cat_id 
@@ -236,10 +240,11 @@ class product_class extends db_connection
 
     public function get_search_count($query)
     {
-        if (!$this->db_conn()) {
+        $db = $this->db_conn();
+        if (!$db) {
             return 0;
         }
-        $search_query = $this->db->real_escape_string($query);
+        $search_query = $db->real_escape_string($query);
         $sql = "SELECT COUNT(*) as total 
                 FROM products p 
                 LEFT JOIN categories c ON p.product_cat = c.cat_id 
@@ -255,10 +260,11 @@ class product_class extends db_connection
 
     public function get_category_count($cat_id)
     {
-        if (!$this->db_conn()) {
+        $db = $this->db_conn();
+        if (!$db) {
             return 0;
         }
-        $cat_id = $this->db->real_escape_string($cat_id);
+        $cat_id = $db->real_escape_string($cat_id);
         $sql = "SELECT COUNT(*) as total FROM products WHERE product_cat = '$cat_id'";
         $result = $this->db_fetch_one($sql);
         return $result ? $result['total'] : 0;
@@ -266,10 +272,11 @@ class product_class extends db_connection
 
     public function get_brand_count($brand_id)
     {
-        if (!$this->db_conn()) {
+        $db = $this->db_conn();
+        if (!$db) {
             return 0;
         }
-        $brand_id = $this->db->real_escape_string($brand_id);
+        $brand_id = $db->real_escape_string($brand_id);
         $sql = "SELECT COUNT(*) as total FROM products WHERE product_brand = '$brand_id'";
         $result = $this->db_fetch_one($sql);
         return $result ? $result['total'] : 0;
@@ -277,7 +284,8 @@ class product_class extends db_connection
 
     public function get_products_with_filters($category_id = null, $brand_id = null, $search_query = null, $limit = null, $offset = 0)
     {
-        if (!$this->db_conn()) {
+        $db = $this->db_conn();
+        if (!$db) {
             return array();
         }
         $sql = "SELECT p.*, c.cat_name, b.brand_name 
@@ -287,17 +295,17 @@ class product_class extends db_connection
                 WHERE 1=1";
         
         if ($category_id) {
-            $category_id = $this->db->real_escape_string($category_id);
+            $category_id = $db->real_escape_string($category_id);
             $sql .= " AND p.product_cat = '$category_id'";
         }
         
         if ($brand_id) {
-            $brand_id = $this->db->real_escape_string($brand_id);
+            $brand_id = $db->real_escape_string($brand_id);
             $sql .= " AND p.product_brand = '$brand_id'";
         }
         
         if ($search_query) {
-            $search_query = $this->db->real_escape_string($search_query);
+            $search_query = $db->real_escape_string($search_query);
             $sql .= " AND (p.product_title LIKE '%$search_query%' 
                     OR p.product_desc LIKE '%$search_query%' 
                     OR p.product_keywords LIKE '%$search_query%'
@@ -317,7 +325,8 @@ class product_class extends db_connection
 
     public function get_filtered_count($category_id = null, $brand_id = null, $search_query = null)
     {
-        if (!$this->db_conn()) {
+        $db = $this->db_conn();
+        if (!$db) {
             return 0;
         }
         $sql = "SELECT COUNT(*) as total 
@@ -327,17 +336,17 @@ class product_class extends db_connection
                 WHERE 1=1";
         
         if ($category_id) {
-            $category_id = $this->db->real_escape_string($category_id);
+            $category_id = $db->real_escape_string($category_id);
             $sql .= " AND p.product_cat = '$category_id'";
         }
         
         if ($brand_id) {
-            $brand_id = $this->db->real_escape_string($brand_id);
+            $brand_id = $db->real_escape_string($brand_id);
             $sql .= " AND p.product_brand = '$brand_id'";
         }
         
         if ($search_query) {
-            $search_query = $this->db->real_escape_string($search_query);
+            $search_query = $db->real_escape_string($search_query);
             $sql .= " AND (p.product_title LIKE '%$search_query%' 
                     OR p.product_desc LIKE '%$search_query%' 
                     OR p.product_keywords LIKE '%$search_query%'
