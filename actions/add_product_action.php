@@ -69,57 +69,38 @@ if ($result['success'] && isset($result['product_id'])) {
     
     // Handle image upload if provided
     if (isset($_FILES['productImage']) && $_FILES['productImage']['error'] === UPLOAD_ERR_OK) {
-        // Process filename
-        $originalName = $_FILES['productImage']['name'];
-        $extension = pathinfo($originalName, PATHINFO_EXTENSION);
-        $sanitizedName = preg_replace('/[^a-zA-Z0-9._-]/', '_', pathinfo($originalName, PATHINFO_FILENAME));
+        // Use the upload_image_ctr method for consistent image handling
+        $upload_result = $product_controller->upload_image_ctr($_FILES['productImage'], $product_id);
         
-        // Create directory structure: product/{product_id}/
-        $upload_dir = "../product/{$product_id}/";
-        
-        // Ensure directory exists
-        if (!is_dir($upload_dir)) {
-            if (!mkdir($upload_dir, 0777, true)) {
-                // Don't fail the entire operation if directory creation fails
-                // Just log it and continue without image
-                error_log("Failed to create upload directory: {$upload_dir}");
-            }
-        }
-        
-        // Proceed with upload if directory exists or was created
-        if (is_dir($upload_dir)) {
-            // Generate filename with timestamp
-            $timestamp = time();
-            $filename = "img_{$sanitizedName}_{$timestamp}.{$extension}";
-            $file_path = $upload_dir . $filename;
+        if ($upload_result['success']) {
+            $product_image = $upload_result['data'];
             
-            // Move uploaded file
-            if (move_uploaded_file($_FILES['productImage']['tmp_name'], $file_path)) {
-                $product_image = "product/{$product_id}/{$filename}";
-                
-                // Update the product with the image path
-                $update_kwargs = array(
-                    'product_id' => $product_id,
-                    'product_cat' => $product_cat,
-                    'product_brand' => $product_brand,
-                    'product_title' => $product_title,
-                    'product_price' => $product_price,
-                    'product_desc' => $product_desc,
-                    'product_image' => $product_image,
-                    'product_keywords' => $product_keywords
-                );
-                
-                $update_result = $product_controller->update_product_ctr($update_kwargs);
-                
-                // Update the result to include the image path (but don't fail if update fails)
-                if ($update_result['success']) {
-                    $result['product_image'] = $product_image;
-                } else {
-                    // Image upload/update failed, but product was created
-                    // Add a warning message but keep success status
-                    $result['image_warning'] = 'Product created but image update failed. You can update the image later.';
-                }
+            // Update the product with the image path
+            $update_kwargs = array(
+                'product_id' => $product_id,
+                'product_cat' => $product_cat,
+                'product_brand' => $product_brand,
+                'product_title' => $product_title,
+                'product_price' => $product_price,
+                'product_desc' => $product_desc,
+                'product_image' => $product_image,
+                'product_keywords' => $product_keywords
+            );
+            
+            $update_result = $product_controller->update_product_ctr($update_kwargs);
+            
+            // Update the result to include the image path (but don't fail if update fails)
+            if ($update_result['success']) {
+                $result['product_image'] = $product_image;
+            } else {
+                // Image upload/update failed, but product was created
+                // Add a warning message but keep success status
+                $result['image_warning'] = 'Product created but image update failed. You can update the image later.';
             }
+        } else {
+            // Image upload failed, but product was created
+            // Add a warning message but keep success status
+            $result['image_warning'] = 'Product created but image upload failed: ' . $upload_result['message'] . '. You can update the image later.';
         }
     }
 }

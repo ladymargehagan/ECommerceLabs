@@ -51,8 +51,10 @@ if (isset($_FILES['productImage']) && $_FILES['productImage']['error'] === UPLOA
     if ($upload_result['success']) {
         $product_image = $upload_result['data'];
     } else {
-        echo json_encode($upload_result);
-        exit;
+        // Image upload failed, but don't fail the entire update
+        // Keep existing image and show warning
+        error_log("Product image upload failed: " . $upload_result['message']);
+        // Keep the existing image - don't change it
     }
 }
 
