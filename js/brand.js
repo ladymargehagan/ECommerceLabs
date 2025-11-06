@@ -46,14 +46,47 @@ function loadBrands() {
         dataType: 'json',
         success: function(response) {
             hideLoading();
-            if (response.success) {
-                displayBrands(response.data);
+            console.log('Brands fetch response:', response);
+            
+            if (response && response.success) {
+                console.log('Brands data received:', response.data);
+                displayBrands(response.data || []);
             } else {
+                console.warn('Brands fetch returned unsuccessful response:', response);
+                if (response && response.message) {
+                    showAlert('error', 'Error', response.message);
+                }
                 displayBrands([]);
             }
         },
         error: function(xhr, status, error) {
             hideLoading();
+            console.error('Brands fetch error:', {
+                status: xhr.status,
+                statusText: xhr.statusText,
+                responseText: xhr.responseText,
+                error: error
+            });
+            
+            // Try to parse response if it's JSON
+            let errorMessage = 'Failed to load brands. Please try again.';
+            if (xhr.responseText) {
+                try {
+                    const errorResponse = JSON.parse(xhr.responseText);
+                    if (errorResponse.message) {
+                        errorMessage = errorResponse.message;
+                    }
+                } catch (e) {
+                    // Not JSON, use raw response or default message
+                    if (xhr.status === 404) {
+                        errorMessage = 'Brands endpoint not found. Please check the server configuration.';
+                    } else if (xhr.status === 500) {
+                        errorMessage = 'Server error occurred. Please check the server logs.';
+                    }
+                }
+            }
+            
+            showAlert('error', 'Error Loading Brands', errorMessage);
             displayBrands([]);
         }
     });
@@ -61,6 +94,12 @@ function loadBrands() {
 
 function displayBrands(brands) {
     const container = $('#brandsContainer');
+    
+    // Ensure brands is an array
+    if (!Array.isArray(brands)) {
+        console.error('displayBrands: brands is not an array:', brands);
+        brands = [];
+    }
     
     if (brands.length === 0) {
         container.html(`
@@ -75,6 +114,8 @@ function displayBrands(brands) {
         `);
         return;
     }
+    
+    console.log('Displaying', brands.length, 'brands');
 
     let html = '';
     brands.forEach(function(brand) {
