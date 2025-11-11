@@ -1,44 +1,62 @@
 /* ===========================================
    MAIN CSS - Taste of Africa
-   Modern, Clean & Fresh Design
+   Afro-Modern Minimalism Design System
    =========================================== */
 
-/* ===== REFINED COLOR PALETTE ===== */
+/* ===== BRAND COLOR PALETTE ===== */
 :root {
-    /* Primary - Rich Earth Tones */
-    --primary: #8B6F47;           /* Warm brown */
-    --primary-dark: #6B5438;      /* Darker brown */
-    --primary-light: #A6896B;     /* Lighter brown */
-    --primary-hover: #7A5F3F;     /* Hover state */
+    /* Primary Brand Colors */
+    --mustard-yellow: #F4B400;
+    --warm-orange: #F47C20;
+    --brick-red: #A63C1B;
+    --forest-green: #164A41;
+    --deep-teal: #0F3433;
     
-    /* Accent Colors */
-    --accent-orange: #E67E22;     /* Warm orange */
-    --accent-green: #27AE60;      /* Fresh green */
-    --accent-yellow: #F39C12;     /* Golden yellow */
-    
-    /* Neutrals */
+    /* Background & Neutrals */
+    --cream-bg: #F9EDE2;
+    --light-sage: #DCE4D0;
+    --neutral-gray: #EDEDED;
+    --charcoal-text: #222222;
     --white: #FFFFFF;
-    --bg-light: #F8F9FA;
-    --bg-cream: #FEFBF7;
-    --text-dark: #2C3E50;
-    --text-medium: #5D6D7E;
-    --text-light: #95A5A6;
-    --border-light: #E8ECEF;
+    
+    /* Semantic Colors */
+    --primary: var(--forest-green);
+    --primary-hover: var(--deep-teal);
+    --accent: var(--warm-orange);
+    --accent-hover: var(--brick-red);
+    --highlight: var(--mustard-yellow);
+    
+    /* Text Colors */
+    --text-dark: var(--charcoal-text);
+    --text-medium: #555555;
+    --text-light: #888888;
+    
+    /* Backgrounds */
+    --bg-primary: var(--cream-bg);
+    --bg-secondary: var(--white);
+    --bg-light: var(--light-sage);
+    --bg-accent: var(--neutral-gray);
+    
+    /* Borders */
+    --border-color: var(--neutral-gray);
+    --border-light: rgba(237, 237, 237, 0.5);
+    
+    /* Shadows - Subtle & Minimal */
+    --shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.04);
+    --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.06);
+    --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.08);
+    --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.1);
     
     /* Status Colors */
-    --success: #27AE60;
-    --danger: #E74C3C;
-    --warning: #F39C12;
-    --info: #3498DB;
-    
-    /* Shadows */
-    --shadow-xs: 0 1px 3px rgba(0, 0, 0, 0.05);
-    --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.08);
-    --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.1);
-    --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.12);
+    --success: var(--forest-green);
+    --danger: var(--brick-red);
+    --warning: var(--mustard-yellow);
+    --info: var(--deep-teal);
 }
 
-/* ===== GLOBAL RESET ===== */
+/* ===== TYPOGRAPHY ===== */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Playfair+Display:wght@400;600;700&display=swap');
+
 * {
     box-sizing: border-box;
     margin: 0;
@@ -46,67 +64,98 @@
 }
 
 body {
-    background-color: var(--bg-cream);
+    background-color: var(--cream-bg);
     min-height: 100vh;
-    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
+    font-family: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
     color: var(--text-dark);
     line-height: 1.6;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    font-weight: 400;
 }
 
-/* ===== TYPOGRAPHY ===== */
+/* Typography Hierarchy */
 h1, h2, h3, h4, h5, h6 {
+    font-family: 'Playfair Display', serif;
     color: var(--text-dark);
     font-weight: 700;
     line-height: 1.2;
     margin-bottom: 1rem;
 }
 
-h1 { font-size: 2.5rem; }
-h2 { font-size: 2rem; }
-h3 { font-size: 1.75rem; }
-h4 { font-size: 1.5rem; }
-h5 { font-size: 1.25rem; }
-h6 { font-size: 1rem; }
+h1 { 
+    font-size: 3rem; 
+    font-weight: 700;
+    letter-spacing: -0.02em;
+}
+
+h2 { 
+    font-size: 2.25rem; 
+    font-weight: 600;
+}
+
+h3 { 
+    font-size: 1.75rem; 
+    font-weight: 600;
+}
+
+h4 { 
+    font-size: 1.5rem; 
+    font-weight: 600;
+}
+
+h5 { 
+    font-size: 1.25rem; 
+    font-weight: 500;
+}
+
+h6 { 
+    font-size: 1rem; 
+    font-weight: 500;
+}
 
 p {
     margin-bottom: 1rem;
     color: var(--text-medium);
+    font-size: 1rem;
+    line-height: 1.7;
 }
 
 a {
-    color: var(--primary);
+    color: var(--forest-green);
     text-decoration: none;
-    transition: color 0.2s ease;
+    transition: all 0.2s ease;
+    font-weight: 500;
 }
 
 a:hover {
-    color: var(--primary-hover);
+    color: var(--deep-teal);
 }
 
 /* ===== BUTTONS ===== */
 .btn-custom {
-    background: var(--primary);
+    background: var(--forest-green);
     border: none;
     color: var(--white);
     border-radius: 8px;
     font-weight: 600;
-    padding: 12px 24px;
-    transition: all 0.2s ease;
+    padding: 14px 28px;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     cursor: pointer;
     display: inline-flex;
     align-items: center;
     justify-content: center;
     gap: 8px;
-    font-size: 0.95rem;
+    font-size: 1rem;
+    font-family: 'Poppins', sans-serif;
     box-shadow: var(--shadow-sm);
+    letter-spacing: 0.01em;
 }
 
 .btn-custom:hover {
-    background: var(--primary-hover);
+    background: var(--deep-teal);
     color: var(--white);
-    transform: translateY(-1px);
+    transform: translateY(-2px);
     box-shadow: var(--shadow-md);
 }
 
@@ -116,7 +165,8 @@ a:hover {
 }
 
 .btn-custom:disabled {
-    background: var(--text-light);
+    background: var(--neutral-gray);
+    color: var(--text-light);
     cursor: not-allowed;
     transform: none;
     box-shadow: none;
@@ -124,121 +174,127 @@ a:hover {
 }
 
 .btn-outline-primary {
-    border: 2px solid var(--primary);
-    color: var(--primary);
+    border: 2px solid var(--forest-green);
+    color: var(--forest-green);
     background: transparent;
     border-radius: 8px;
-    padding: 10px 22px;
+    padding: 12px 24px;
     font-weight: 600;
-    transition: all 0.2s ease;
+    transition: all 0.3s ease;
+    font-family: 'Poppins', sans-serif;
 }
 
 .btn-outline-primary:hover {
-    background: var(--primary);
+    background: var(--forest-green);
     color: var(--white);
-    border-color: var(--primary);
+    border-color: var(--forest-green);
 }
 
 /* ===== CARDS ===== */
 .card {
     border: none;
-    border-radius: 12px;
+    border-radius: 16px;
     overflow: hidden;
     box-shadow: var(--shadow-sm);
     background: var(--white);
-    transition: all 0.3s ease;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     border: 1px solid var(--border-light);
 }
 
 .card:hover {
     transform: translateY(-4px);
     box-shadow: var(--shadow-md);
-    border-color: rgba(139, 111, 71, 0.2);
+    border-color: rgba(22, 74, 65, 0.15);
 }
 
 .card-header {
     background: var(--white);
     color: var(--text-dark);
-    border-bottom: 1px solid var(--border-light);
-    padding: 20px 24px;
+    border-bottom: 1px solid var(--border-color);
+    padding: 24px 28px;
     font-weight: 600;
-    font-size: 1.1rem;
+    font-size: 1.2rem;
+    font-family: 'Playfair Display', serif;
 }
 
 .card-body {
-    padding: 24px;
+    padding: 28px;
 }
 
 /* ===== FORMS ===== */
 .form-control {
-    border: 1px solid var(--border-light);
-    border-radius: 8px;
-    padding: 10px 14px;
-    transition: all 0.2s ease;
-    font-size: 0.95rem;
+    border: 1.5px solid var(--border-color);
+    border-radius: 10px;
+    padding: 12px 16px;
+    transition: all 0.3s ease;
+    font-size: 1rem;
     background: var(--white);
     color: var(--text-dark);
+    font-family: 'Poppins', sans-serif;
 }
 
 .form-control:focus {
-    border-color: var(--primary);
-    box-shadow: 0 0 0 3px rgba(139, 111, 71, 0.1);
+    border-color: var(--forest-green);
+    box-shadow: 0 0 0 4px rgba(22, 74, 65, 0.08);
     outline: none;
     background: var(--white);
 }
 
 .form-control::placeholder {
     color: var(--text-light);
+    font-weight: 400;
 }
 
 .form-label {
     font-weight: 600;
     color: var(--text-dark);
-    margin-bottom: 8px;
+    margin-bottom: 10px;
     display: block;
-    font-size: 0.9rem;
+    font-size: 0.95rem;
+    font-family: 'Poppins', sans-serif;
 }
 
 /* ===== ALERTS ===== */
 .alert {
-    border-radius: 8px;
+    border-radius: 12px;
     border: none;
-    padding: 14px 18px;
-    margin: 16px 0;
+    padding: 16px 20px;
+    margin: 20px 0;
     font-weight: 500;
-    animation: fadeIn 0.3s ease;
+    animation: fadeIn 0.4s ease;
     border-left: 4px solid;
+    font-family: 'Poppins', sans-serif;
 }
 
 .alert-success {
-    background: #E8F8F5;
-    color: #1E8449;
-    border-left-color: var(--success);
+    background: rgba(22, 74, 65, 0.08);
+    color: var(--forest-green);
+    border-left-color: var(--forest-green);
 }
 
 .alert-danger {
-    background: #FADBD8;
-    color: #C0392B;
-    border-left-color: var(--danger);
+    background: rgba(166, 60, 27, 0.08);
+    color: var(--brick-red);
+    border-left-color: var(--brick-red);
 }
 
 .alert-info {
-    background: #EBF5FB;
-    color: #2874A6;
-    border-left-color: var(--info);
+    background: rgba(15, 52, 51, 0.08);
+    color: var(--deep-teal);
+    border-left-color: var(--deep-teal);
 }
 
 .alert-warning {
-    background: #FEF9E7;
-    color: #B7950B;
-    border-left-color: var(--warning);
+    background: rgba(244, 180, 0, 0.12);
+    color: #B8860B;
+    border-left-color: var(--mustard-yellow);
 }
 
 /* ===== ANIMATIONS ===== */
 @keyframes fadeIn {
     from {
         opacity: 0;
-        transform: translateY(8px);
+        transform: translateY(10px);
     }
     to {
         opacity: 1;
@@ -246,27 +302,40 @@ a:hover {
     }
 }
 
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateX(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
 /* ===== MENU TRAY ===== */
 .menu-tray {
     position: fixed;
-    top: 20px;
-    right: 20px;
+    top: 24px;
+    right: 24px;
     background: var(--white);
-    border: 1px solid var(--border-light);
-    border-radius: 12px;
-    padding: 10px 16px;
+    border: 1px solid var(--border-color);
+    border-radius: 14px;
+    padding: 12px 20px;
     box-shadow: var(--shadow-md);
     z-index: 1000;
     display: flex;
     align-items: center;
-    gap: 12px;
+    gap: 16px;
     flex-wrap: wrap;
+    backdrop-filter: blur(10px);
 }
 
 .menu-tray span {
     color: var(--text-dark);
     font-weight: 500;
-    font-size: 0.9rem;
+    font-size: 0.95rem;
+    font-family: 'Poppins', sans-serif;
 }
 
 .menu-tray a {
@@ -274,26 +343,27 @@ a:hover {
     text-decoration: none;
     font-weight: 500;
     transition: all 0.2s ease;
-    padding: 6px 12px;
-    border-radius: 6px;
-    font-size: 0.875rem;
+    padding: 8px 14px;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    font-family: 'Poppins', sans-serif;
 }
 
 .menu-tray a:hover {
-    color: var(--primary);
-    background: rgba(139, 111, 71, 0.08);
+    color: var(--forest-green);
+    background: rgba(22, 74, 65, 0.08);
 }
 
 /* ===== CONTAINERS ===== */
 .container {
     max-width: 1200px;
     margin: 0 auto;
-    padding: 0 20px;
+    padding: 0 24px;
 }
 
 /* ===== UTILITY CLASSES ===== */
 .text-primary {
-    color: var(--primary) !important;
+    color: var(--forest-green) !important;
 }
 
 .text-secondary {
@@ -301,33 +371,41 @@ a:hover {
 }
 
 .bg-primary {
-    background-color: var(--primary) !important;
+    background-color: var(--forest-green) !important;
 }
 
 .bg-light {
-    background-color: var(--bg-light) !important;
+    background-color: var(--light-sage) !important;
+}
+
+.bg-cream {
+    background-color: var(--cream-bg) !important;
 }
 
 /* ===== RESPONSIVE ===== */
 @media (max-width: 768px) {
-    h1 { font-size: 2rem; }
-    h2 { font-size: 1.75rem; }
+    h1 { font-size: 2.25rem; }
+    h2 { font-size: 1.875rem; }
     h3 { font-size: 1.5rem; }
     
     .menu-tray {
-        top: 10px;
-        right: 10px;
-        padding: 8px 12px;
+        top: 16px;
+        right: 16px;
+        padding: 10px 16px;
     }
     
     .menu-tray a {
-        font-size: 0.8rem;
-        padding: 5px 10px;
+        font-size: 0.85rem;
+        padding: 6px 12px;
     }
     
     .btn-custom {
-        padding: 10px 20px;
-        font-size: 0.9rem;
+        padding: 12px 24px;
+        font-size: 0.95rem;
+    }
+    
+    .container {
+        padding: 0 16px;
     }
 }
 
@@ -336,7 +414,10 @@ a:hover {
         position: relative;
         top: 0;
         right: 0;
-        margin: 10px;
-        width: calc(100% - 20px);
+        margin: 12px;
+        width: calc(100% - 24px);
     }
+    
+    h1 { font-size: 1.875rem; }
+    h2 { font-size: 1.5rem; }
 }
