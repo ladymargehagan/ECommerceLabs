@@ -1,22 +1,23 @@
 /* ===========================================
    PRODUCT PAGE STYLES
-   Afro-Modern Minimalism
+   Taste of Africa - Scaled Design
    =========================================== */
 
 .product-card {
     transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     height: 100%;
-    border-radius: 16px;
+    border-radius: 18px;
     overflow: hidden;
-    background: var(--white);
-    border: 1px solid var(--border-light);
+    background: var(--toa-white);
+    border: 1px solid var(--toa-border);
     display: flex;
     flex-direction: column;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.04);
 }
 
 .product-card:hover {
     transform: translateY(-6px);
-    box-shadow: var(--shadow-md);
+    box-shadow: 0 16px 40px rgba(0, 0, 0, 0.08);
     border-color: rgba(22, 74, 65, 0.2);
 }
 
@@ -25,7 +26,7 @@
     object-fit: cover;
     width: 100%;
     transition: transform 0.5s ease;
-    background: var(--light-sage);
+    background: var(--toa-sage);
 }
 
 .product-card:hover .product-image {
@@ -35,40 +36,40 @@
 .product-price {
     font-size: 1.5rem;
     font-weight: 700;
-    color: var(--forest-green);
-    margin: 12px 0;
+    color: var(--toa-forest);
+    margin: 0.75rem 0;
     font-family: 'Playfair Display', serif;
 }
 
 .product-category,
 .product-brand {
     font-size: 0.875rem;
-    color: var(--text-medium);
-    margin: 6px 0;
+    color: var(--toa-text-light);
+    margin: 0.375rem 0;
     font-weight: 400;
 }
 
 .product-category i,
 .product-brand i {
-    color: var(--warm-orange);
-    margin-right: 6px;
+    color: var(--toa-sunset);
+    margin-right: 0.375rem;
     font-size: 0.85rem;
 }
 
 .filter-section {
-    background: var(--white);
-    border-radius: 16px;
-    padding: 28px;
-    margin-bottom: 40px;
-    border: 1px solid var(--border-light);
-    box-shadow: var(--shadow-xs);
+    background: var(--toa-white);
+    border-radius: 18px;
+    padding: 1.75rem;
+    margin-bottom: 2.5rem;
+    border: 1px solid var(--toa-border);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.04);
 }
 
 .filter-section h4 {
-    color: var(--text-dark);
-    margin-bottom: 24px;
+    color: var(--toa-text);
+    margin-bottom: 1.5rem;
     text-align: center;
-    font-size: 1.5rem;
+    font-size: clamp(1.25rem, 2vw, 1.5rem);
     font-family: 'Playfair Display', serif;
     font-weight: 600;
 }
@@ -76,83 +77,83 @@
 .pagination-wrapper {
     display: flex;
     justify-content: center;
-    margin-top: 48px;
+    margin-top: 3rem;
 }
 
 .pagination .page-link {
-    color: var(--forest-green);
-    border-color: var(--border-color);
-    padding: 10px 16px;
-    margin: 0 4px;
-    border-radius: 10px;
+    color: var(--toa-forest);
+    border-color: var(--toa-border);
+    padding: 0.625rem 1rem;
+    margin: 0 0.25rem;
+    border-radius: 12px;
     transition: all 0.3s ease;
     font-weight: 500;
-    font-family: 'Poppins', sans-serif;
+    font-family: 'Inter', sans-serif;
 }
 
 .pagination .page-link:hover {
-    background: var(--forest-green);
-    color: var(--white);
-    border-color: var(--forest-green);
+    background: var(--toa-forest);
+    color: var(--toa-white);
+    border-color: var(--toa-forest);
     transform: translateY(-2px);
 }
 
 .pagination .page-item.active .page-link {
-    background: var(--forest-green);
-    border-color: var(--forest-green);
-    color: var(--white);
+    background: var(--toa-deep);
+    border-color: var(--toa-deep);
+    color: var(--toa-white);
 }
 
 .no-products {
     text-align: center;
-    padding: 80px 24px;
-    background: var(--white);
-    border-radius: 16px;
-    box-shadow: var(--shadow-xs);
-    border: 1px solid var(--border-light);
+    padding: 5rem 1.5rem;
+    background: var(--toa-white);
+    border-radius: 18px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.04);
+    border: 1px solid var(--toa-border);
 }
 
 .no-products i {
     font-size: 4em;
-    color: var(--text-light);
-    margin-bottom: 24px;
+    color: var(--toa-text-muted);
+    margin-bottom: 1.5rem;
     opacity: 0.3;
 }
 
 .no-products h3 {
-    color: var(--text-dark);
-    margin-bottom: 16px;
+    color: var(--toa-text);
+    margin-bottom: 1rem;
     font-family: 'Playfair Display', serif;
 }
 
 .no-products p {
-    color: var(--text-medium);
-    margin-bottom: 32px;
+    color: var(--toa-text-light);
+    margin-bottom: 2rem;
 }
 
 .welcome-header {
     text-align: center;
-    padding: 60px 24px;
-    margin-bottom: 48px;
-    background: var(--white);
-    border-radius: 16px;
-    box-shadow: var(--shadow-sm);
-    border: 1px solid var(--border-light);
+    padding: 3.75rem 1.5rem;
+    margin-bottom: 3rem;
+    background: var(--toa-white);
+    border-radius: 18px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.04);
+    border: 1px solid var(--toa-border);
 }
 
 .welcome-header h1 {
-    color: var(--forest-green);
+    color: var(--toa-forest);
     font-weight: 700;
-    font-size: 3rem;
-    margin-bottom: 16px;
+    font-size: clamp(2rem, 4vw, 3rem);
+    margin-bottom: 1rem;
     font-family: 'Playfair Display', serif;
 }
 
 .welcome-header .lead {
-    color: var(--text-medium);
-    font-size: 1.2rem;
+    color: var(--toa-text-light);
+    font-size: clamp(1rem, 2vw, 1.2rem);
     font-weight: 400;
-    font-family: 'Poppins', sans-serif;
+    font-family: 'Inter', sans-serif;
 }
 
 /* Product Detail Page */
@@ -160,64 +161,64 @@
     max-height: 550px;
     object-fit: cover;
     width: 100%;
-    border-radius: 16px;
-    box-shadow: var(--shadow-sm);
-    background: var(--light-sage);
-    border: 1px solid var(--border-light);
+    border-radius: 18px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.04);
+    background: var(--toa-sage);
+    border: 1px solid var(--toa-border);
 }
 
 .product-info {
-    background: var(--white);
-    border-radius: 16px;
-    padding: 40px;
-    border: 1px solid var(--border-light);
-    box-shadow: var(--shadow-xs);
+    background: var(--toa-white);
+    border-radius: 18px;
+    padding: 2.5rem;
+    border: 1px solid var(--toa-border);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.04);
 }
 
 .product-info h1 {
-    color: var(--text-dark);
-    font-size: 2.5rem;
-    margin-bottom: 20px;
+    color: var(--toa-text);
+    font-size: clamp(1.75rem, 3vw, 2.5rem);
+    margin-bottom: 1.25rem;
     font-family: 'Playfair Display', serif;
     font-weight: 700;
 }
 
 .product-info .product-price {
-    font-size: 2rem;
-    color: var(--forest-green);
-    margin: 20px 0;
+    font-size: clamp(1.5rem, 2.5vw, 2rem);
+    color: var(--toa-forest);
+    margin: 1.25rem 0;
 }
 
 .product-meta {
-    background: var(--light-sage);
+    background: var(--toa-sage);
     border-radius: 12px;
-    padding: 24px;
-    margin: 24px 0;
-    border: 1px solid var(--border-light);
+    padding: 1.5rem;
+    margin: 1.5rem 0;
+    border: 1px solid var(--toa-border);
 }
 
 .keywords {
     display: flex;
     flex-wrap: wrap;
-    gap: 10px;
+    gap: 0.625rem;
 }
 
 .keyword-badge {
-    background: var(--warm-orange);
-    color: var(--white);
-    padding: 8px 16px;
-    border-radius: 24px;
+    background: var(--toa-sunset);
+    color: var(--toa-white);
+    padding: 0.5rem 1rem;
+    border-radius: 999px;
     font-size: 0.875rem;
     font-weight: 500;
-    font-family: 'Poppins', sans-serif;
-    box-shadow: var(--shadow-xs);
+    font-family: 'Inter', sans-serif;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04);
 }
 
 .action-buttons {
     display: flex;
-    gap: 16px;
+    gap: 1rem;
     flex-wrap: wrap;
-    margin-top: 32px;
+    margin-top: 2rem;
 }
 
 .action-buttons .btn {
@@ -227,11 +228,11 @@
 
 /* Search Highlight */
 .search-highlight {
-    background: var(--mustard-yellow);
-    padding: 3px 6px;
+    background: var(--toa-gold);
+    padding: 0.2rem 0.4rem;
     border-radius: 4px;
     font-weight: 600;
-    color: var(--text-dark);
+    color: var(--toa-text);
 }
 
 /* Responsive */
@@ -240,20 +241,12 @@
         height: 220px;
     }
     
-    .welcome-header h1 {
-        font-size: 2.25rem;
-    }
-    
     .filter-section {
-        padding: 24px;
+        padding: 1.5rem;
     }
     
     .product-info {
-        padding: 28px;
-    }
-    
-    .product-info h1 {
-        font-size: 2rem;
+        padding: 1.75rem;
     }
     
     .action-buttons {

@@ -1,11 +1,11 @@
 /* ===========================================
    CART PAGE STYLES
-   Afro-Modern Minimalism
+   Taste of Africa - Scaled Design
    =========================================== */
 
 .cart-item {
-    border-bottom: 1px solid var(--border-color);
-    padding: 28px 0;
+    border-bottom: 1px solid var(--toa-border);
+    padding: 1.75rem 0;
     transition: all 0.3s ease;
 }
 
@@ -14,10 +14,10 @@
 }
 
 .cart-item:hover {
-    background: var(--light-sage);
+    background: var(--toa-sage);
     border-radius: 12px;
-    padding-left: 16px;
-    padding-right: 16px;
+    padding-left: 1rem;
+    padding-right: 1rem;
 }
 
 .product-image-cart {
@@ -25,25 +25,25 @@
     height: 110px;
     object-fit: cover;
     border-radius: 12px;
-    box-shadow: var(--shadow-xs);
-    background: var(--light-sage);
-    border: 1px solid var(--border-light);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04);
+    background: var(--toa-sage);
+    border: 1px solid var(--toa-border);
 }
 
 .quantity-input {
     width: 70px;
     text-align: center;
-    border: 1.5px solid var(--border-color);
-    border-radius: 8px;
-    padding: 10px;
+    border: 1.5px solid var(--toa-border);
+    border-radius: 12px;
+    padding: 0.625rem;
     font-weight: 600;
     transition: all 0.3s ease;
-    font-family: 'Poppins', sans-serif;
+    font-family: 'Inter', sans-serif;
     font-size: 1rem;
 }
 
 .quantity-input:focus {
-    border-color: var(--forest-green);
+    border-color: var(--toa-forest);
     box-shadow: 0 0 0 4px rgba(22, 74, 65, 0.08);
     outline: none;
 }
@@ -52,10 +52,10 @@
 .quantity-increase {
     width: 36px;
     height: 36px;
-    border: 1.5px solid var(--border-color);
-    background: var(--white);
-    color: var(--forest-green);
-    border-radius: 8px;
+    border: 1.5px solid var(--toa-border);
+    background: var(--toa-white);
+    color: var(--toa-forest);
+    border-radius: 12px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -67,110 +67,110 @@
 
 .quantity-decrease:hover,
 .quantity-increase:hover {
-    background: var(--forest-green);
-    color: var(--white);
-    border-color: var(--forest-green);
+    background: var(--toa-forest);
+    color: var(--toa-white);
+    border-color: var(--toa-forest);
     transform: scale(1.05);
 }
 
 .cart-summary {
-    background: var(--white);
-    border-radius: 16px;
-    padding: 32px;
+    background: var(--toa-white);
+    border-radius: 18px;
+    padding: 2rem;
     position: sticky;
     top: 140px;
-    border: 1px solid var(--border-light);
-    box-shadow: var(--shadow-sm);
+    border: 1px solid var(--toa-border);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.06);
 }
 
 .cart-summary h4 {
-    color: var(--text-dark);
-    margin-bottom: 24px;
-    padding-bottom: 20px;
-    border-bottom: 2px solid var(--border-color);
-    font-size: 1.5rem;
+    color: var(--toa-text);
+    margin-bottom: 1.5rem;
+    padding-bottom: 1.25rem;
+    border-bottom: 2px solid var(--toa-border);
+    font-size: clamp(1.25rem, 2vw, 1.5rem);
     font-family: 'Playfair Display', serif;
     font-weight: 600;
 }
 
 .cart-summary .d-flex {
-    padding: 12px 0;
+    padding: 0.75rem 0;
     font-size: 1rem;
-    color: var(--text-medium);
-    font-family: 'Poppins', sans-serif;
+    color: var(--toa-text-light);
+    font-family: 'Inter', sans-serif;
 }
 
 .cart-summary hr {
-    border-color: var(--border-color);
-    margin: 24px 0;
+    border-color: var(--toa-border);
+    margin: 1.5rem 0;
     border-width: 1px;
 }
 
 .cart-summary .text-primary {
-    font-size: 1.875rem;
+    font-size: clamp(1.5rem, 2.5vw, 1.875rem);
     font-weight: 700;
-    color: var(--forest-green);
+    color: var(--toa-forest);
     font-family: 'Playfair Display', serif;
 }
 
 .empty-cart {
     text-align: center;
-    padding: 100px 24px;
-    background: var(--white);
-    border-radius: 16px;
-    box-shadow: var(--shadow-xs);
-    border: 1px solid var(--border-light);
+    padding: 6.25rem 1.5rem;
+    background: var(--toa-white);
+    border-radius: 18px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.04);
+    border: 1px solid var(--toa-border);
 }
 
 .empty-cart i {
     font-size: 5em;
-    color: var(--text-light);
-    margin-bottom: 28px;
+    color: var(--toa-text-muted);
+    margin-bottom: 1.75rem;
     opacity: 0.25;
 }
 
 .empty-cart h3 {
-    color: var(--text-dark);
-    margin-bottom: 16px;
+    color: var(--toa-text);
+    margin-bottom: 1rem;
     font-family: 'Playfair Display', serif;
-    font-size: 2rem;
+    font-size: clamp(1.5rem, 2.5vw, 2rem);
 }
 
 .empty-cart p {
-    color: var(--text-medium);
-    margin-bottom: 40px;
+    color: var(--toa-text-light);
+    margin-bottom: 2.5rem;
     font-size: 1.1rem;
 }
 
 .remove-item {
-    border: 1.5px solid var(--brick-red);
-    color: var(--brick-red);
+    border: 1.5px solid var(--toa-rust);
+    color: var(--toa-rust);
     background: transparent;
-    border-radius: 8px;
-    padding: 8px 16px;
+    border-radius: 12px;
+    padding: 0.5rem 1rem;
     font-size: 0.875rem;
     transition: all 0.3s ease;
     font-weight: 600;
-    font-family: 'Poppins', sans-serif;
+    font-family: 'Inter', sans-serif;
 }
 
 .remove-item:hover {
-    background: var(--brick-red);
-    color: var(--white);
+    background: var(--toa-rust);
+    color: var(--toa-white);
     transform: translateY(-2px);
-    box-shadow: var(--shadow-sm);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.06);
 }
 
 .cart-item h5 {
-    color: var(--text-dark);
+    color: var(--toa-text);
     font-weight: 600;
-    margin-bottom: 10px;
+    margin-bottom: 0.625rem;
     font-size: 1.1rem;
-    font-family: 'Poppins', sans-serif;
+    font-family: 'Inter', sans-serif;
 }
 
 .cart-item .text-muted {
-    color: var(--text-medium);
+    color: var(--toa-text-light);
     font-size: 0.9rem;
     font-weight: 400;
 }
@@ -178,14 +178,14 @@
 .cart-item .text-primary {
     font-size: 1.25rem;
     font-weight: 700;
-    color: var(--forest-green);
+    color: var(--toa-forest);
     font-family: 'Playfair Display', serif;
 }
 
 /* Responsive */
 @media (max-width: 768px) {
     .cart-item {
-        padding: 24px 0;
+        padding: 1.5rem 0;
     }
     
     .product-image-cart {
@@ -196,18 +196,10 @@
     .cart-summary {
         position: relative;
         top: 0;
-        margin-top: 32px;
+        margin-top: 2rem;
     }
     
     .quantity-input {
         width: 60px;
-    }
-    
-    .cart-summary h4 {
-        font-size: 1.3rem;
-    }
-    
-    .cart-summary .text-primary {
-        font-size: 1.5rem;
     }
 }

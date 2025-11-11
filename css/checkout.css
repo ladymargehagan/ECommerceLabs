@@ -1,11 +1,11 @@
 /* ===========================================
    CHECKOUT PAGE STYLES
-   Afro-Modern Minimalism
+   Taste of Africa - Scaled Design
    =========================================== */
 
 .checkout-item {
-    border-bottom: 1px solid var(--border-color);
-    padding: 24px 0;
+    border-bottom: 1px solid var(--toa-border);
+    padding: 1.5rem 0;
     transition: all 0.3s ease;
 }
 
@@ -14,10 +14,10 @@
 }
 
 .checkout-item:hover {
-    background: var(--light-sage);
+    background: var(--toa-sage);
     border-radius: 12px;
-    padding-left: 16px;
-    padding-right: 16px;
+    padding-left: 1rem;
+    padding-right: 1rem;
 }
 
 .product-image-checkout {
@@ -25,106 +25,106 @@
     height: 90px;
     object-fit: cover;
     border-radius: 12px;
-    box-shadow: var(--shadow-xs);
-    background: var(--light-sage);
-    border: 1px solid var(--border-light);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04);
+    background: var(--toa-sage);
+    border: 1px solid var(--toa-border);
 }
 
 .checkout-summary {
-    background: var(--white);
-    border-radius: 16px;
-    padding: 32px;
+    background: var(--toa-white);
+    border-radius: 18px;
+    padding: 2rem;
     position: sticky;
     top: 140px;
-    border: 1px solid var(--border-light);
-    box-shadow: var(--shadow-sm);
+    border: 1px solid var(--toa-border);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.06);
 }
 
 .checkout-summary h4 {
-    color: var(--text-dark);
-    margin-bottom: 24px;
-    padding-bottom: 20px;
-    border-bottom: 2px solid var(--border-color);
-    font-size: 1.5rem;
+    color: var(--toa-text);
+    margin-bottom: 1.5rem;
+    padding-bottom: 1.25rem;
+    border-bottom: 2px solid var(--toa-border);
+    font-size: clamp(1.25rem, 2vw, 1.5rem);
     font-family: 'Playfair Display', serif;
     font-weight: 600;
 }
 
 .checkout-summary .d-flex {
-    padding: 12px 0;
+    padding: 0.75rem 0;
     font-size: 1rem;
-    color: var(--text-medium);
-    font-family: 'Poppins', sans-serif;
+    color: var(--toa-text-light);
+    font-family: 'Inter', sans-serif;
 }
 
 .checkout-summary hr {
-    border-color: var(--border-color);
-    margin: 24px 0;
+    border-color: var(--toa-border);
+    margin: 1.5rem 0;
     border-width: 1px;
 }
 
 .checkout-summary .text-primary {
-    font-size: 2rem;
+    font-size: clamp(1.75rem, 2.5vw, 2rem);
     font-weight: 700;
-    color: var(--forest-green);
+    color: var(--toa-forest);
     font-family: 'Playfair Display', serif;
 }
 
 .payment-section {
-    background: var(--white);
-    border: 2px dashed var(--border-color);
-    border-radius: 16px;
-    padding: 48px 36px;
+    background: var(--toa-white);
+    border: 2px dashed var(--toa-border);
+    border-radius: 18px;
+    padding: 3rem 2.25rem;
     text-align: center;
-    margin: 48px 0;
+    margin: 3rem 0;
     transition: all 0.4s ease;
 }
 
 .payment-section:hover {
-    border-color: var(--forest-green);
-    background: var(--light-sage);
-    box-shadow: var(--shadow-sm);
+    border-color: var(--toa-forest);
+    background: var(--toa-sage);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.06);
 }
 
 .payment-section i {
-    color: var(--forest-green);
-    margin-bottom: 24px;
+    color: var(--toa-forest);
+    margin-bottom: 1.5rem;
     font-size: 3.5rem;
 }
 
 .payment-section h4 {
-    color: var(--text-dark);
-    margin-bottom: 16px;
+    color: var(--toa-text);
+    margin-bottom: 1rem;
     font-family: 'Playfair Display', serif;
-    font-size: 1.75rem;
+    font-size: clamp(1.5rem, 2.5vw, 1.75rem);
 }
 
 .payment-section p {
-    color: var(--text-medium);
-    margin-bottom: 32px;
+    color: var(--toa-text-light);
+    margin-bottom: 2rem;
     font-size: 1.05rem;
     line-height: 1.7;
 }
 
 /* Customer Information Section */
 .card-header h5 {
-    color: var(--text-dark);
+    color: var(--toa-text);
     margin: 0;
     font-family: 'Playfair Display', serif;
     font-weight: 600;
 }
 
 .card-body .form-label {
-    color: var(--text-dark);
+    color: var(--toa-text);
     font-weight: 600;
-    margin-bottom: 10px;
-    font-family: 'Poppins', sans-serif;
+    margin-bottom: 0.625rem;
+    font-family: 'Inter', sans-serif;
 }
 
 .card-body .form-control[readonly] {
-    background: var(--light-sage);
-    border-color: var(--border-color);
-    color: var(--text-dark);
+    background: var(--toa-sage);
+    border-color: var(--toa-border);
+    color: var(--toa-text);
     cursor: default;
     font-weight: 500;
 }
@@ -132,7 +132,7 @@
 /* Responsive */
 @media (max-width: 768px) {
     .checkout-item {
-        padding: 20px 0;
+        padding: 1.25rem 0;
     }
     
     .product-image-checkout {
@@ -143,18 +143,10 @@
     .checkout-summary {
         position: relative;
         top: 0;
-        margin-top: 32px;
+        margin-top: 2rem;
     }
     
     .payment-section {
-        padding: 36px 24px;
-    }
-    
-    .checkout-summary h4 {
-        font-size: 1.3rem;
-    }
-    
-    .checkout-summary .text-primary {
-        font-size: 1.75rem;
+        padding: 2.25rem 1.5rem;
     }
 }
