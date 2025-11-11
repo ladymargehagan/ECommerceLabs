@@ -42,10 +42,75 @@ if (!$product) {
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <link href="css/main.css" rel="stylesheet">
     <link href="css/product.css" rel="stylesheet">
+    <link href="css/homepage.css" rel="stylesheet">
 </head>
 <body>
+    <!-- Top Header Bar -->
+    <div class="top-header">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-md-4">
+                    <div class="d-flex gap-3">
+                        <a href="index.php#about">About Us</a>
+                        <?php if (isset($_SESSION['user_id'])): ?>
+                            <a href="customer/dashboard.php">My Account</a>
+                        <?php endif; ?>
+                        <a href="index.php#contact">Contact</a>
+                    </div>
+                </div>
+                <div class="col-md-4 text-center">
+                    <span class="promo-text">Super Value Deals - Save more with coupons</span>
+                </div>
+                <div class="col-md-4 text-end">
+                    <span>Need help? Call Us: <strong>+1-800-900-122</strong></span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Navigation -->
+    <nav class="main-nav">
+        <div class="container">
+            <div class="nav-container">
+                <a href="index.php" class="logo-section">
+                    <i class="fas fa-seedling"></i>
+                    <span>Taste of Africa</span>
+                </a>
+                <div class="search-section">
+                    <form method="GET" action="all_product.php">
+                        <input type="text" name="search" placeholder="Search for products...">
+                        <button type="submit">Search</button>
+                    </form>
+                </div>
+                <div class="nav-actions">
+                    <?php if (isset($_SESSION['user_id'])): ?>
+                        <?php if ($_SESSION['role'] == 1): ?>
+                            <a href="admin/dashboard.php" class="nav-action-item" title="Admin Dashboard">
+                                <i class="fas fa-tachometer-alt"></i>
+                                <span>Admin</span>
+                            </a>
+                        <?php endif; ?>
+                        <a href="customer/dashboard.php" class="nav-action-item" title="My Account">
+                            <i class="fas fa-user"></i>
+                            <span>Account</span>
+                        </a>
+                    <?php else: ?>
+                        <a href="login/login.php" class="nav-action-item" title="Login">
+                            <i class="fas fa-sign-in-alt"></i>
+                            <span>Login</span>
+                        </a>
+                    <?php endif; ?>
+                    <a href="cart.php" class="nav-action-item cart-badge" title="Shopping Cart">
+                        <i class="fas fa-shopping-cart"></i>
+                        <span>Cart</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
     <!-- Navigation -->
-    <div class="menu-tray">
+    <div class="menu-tray" style="display: none;">
         <?php if (isset($_SESSION['user_id'])): ?>
             <span class="me-2">Welcome, <?php echo htmlspecialchars($_SESSION['name']); ?>!</span>
             <?php if ($_SESSION['role'] == 1): // Admin users ?>
@@ -79,7 +144,7 @@ if (!$product) {
         <?php endif; ?>
     </div>
 
-    <div class="container" style="padding-top: 120px;">
+    <div class="container" style="padding-top: 20px;">
         <!-- Breadcrumb -->
         <nav aria-label="breadcrumb" class="mb-4">
             <ol class="breadcrumb">

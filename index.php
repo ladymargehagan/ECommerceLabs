@@ -1,9 +1,4 @@
 <?php
-// Enable error reporting for debugging (remove in production)
-error_reporting(E_ALL);
-ini_set('display_errors', 0);
-ini_set('log_errors', 1);
-
 session_start();
 
 // Initialize empty arrays
@@ -11,17 +6,37 @@ $products = array();
 $categories = array();
 $brands = array();
 $total_count = 0;
-$total_pages = 0;
 $error_message = '';
 
-// Get current page and filters
-$page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
-$category_id = isset($_GET['category']) ? (int)$_GET['category'] : null;
-$brand_id = isset($_GET['brand']) ? (int)$_GET['brand'] : null;
-$search_query = isset($_GET['q']) ? trim($_GET['q']) : (isset($_GET['search']) ? trim($_GET['search']) : null);
+// Get cart count for navigation
+$cart_count = 0;
+if (file_exists('controllers/cart_controller.php')) {
+    try {
+        require_once 'controllers/cart_controller.php';
+        $cartController = new cart_controller();
+        
+        $customer_id = isset($_SESSION['user_id']) ? (int)$_SESSION['user_id'] : null;
+        $ip_address = null;
+        
+        if (!$customer_id) {
+            if (!empty($_SERVER['HTTP_CLIENT_IP'])) {
+                $ip_address = $_SERVER['HTTP_CLIENT_IP'];
+            } elseif (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {
+                $ip_address = $_SERVER['HTTP_X_FORWARDED_FOR'];
+            } else {
+                $ip_address = $_SERVER['REMOTE_ADDR'];
+            }
+        }
+        
+        $cart_count = $cartController->get_cart_count_ctr($customer_id, $ip_address);
+    } catch (Exception $e) {
+        // Silently fail, cart count will be 0
+    }
+}
 
-$limit = 10;
-$offset = ($page - 1) * $limit;
+// Get featured products (first 8 products)
+$limit = 8;
+$offset = 0;
 
 // Try to load data from database
 if (file_exists('settings/db_class.php') && file_exists('classes/product_class.php')) {
@@ -32,16 +47,11 @@ if (file_exists('settings/db_class.php') && file_exists('classes/product_class.p
         $product_class = new product_class();
         
         if ($product_class->db_connect()) {
-            // Get products based on filters
-            if ($category_id || $brand_id || $search_query) {
-                $products = $product_class->get_products_with_filters($category_id, $brand_id, $search_query, $limit, $offset);
-                $total_count = $product_class->get_filtered_count($category_id, $brand_id, $search_query);
-            } else {
-                $products = $product_class->view_all_products($limit, $offset);
-                $total_count = $product_class->get_products_count();
-            }
+            // Get featured products (first 8)
+            $products = $product_class->view_all_products($limit, $offset);
+            $total_count = $product_class->get_products_count();
             
-            // Get categories and brands for filters
+            // Get categories and brands
             $categories = $product_class->get_categories();
             $brands = $product_class->get_brands();
             
@@ -55,251 +65,314 @@ if (file_exists('settings/db_class.php') && file_exists('classes/product_class.p
     } catch (Exception $e) {
         $error_message = 'Error loading product data: ' . $e->getMessage();
         error_log("Error loading product data: " . $e->getMessage());
-    } catch (Error $e) {
-        $error_message = 'Fatal error: ' . $e->getMessage();
-        error_log("Fatal error loading product data: " . $e->getMessage());
     }
 } else {
     $error_message = 'Required files not found.';
 }
-
-// Calculate pagination (avoid division by zero)
-$total_pages = $limit > 0 ? ceil($total_count / $limit) : 0;
 ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Welcome - Taste of Africa</title>
+    <title>Taste of Africa - Authentic African Groceries</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <link href="css/main.css" rel="stylesheet">
-    <link href="css/product.css" rel="stylesheet">
+    <link href="css/homepage.css" rel="stylesheet">
 </head>
 <body>
-    <div class="menu-tray">
-        <?php if (isset($_SESSION['user_id'])): ?>
-            <span class="me-2">Welcome, <?php echo htmlspecialchars($_SESSION['name']); ?>!</span>
-            <?php if (isset($_SESSION['role']) && $_SESSION['role'] == 1): // Admin users ?>
-                <a href="admin/dashboard.php" class="btn btn-sm btn-outline-primary me-2">
-                    <i class="fa fa-tachometer-alt me-1"></i>Dashboard
-                </a>
-                <a href="admin/category.php" class="btn btn-sm btn-outline-primary me-2">
-                    <i class="fa fa-tags me-1"></i>Category
-                </a>
-                <a href="admin/brand.php" class="btn btn-sm btn-outline-warning me-2">
-                    <i class="fa fa-star me-1"></i>Brand
-                </a>
-                <a href="admin/product.php" class="btn btn-sm btn-outline-success me-2">
-                    <i class="fa fa-plus me-1"></i>Add Product
-                </a>
-            <?php endif; ?>
-            <a href="customer/dashboard.php" class="btn btn-sm btn-outline-info me-2">
-                <i class="fa fa-user me-1"></i>My Account
-            </a>
-            <a href="login/logout.php" class="btn btn-sm btn-outline-danger">
-                <i class="fa fa-sign-out-alt me-1"></i>Logout
-            </a>
-        <?php else: ?>
-            <span class="me-2">Menu:</span>
-            <a href="login/register.php" class="btn btn-sm btn-outline-primary me-2">
-                <i class="fa fa-user-plus me-1"></i>Register
-            </a>
-            <a href="login/login.php" class="btn btn-sm btn-outline-secondary me-2">
-                <i class="fa fa-sign-in-alt me-1"></i>Login
-            </a>
-        <?php endif; ?>
+    <!-- Top Header Bar -->
+    <div class="top-header">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-md-4">
+                    <div class="d-flex gap-3">
+                        <a href="#about">About Us</a>
+                        <?php if (isset($_SESSION['user_id'])): ?>
+                            <a href="customer/dashboard.php">My Account</a>
+                        <?php endif; ?>
+                        <a href="#contact">Contact</a>
+                    </div>
+                </div>
+                <div class="col-md-4 text-center">
+                    <span class="promo-text">Super Value Deals - Save more with coupons</span>
+                </div>
+                <div class="col-md-4 text-end">
+                    <span>Need help? Call Us: <strong>+1-800-900-122</strong></span>
+                </div>
+            </div>
+        </div>
     </div>
 
-    <div class="container" style="padding-top: 120px;">
-        <?php if (isset($_SESSION['user_id'])): ?>
-            <!-- Welcome Message for Logged In Users -->
-            <div class="welcome-header">
-                <h1><i class="fa fa-home me-2"></i>Welcome, <?php echo htmlspecialchars($_SESSION['name']); ?>!</h1>
-            </div>
-        <?php else: ?>
-            <!-- Guest user welcome -->
-            <div class="welcome-header">
-                <h1><i class="fa fa-home me-2"></i>Welcome to Taste of Africa</h1>
-                <p class="lead text-muted">Discover the authentic flavors of Africa</p>
-            </div>
-        <?php endif; ?>
+    <!-- Main Navigation -->
+    <nav class="main-nav">
+        <div class="container">
+            <div class="nav-container">
+                <!-- Logo -->
+                <a href="index.php" class="logo-section">
+                    <i class="fas fa-seedling"></i>
+                    <span>Taste of Africa</span>
+                </a>
 
-        <!-- Search and Filter Section -->
-        <div class="filter-section">
-            <h4 class="text-center mb-4"><i class="fa fa-search me-2"></i>Search Products</h4>
-            <form method="GET" id="filterForm">
-                <div class="row">
-                    <div class="col-md-6">
-                        <label for="search" class="form-label">Search Products</label>
-                        <div class="input-group">
-                            <input type="text" class="form-control" id="search" name="q" 
-                                   value="<?php echo htmlspecialchars($search_query); ?>" 
-                                   placeholder="Search by product name, description, or keywords...">
-                            <button class="btn btn-custom" type="submit">
-                                <i class="fa fa-search"></i>
-                            </button>
-                        </div>
-                    </div>
-                    <div class="col-md-3">
-                        <label for="category" class="form-label">Category</label>
-                        <select class="form-control" id="category" name="category">
-                            <option value="">All Categories</option>
-                            <?php foreach ($categories as $category): ?>
-                                <option value="<?php echo $category['cat_id']; ?>" 
-                                        <?php echo ($category_id == $category['cat_id']) ? 'selected' : ''; ?>>
-                                    <?php echo htmlspecialchars($category['cat_name']); ?>
-                                </option>
-                            <?php endforeach; ?>
-                        </select>
-                    </div>
-                    <div class="col-md-3">
-                        <label for="brand" class="form-label">Brand</label>
-                        <select class="form-control" id="brand" name="brand">
-                            <option value="">All Brands</option>
-                            <?php foreach ($brands as $brand): ?>
-                                <option value="<?php echo $brand['brand_id']; ?>" 
-                                        <?php echo ($brand_id == $brand['brand_id']) ? 'selected' : ''; ?>>
-                                    <?php echo htmlspecialchars($brand['brand_name']); ?>
-                                </option>
-                            <?php endforeach; ?>
-                        </select>
-                    </div>
+                <!-- Search Bar -->
+                <div class="search-section">
+                    <form method="GET" action="all_product.php">
+                        <input type="text" name="search" placeholder="Search for products..." 
+                               value="<?php echo isset($_GET['search']) ? htmlspecialchars($_GET['search']) : ''; ?>">
+                        <button type="submit">Search</button>
+                    </form>
                 </div>
-                <?php if ($category_id || $brand_id || $search_query): ?>
-                    <div class="row mt-2">
-                        <div class="col-12">
-                            <a href="index.php" class="btn btn-sm btn-outline-secondary">
-                                <i class="fa fa-times me-1"></i>Clear Filters
+
+                <!-- User Actions -->
+                <div class="nav-actions">
+                    <?php if (isset($_SESSION['user_id'])): ?>
+                        <?php if ($_SESSION['role'] == 1): ?>
+                            <a href="admin/dashboard.php" class="nav-action-item" title="Admin Dashboard">
+                                <i class="fas fa-tachometer-alt"></i>
+                                <span>Admin</span>
                             </a>
-                        </div>
-                    </div>
-                <?php endif; ?>
-            </form>
-        </div>
-
-        <!-- Error Message -->
-        <?php if ($error_message): ?>
-            <div class="alert alert-danger" role="alert">
-                <i class="fa fa-exclamation-triangle me-2"></i><?php echo htmlspecialchars($error_message); ?>
-            </div>
-        <?php endif; ?>
-
-        <!-- Results Summary -->
-        <?php if (!empty($products)): ?>
-            <div class="row mb-3">
-                <div class="col-12">
-                    <p class="text-muted">
-                        Showing <?php echo count($products); ?> of <?php echo $total_count; ?> products
-                        <?php if ($search_query): ?>
-                            for "<strong><?php echo htmlspecialchars($search_query); ?></strong>"
                         <?php endif; ?>
-                        <?php if ($category_id): ?>
-                            in category "<strong><?php echo htmlspecialchars(array_column($categories, 'cat_name', 'cat_id')[$category_id] ?? 'Unknown'); ?></strong>"
+                        <a href="customer/dashboard.php" class="nav-action-item" title="My Account">
+                            <i class="fas fa-user"></i>
+                            <span>Account</span>
+                        </a>
+                    <?php else: ?>
+                        <a href="login/login.php" class="nav-action-item" title="Login">
+                            <i class="fas fa-sign-in-alt"></i>
+                            <span>Login</span>
+                        </a>
+                    <?php endif; ?>
+                    
+                    <a href="cart.php" class="nav-action-item cart-badge" title="Shopping Cart">
+                        <i class="fas fa-shopping-cart"></i>
+                        <span>Cart</span>
+                        <?php if ($cart_count > 0): ?>
+                            <span class="cart-count"><?php echo $cart_count; ?></span>
                         <?php endif; ?>
-                        <?php if ($brand_id): ?>
-                            from brand "<strong><?php echo htmlspecialchars(array_column($brands, 'brand_name', 'brand_id')[$brand_id] ?? 'Unknown'); ?></strong>"
-                        <?php endif; ?>
-                    </p>
+                    </a>
                 </div>
             </div>
-        <?php endif; ?>
+        </div>
+    </nav>
 
-        <!-- Products Grid -->
-        <?php if (empty($products)): ?>
-            <div class="no-products">
-                <i class="fa fa-box fa-3x mb-3"></i>
-                <h3>No Products Found</h3>
-                <p>Try adjusting your search criteria or browse all products.</p>
-                <a href="index.php" class="btn btn-custom">View All Products</a>
+    <div class="container" style="padding-top: 20px;">
+        <!-- Hero Section -->
+        <section class="hero-section">
+            <div class="hero-content">
+                <h1>Fresh African Produce<br>Big Discount</h1>
+                <p class="subtitle">Save up to 50% off on your first order</p>
+                <div class="hero-cta">
+                    <a href="all_product.php" class="btn btn-custom btn-lg">
+                        <i class="fas fa-shopping-bag me-2"></i>Shop Now
+                    </a>
+                    <a href="#categories" class="btn btn-outline-primary btn-lg">
+                        Browse Categories
+                    </a>
+                </div>
             </div>
-        <?php else: ?>
-            <div class="row" id="productsContainer">
-                <?php foreach ($products as $product): ?>
-                    <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
-                        <div class="card product-card h-100">
-                            <div class="position-relative">
+            <div class="hero-image">
+                <img src="uploads/placeholder.png" alt="Fresh African Produce" 
+                     onerror="this.src='uploads/placeholder.png'">
+            </div>
+        </section>
+
+        <!-- Featured Categories -->
+        <section class="featured-categories" id="categories">
+            <h2 class="section-title">Featured Categories</h2>
+            
+            <div class="category-filters">
+                <button class="category-filter-btn active" data-category="all">All</button>
+                <?php 
+                $displayed_categories = array_slice($categories, 0, 6);
+                foreach ($displayed_categories as $category): 
+                ?>
+                    <button class="category-filter-btn" data-category="<?php echo $category['cat_id']; ?>">
+                        <?php echo htmlspecialchars($category['cat_name']); ?>
+                    </button>
+                <?php endforeach; ?>
+            </div>
+
+            <div class="categories-grid">
+                <?php 
+                $category_icons = [
+                    'Fruits' => 'fa-apple-alt',
+                    'Vegetables' => 'fa-carrot',
+                    'Spices' => 'fa-pepper-hot',
+                    'Grains' => 'fa-wheat-awn',
+                    'Beverages' => 'fa-wine-bottle',
+                    'Meat' => 'fa-drumstick-bite',
+                    'Dairy' => 'fa-cheese',
+                    'Snacks' => 'fa-cookie'
+                ];
+                
+                foreach ($categories as $category): 
+                    $cat_name = $category['cat_name'];
+                    $icon = 'fa-tag'; // default
+                    foreach ($category_icons as $key => $icon_class) {
+                        if (stripos($cat_name, $key) !== false) {
+                            $icon = $icon_class;
+                            break;
+                        }
+                    }
+                    
+                    // Get product count for this category
+                    if ($product_class) {
+                        $item_count = $product_class->get_category_count($category['cat_id']);
+                    } else {
+                        $item_count = 0;
+                    }
+                ?>
+                    <a href="all_product.php?category=<?php echo $category['cat_id']; ?>" class="category-card">
+                        <i class="fas <?php echo $icon; ?>"></i>
+                        <h5><?php echo htmlspecialchars($cat_name); ?></h5>
+                        <span class="item-count"><?php echo $item_count; ?> items</span>
+                    </a>
+                <?php endforeach; ?>
+            </div>
+        </section>
+
+        <!-- Promotional Banners -->
+        <section class="promo-banners">
+            <div class="promo-banner">
+                <div>
+                    <h4>Everyday Fresh & Clean with Our Products</h4>
+                    <a href="all_product.php" class="btn btn-custom">Shop Now <i class="fas fa-arrow-right ms-2"></i></a>
+                </div>
+                <img src="uploads/placeholder.png" alt="Fresh Products" class="promo-banner-image">
+            </div>
+            
+            <div class="promo-banner">
+                <div>
+                    <h4>Make your Breakfast Healthy and Easy</h4>
+                    <a href="all_product.php" class="btn btn-custom">Shop Now <i class="fas fa-arrow-right ms-2"></i></a>
+                </div>
+                <img src="uploads/placeholder.png" alt="Healthy Breakfast" class="promo-banner-image">
+            </div>
+            
+            <div class="promo-banner">
+                <div>
+                    <h4>The best Organic Products Online</h4>
+                    <a href="all_product.php" class="btn btn-custom">Shop Now <i class="fas fa-arrow-right ms-2"></i></a>
+                </div>
+                <img src="uploads/placeholder.png" alt="Organic Products" class="promo-banner-image">
+            </div>
+        </section>
+
+        <!-- Popular Products -->
+        <section class="popular-products">
+            <h2 class="section-title">Popular Products</h2>
+            
+            <div class="product-filters">
+                <button class="product-filter-btn active" data-filter="all">All</button>
+                <button class="product-filter-btn" data-filter="fruits">Fresh Fruits</button>
+                <button class="product-filter-btn" data-filter="vegetables">Vegetables</button>
+                <button class="product-filter-btn" data-filter="grains">Grains</button>
+                <button class="product-filter-btn" data-filter="spices">Spices</button>
+            </div>
+
+            <?php if (empty($products)): ?>
+                <div class="no-products">
+                    <i class="fa fa-box fa-3x mb-3"></i>
+                    <h3>No Products Available</h3>
+                    <p>Products will be displayed here once added to the system.</p>
+                </div>
+            <?php else: ?>
+                <div class="products-grid">
+                    <?php foreach ($products as $product): ?>
+                        <div class="product-card-modern">
+                            <div class="product-image-wrapper">
                                 <?php if ($product['product_image']): ?>
                                     <img src="<?php echo htmlspecialchars($product['product_image']); ?>" 
-                                         class="card-img-top product-image" 
+                                         class="product-image-modern" 
                                          alt="<?php echo htmlspecialchars($product['product_title']); ?>"
                                          onerror="this.src='uploads/placeholder.png'">
                                 <?php else: ?>
                                     <img src="uploads/placeholder.png" 
-                                         class="card-img-top product-image" 
+                                         class="product-image-modern" 
                                          alt="No image available">
                                 <?php endif; ?>
-                                <div class="position-absolute top-0 end-0 m-2">
-                                    <span class="badge bg-primary">ID: <?php echo $product['product_id']; ?></span>
-                                </div>
+                                <span class="product-badge">New</span>
                             </div>
-                            <div class="card-body d-flex flex-column">
-                                <h5 class="card-title"><?php echo htmlspecialchars($product['product_title']); ?></h5>
-                                <div class="product-price mb-2">$<?php echo number_format($product['product_price'], 2); ?></div>
-                                <div class="product-category mb-1">
-                                    <i class="fa fa-tag me-1"></i><?php echo htmlspecialchars($product['cat_name'] ?? 'No Category'); ?>
+                            <div class="product-card-body">
+                                <h5 class="product-title-modern"><?php echo htmlspecialchars($product['product_title']); ?></h5>
+                                <div class="product-meta-modern">
+                                    <span><?php echo htmlspecialchars($product['cat_name'] ?? 'Category'); ?></span>
+                                    <?php if ($product['brand_name']): ?>
+                                        <span> • By <?php echo htmlspecialchars($product['brand_name']); ?></span>
+                                    <?php endif; ?>
                                 </div>
-                                <div class="product-brand mb-3">
-                                    <i class="fa fa-star me-1"></i><?php echo htmlspecialchars($product['brand_name'] ?? 'No Brand'); ?>
+                                <div class="product-rating">
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="far fa-star"></i>
                                 </div>
-                                <?php if ($product['product_desc']): ?>
-                                    <p class="card-text text-muted small flex-grow-1">
-                                        <?php echo htmlspecialchars(substr($product['product_desc'], 0, 100)) . (strlen($product['product_desc']) > 100 ? '...' : ''); ?>
-                                    </p>
-                                <?php endif; ?>
-                                <div class="mt-auto">
-                                    <div class="d-grid gap-2">
-                                        <a href="single_product.php?id=<?php echo $product['product_id']; ?>" 
-                                           class="btn btn-outline-primary">
-                                            <i class="fa fa-eye me-1"></i>View Details
-                                        </a>
-                                        <button class="btn btn-custom add-to-cart" 
-                                                data-product-id="<?php echo $product['product_id']; ?>">
-                                            <i class="fa fa-cart-plus me-1"></i>Add to Cart
-                                        </button>
-                                    </div>
+                                <div class="product-price-modern">
+                                    <span class="current-price">$<?php echo number_format($product['product_price'], 2); ?></span>
                                 </div>
+                                <button class="add-to-cart-btn" data-product-id="<?php echo $product['product_id']; ?>">
+                                    <i class="fas fa-shopping-cart"></i> Add
+                                </button>
                             </div>
                         </div>
-                    </div>
-                <?php endforeach; ?>
-            </div>
-
-            <!-- Pagination -->
-            <?php if ($total_pages > 1): ?>
-                <div class="pagination-wrapper">
-                    <nav aria-label="Products pagination">
-                        <ul class="pagination">
-                            <?php if ($page > 1): ?>
-                                <li class="page-item">
-                                    <a class="page-link" href="?<?php echo http_build_query(array_merge($_GET, ['page' => $page - 1])); ?>">
-                                        <i class="fa fa-chevron-left"></i> Previous
-                                    </a>
-                                </li>
-                            <?php endif; ?>
-
-                            <?php for ($i = max(1, $page - 2); $i <= min($total_pages, $page + 2); $i++): ?>
-                                <li class="page-item <?php echo ($i == $page) ? 'active' : ''; ?>">
-                                    <a class="page-link" href="?<?php echo http_build_query(array_merge($_GET, ['page' => $i])); ?>">
-                                        <?php echo $i; ?>
-                                    </a>
-                                </li>
-                            <?php endfor; ?>
-
-                            <?php if ($page < $total_pages): ?>
-                                <li class="page-item">
-                                    <a class="page-link" href="?<?php echo http_build_query(array_merge($_GET, ['page' => $page + 1])); ?>">
-                                        Next <i class="fa fa-chevron-right"></i>
-                                    </a>
-                                </li>
-                            <?php endif; ?>
-                        </ul>
-                    </nav>
+                    <?php endforeach; ?>
+                </div>
+                
+                <div class="text-center mt-5">
+                    <a href="all_product.php" class="btn btn-custom btn-lg">
+                        View All Products <i class="fas fa-arrow-right ms-2"></i>
+                    </a>
                 </div>
             <?php endif; ?>
-        <?php endif; ?>
+        </section>
     </div>
+
+    <!-- Footer -->
+    <footer style="background: var(--white); border-top: 1px solid var(--border-color); padding: 40px 0; margin-top: 60px;">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4 mb-4">
+                    <h5 style="font-family: 'Playfair Display', serif; color: var(--forest-green); margin-bottom: 16px;">Taste of Africa</h5>
+                    <p style="color: var(--text-medium);">Bringing authentic African flavors to your doorstep. Fresh, organic, and locally sourced products.</p>
+                </div>
+                <div class="col-md-2 mb-4">
+                    <h6 style="font-weight: 600; margin-bottom: 16px;">Quick Links</h6>
+                    <ul style="list-style: none; padding: 0;">
+                        <li style="margin-bottom: 8px;"><a href="index.php" style="color: var(--text-medium);">Home</a></li>
+                        <li style="margin-bottom: 8px;"><a href="all_product.php" style="color: var(--text-medium);">Products</a></li>
+                        <li style="margin-bottom: 8px;"><a href="#about" style="color: var(--text-medium);">About</a></li>
+                        <li style="margin-bottom: 8px;"><a href="#contact" style="color: var(--text-medium);">Contact</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-3 mb-4">
+                    <h6 style="font-weight: 600; margin-bottom: 16px;">Customer Service</h6>
+                    <ul style="list-style: none; padding: 0;">
+                        <li style="margin-bottom: 8px;"><a href="cart.php" style="color: var(--text-medium);">Shopping Cart</a></li>
+                        <?php if (isset($_SESSION['user_id'])): ?>
+                            <li style="margin-bottom: 8px;"><a href="customer/dashboard.php" style="color: var(--text-medium);">My Account</a></li>
+                        <?php else: ?>
+                            <li style="margin-bottom: 8px;"><a href="login/login.php" style="color: var(--text-medium);">Login</a></li>
+                            <li style="margin-bottom: 8px;"><a href="login/register.php" style="color: var(--text-medium);">Register</a></li>
+                        <?php endif; ?>
+                    </ul>
+                </div>
+                <div class="col-md-3 mb-4">
+                    <h6 style="font-weight: 600; margin-bottom: 16px;">Follow Us</h6>
+                    <div style="display: flex; gap: 12px;">
+                        <a href="#" style="color: var(--forest-green); font-size: 1.5rem;"><i class="fab fa-facebook"></i></a>
+                        <a href="#" style="color: var(--forest-green); font-size: 1.5rem;"><i class="fab fa-instagram"></i></a>
+                        <a href="#" style="color: var(--forest-green); font-size: 1.5rem;"><i class="fab fa-twitter"></i></a>
+                    </div>
+                </div>
+            </div>
+            <hr style="border-color: var(--border-color); margin: 32px 0;">
+            <div class="text-center" style="color: var(--text-medium);">
+                <p>&copy; <?php echo date('Y'); ?> Taste of Africa. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -307,27 +380,33 @@ $total_pages = $limit > 0 ? ceil($total_count / $limit) : 0;
     
     <script>
         $(document).ready(function() {
-            // Auto-submit form on filter change
-            $('#category, #brand').change(function() {
-                $('#filterForm').submit();
-            });
-
-            // Search with Enter key
-            $('#search').keypress(function(e) {
-                if (e.which == 13) {
-                    $('#filterForm').submit();
+            // Category filter buttons
+            $('.category-filter-btn').click(function() {
+                $('.category-filter-btn').removeClass('active');
+                $(this).addClass('active');
+                const categoryId = $(this).data('category');
+                if (categoryId === 'all') {
+                    window.location.href = 'all_product.php';
+                } else {
+                    window.location.href = 'all_product.php?category=' + categoryId;
                 }
             });
 
+            // Product filter buttons
+            $('.product-filter-btn').click(function() {
+                $('.product-filter-btn').removeClass('active');
+                $(this).addClass('active');
+                // Filter logic can be added here
+            });
+
             // Add to cart functionality
-            $('.add-to-cart').click(function() {
+            $('.add-to-cart-btn').click(function() {
                 const productId = $(this).data('product-id');
                 const button = $(this);
                 
-                // Disable button and show loading
                 button.prop('disabled', true);
                 const originalHtml = button.html();
-                button.html('<i class="fa fa-spinner fa-spin me-1"></i>Adding...');
+                button.html('<i class="fas fa-spinner fa-spin"></i> Adding...');
                 
                 $.ajax({
                     url: 'actions/add_to_cart_action.php',
@@ -343,13 +422,13 @@ $total_pages = $limit > 0 ? ceil($total_count / $limit) : 0;
                         
                         if (response.success) {
                             Swal.fire({
-                                title: 'Success!',
-                                text: response.message || 'Product added to cart successfully.',
+                                title: 'Added to Cart!',
+                                text: response.message || 'Product added successfully.',
                                 icon: 'success',
                                 confirmButtonText: 'OK',
                                 timer: 2000,
                                 showCancelButton: true,
-                                cancelButtonText: 'Continue Shopping',
+                                cancelButtonText: 'Continue',
                                 confirmButtonText: 'View Cart'
                             }).then((result) => {
                                 if (result.isConfirmed) {
@@ -357,14 +436,17 @@ $total_pages = $limit > 0 ? ceil($total_count / $limit) : 0;
                                 }
                             });
                             
-                            // Update cart count if displayed
+                            // Update cart count
                             if (response.cart_count !== undefined) {
                                 $('.cart-count').text(response.cart_count);
+                                if (response.cart_count > 0 && $('.cart-count').length === 0) {
+                                    $('.cart-badge').append('<span class="cart-count">' + response.cart_count + '</span>');
+                                }
                             }
                         } else {
                             Swal.fire({
                                 title: 'Error',
-                                text: response.message || 'Failed to add product to cart.',
+                                text: response.message || 'Failed to add product.',
                                 icon: 'error',
                                 confirmButtonText: 'OK'
                             });
@@ -375,7 +457,7 @@ $total_pages = $limit > 0 ? ceil($total_count / $limit) : 0;
                         button.html(originalHtml);
                         Swal.fire({
                             title: 'Error',
-                            text: 'An error occurred while adding the product to cart.',
+                            text: 'An error occurred.',
                             icon: 'error',
                             confirmButtonText: 'OK'
                         });

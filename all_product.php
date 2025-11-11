@@ -76,10 +76,76 @@ $total_pages = $limit > 0 ? ceil($total_count / $limit) : 0;
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <link href="css/main.css" rel="stylesheet">
     <link href="css/product.css" rel="stylesheet">
+    <link href="css/homepage.css" rel="stylesheet">
 </head>
 <body>
+    <!-- Top Header Bar -->
+    <div class="top-header">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-md-4">
+                    <div class="d-flex gap-3">
+                        <a href="index.php#about">About Us</a>
+                        <?php if (isset($_SESSION['user_id'])): ?>
+                            <a href="customer/dashboard.php">My Account</a>
+                        <?php endif; ?>
+                        <a href="index.php#contact">Contact</a>
+                    </div>
+                </div>
+                <div class="col-md-4 text-center">
+                    <span class="promo-text">Super Value Deals - Save more with coupons</span>
+                </div>
+                <div class="col-md-4 text-end">
+                    <span>Need help? Call Us: <strong>+1-800-900-122</strong></span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Navigation -->
+    <nav class="main-nav">
+        <div class="container">
+            <div class="nav-container">
+                <a href="index.php" class="logo-section">
+                    <i class="fas fa-seedling"></i>
+                    <span>Taste of Africa</span>
+                </a>
+                <div class="search-section">
+                    <form method="GET" action="all_product.php">
+                        <input type="text" name="search" placeholder="Search for products..." 
+                               value="<?php echo htmlspecialchars($search_query ?? ''); ?>">
+                        <button type="submit">Search</button>
+                    </form>
+                </div>
+                <div class="nav-actions">
+                    <?php if (isset($_SESSION['user_id'])): ?>
+                        <?php if ($_SESSION['role'] == 1): ?>
+                            <a href="admin/dashboard.php" class="nav-action-item" title="Admin Dashboard">
+                                <i class="fas fa-tachometer-alt"></i>
+                                <span>Admin</span>
+                            </a>
+                        <?php endif; ?>
+                        <a href="customer/dashboard.php" class="nav-action-item" title="My Account">
+                            <i class="fas fa-user"></i>
+                            <span>Account</span>
+                        </a>
+                    <?php else: ?>
+                        <a href="login/login.php" class="nav-action-item" title="Login">
+                            <i class="fas fa-sign-in-alt"></i>
+                            <span>Login</span>
+                        </a>
+                    <?php endif; ?>
+                    <a href="cart.php" class="nav-action-item cart-badge" title="Shopping Cart">
+                        <i class="fas fa-shopping-cart"></i>
+                        <span>Cart</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
     <!-- Navigation -->
-    <div class="menu-tray">
+    <div class="menu-tray" style="display: none;">
         <?php if (isset($_SESSION['user_id'])): ?>
             <span class="me-2">Welcome, <?php echo htmlspecialchars($_SESSION['name']); ?>!</span>
             <?php if (isset($_SESSION['role']) && $_SESSION['role'] == 1): // ONLY Admin users ?>
@@ -113,11 +179,11 @@ $total_pages = $limit > 0 ? ceil($total_count / $limit) : 0;
         <?php endif; ?>
     </div>
 
-    <div class="container" style="padding-top: 120px;">
+    <div class="container" style="padding-top: 20px;">
         <!-- Header -->
         <div class="row mb-4">
             <div class="col-12">
-                <h1><i class="fa fa-box me-2"></i>All Products</h1>
+                <h1 style="font-family: 'Playfair Display', serif; color: var(--forest-green);">All Products</h1>
                 <p class="text-muted">Discover our amazing collection of African products</p>
             </div>
         </div>
@@ -211,52 +277,43 @@ $total_pages = $limit > 0 ? ceil($total_count / $limit) : 0;
                 <a href="all_product.php" class="btn btn-custom">View All Products</a>
             </div>
         <?php else: ?>
-            <div class="row" id="productsContainer">
+            <div class="products-grid">
                 <?php foreach ($products as $product): ?>
-                    <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
-                        <div class="card product-card h-100">
-                            <div class="position-relative">
-                                <?php if ($product['product_image']): ?>
-                                    <img src="<?php echo htmlspecialchars($product['product_image']); ?>" 
-                                         class="card-img-top product-image" 
-                                         alt="<?php echo htmlspecialchars($product['product_title']); ?>"
-                                         onerror="this.src='uploads/placeholder.png'">
-                                <?php else: ?>
-                                    <img src="uploads/placeholder.png" 
-                                         class="card-img-top product-image" 
-                                         alt="No image available">
+                    <div class="product-card-modern">
+                        <div class="product-image-wrapper">
+                            <?php if ($product['product_image']): ?>
+                                <img src="<?php echo htmlspecialchars($product['product_image']); ?>" 
+                                     class="product-image-modern" 
+                                     alt="<?php echo htmlspecialchars($product['product_title']); ?>"
+                                     onerror="this.src='uploads/placeholder.png'">
+                            <?php else: ?>
+                                <img src="uploads/placeholder.png" 
+                                     class="product-image-modern" 
+                                     alt="No image available">
+                            <?php endif; ?>
+                            <span class="product-badge">New</span>
+                        </div>
+                        <div class="product-card-body">
+                            <h5 class="product-title-modern"><?php echo htmlspecialchars($product['product_title']); ?></h5>
+                            <div class="product-meta-modern">
+                                <span><?php echo htmlspecialchars($product['cat_name'] ?? 'Category'); ?></span>
+                                <?php if ($product['brand_name']): ?>
+                                    <span> • By <?php echo htmlspecialchars($product['brand_name']); ?></span>
                                 <?php endif; ?>
-                                <div class="position-absolute top-0 end-0 m-2">
-                                    <span class="badge bg-primary">ID: <?php echo $product['product_id']; ?></span>
-                                </div>
                             </div>
-                            <div class="card-body d-flex flex-column">
-                                <h5 class="card-title"><?php echo htmlspecialchars($product['product_title']); ?></h5>
-                                <div class="product-price mb-2">$<?php echo number_format($product['product_price'], 2); ?></div>
-                                <div class="product-category mb-1">
-                                    <i class="fa fa-tag me-1"></i><?php echo htmlspecialchars($product['cat_name'] ?? 'No Category'); ?>
-                                </div>
-                                <div class="product-brand mb-3">
-                                    <i class="fa fa-star me-1"></i><?php echo htmlspecialchars($product['brand_name'] ?? 'No Brand'); ?>
-                                </div>
-                                <?php if ($product['product_desc']): ?>
-                                    <p class="card-text text-muted small flex-grow-1">
-                                        <?php echo htmlspecialchars(substr($product['product_desc'], 0, 100)) . (strlen($product['product_desc']) > 100 ? '...' : ''); ?>
-                                    </p>
-                                <?php endif; ?>
-                                <div class="mt-auto">
-                                    <div class="d-grid gap-2">
-                                        <a href="single_product.php?id=<?php echo $product['product_id']; ?>" 
-                                           class="btn btn-outline-primary">
-                                            <i class="fa fa-eye me-1"></i>View Details
-                                        </a>
-                                        <button class="btn btn-custom add-to-cart" 
-                                                data-product-id="<?php echo $product['product_id']; ?>">
-                                            <i class="fa fa-cart-plus me-1"></i>Add to Cart
-                                        </button>
-                                    </div>
-                                </div>
+                            <div class="product-rating">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="far fa-star"></i>
                             </div>
+                            <div class="product-price-modern">
+                                <span class="current-price">$<?php echo number_format($product['product_price'], 2); ?></span>
+                            </div>
+                            <button class="add-to-cart-btn" data-product-id="<?php echo $product['product_id']; ?>">
+                                <i class="fas fa-shopping-cart"></i> Add
+                            </button>
                         </div>
                     </div>
                 <?php endforeach; ?>
@@ -304,7 +361,7 @@ $total_pages = $limit > 0 ? ceil($total_count / $limit) : 0;
     <script>
         $(document).ready(function() {
             // Add to cart functionality
-            $('.add-to-cart').click(function() {
+            $('.add-to-cart-btn, .add-to-cart').click(function() {
                 const productId = $(this).data('product-id');
                 const button = $(this);
                 
