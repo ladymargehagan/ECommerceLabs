@@ -1,205 +1,219 @@
 /* ===========================================
    CART PAGE STYLES
-   Taste of Africa - Scaled Design
+   Modern, Sleek Design
    =========================================== */
 
 .cart-item {
-    border-bottom: 1px solid var(--toa-border);
-    padding: 1.75rem 0;
-    transition: all 0.3s ease;
+  border-bottom: 1px solid var(--border-color);
+  padding: var(--spacing-lg) 0;
+  transition: all var(--transition-base);
 }
 
 .cart-item:last-child {
-    border-bottom: none;
+  border-bottom: none;
 }
 
 .cart-item:hover {
-    background: var(--toa-sage);
-    border-radius: 12px;
-    padding-left: 1rem;
-    padding-right: 1rem;
+  background: var(--gray-50);
+  border-radius: var(--radius-lg);
+  padding-left: var(--spacing-md);
+  padding-right: var(--spacing-md);
 }
 
 .product-image-cart {
-    width: 110px;
-    height: 110px;
-    object-fit: cover;
-    border-radius: 12px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04);
-    background: var(--toa-sage);
-    border: 1px solid var(--toa-border);
+  width: 110px;
+  height: 110px;
+  object-fit: cover;
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow);
+  background: var(--gray-50);
+  border: 1px solid var(--border-color);
 }
 
 .quantity-input {
-    width: 70px;
-    text-align: center;
-    border: 1.5px solid var(--toa-border);
-    border-radius: 12px;
-    padding: 0.625rem;
-    font-weight: 600;
-    transition: all 0.3s ease;
-    font-family: 'Inter', sans-serif;
-    font-size: 1rem;
+  width: 70px;
+  text-align: center;
+  border: 1.5px solid var(--border-color);
+  border-radius: var(--radius-md);
+  padding: 0.625rem;
+  font-weight: 400;
+  transition: all var(--transition-base);
+  font-family: 'Glacial Indifference', sans-serif;
+  font-size: 1rem;
 }
 
 .quantity-input:focus {
-    border-color: var(--toa-forest);
-    box-shadow: 0 0 0 4px rgba(22, 74, 65, 0.08);
-    outline: none;
+  border-color: var(--primary-orange);
+  box-shadow: 0 0 0 3px rgba(244, 124, 32, 0.1);
+  outline: none;
 }
 
 .quantity-decrease,
 .quantity-increase {
-    width: 36px;
-    height: 36px;
-    border: 1.5px solid var(--toa-border);
-    background: var(--toa-white);
-    color: var(--toa-forest);
-    border-radius: 12px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    font-weight: 600;
-    font-size: 1rem;
+  width: 36px;
+  height: 36px;
+  border: 1.5px solid var(--border-color);
+  background: var(--white);
+  color: var(--accent-teal);
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all var(--transition-base);
+  font-weight: 400;
+  font-size: 1rem;
 }
 
 .quantity-decrease:hover,
 .quantity-increase:hover {
-    background: var(--toa-forest);
-    color: var(--toa-white);
-    border-color: var(--toa-forest);
-    transform: scale(1.05);
+  background: var(--accent-teal);
+  color: var(--white);
+  border-color: var(--accent-teal);
+  transform: scale(1.05);
 }
 
 .cart-summary {
-    background: var(--toa-white);
-    border-radius: 18px;
-    padding: 2rem;
-    position: sticky;
-    top: 140px;
-    border: 1px solid var(--toa-border);
-    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.06);
+  background: var(--white);
+  border-radius: var(--radius-xl);
+  padding: var(--spacing-xl);
+  position: sticky;
+  top: 140px;
+  border: 1px solid var(--border-color);
+  box-shadow: var(--shadow-lg);
 }
 
 .cart-summary h4 {
-    color: var(--toa-text);
-    margin-bottom: 1.5rem;
-    padding-bottom: 1.25rem;
-    border-bottom: 2px solid var(--toa-border);
-    font-size: clamp(1.25rem, 2vw, 1.5rem);
-    font-family: 'Playfair Display', serif;
-    font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: var(--spacing-lg);
+  padding-bottom: var(--spacing-lg);
+  border-bottom: 2px solid var(--border-color);
+  font-size: clamp(1.125rem, 2.5vw, 1.375rem);
+  font-family: 'Glacial Indifference', sans-serif;
+  font-weight: 700;
 }
 
 .cart-summary .d-flex {
-    padding: 0.75rem 0;
-    font-size: 1rem;
-    color: var(--toa-text-light);
-    font-family: 'Inter', sans-serif;
+  padding: var(--spacing-sm) 0;
+  font-size: 1rem;
+  color: var(--text-secondary);
+  font-family: 'Glacial Indifference', sans-serif;
 }
 
 .cart-summary hr {
-    border-color: var(--toa-border);
-    margin: 1.5rem 0;
-    border-width: 1px;
+  border-color: var(--border-color);
+  margin: var(--spacing-lg) 0;
+  border-width: 1px;
 }
 
 .cart-summary .text-primary {
-    font-size: clamp(1.5rem, 2.5vw, 1.875rem);
-    font-weight: 700;
-    color: var(--toa-forest);
-    font-family: 'Playfair Display', serif;
+  font-size: clamp(1.5rem, 3vw, 1.875rem);
+  font-weight: 700;
+  color: var(--accent-teal);
+  font-family: 'Glacial Indifference', sans-serif;
 }
 
 .empty-cart {
-    text-align: center;
-    padding: 6.25rem 1.5rem;
-    background: var(--toa-white);
-    border-radius: 18px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.04);
-    border: 1px solid var(--toa-border);
+  text-align: center;
+  padding: var(--spacing-2xl) var(--spacing-lg);
+  background: var(--white);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow);
+  border: 1px solid var(--border-color);
 }
 
 .empty-cart i {
-    font-size: 5em;
-    color: var(--toa-text-muted);
-    margin-bottom: 1.75rem;
-    opacity: 0.25;
+  font-size: 5em;
+  color: var(--text-muted);
+  margin-bottom: var(--spacing-xl);
+  opacity: 0.25;
 }
 
 .empty-cart h3 {
-    color: var(--toa-text);
-    margin-bottom: 1rem;
-    font-family: 'Playfair Display', serif;
-    font-size: clamp(1.5rem, 2.5vw, 2rem);
+  color: var(--text-primary);
+  margin-bottom: var(--spacing-md);
+  font-family: 'Glacial Indifference', sans-serif;
+  font-size: clamp(1.5rem, 3vw, 2rem);
+  font-weight: 700;
 }
 
 .empty-cart p {
-    color: var(--toa-text-light);
-    margin-bottom: 2.5rem;
-    font-size: 1.1rem;
+  color: var(--text-secondary);
+  margin-bottom: var(--spacing-2xl);
+  font-size: 1.1rem;
 }
 
 .remove-item {
-    border: 1.5px solid var(--toa-rust);
-    color: var(--toa-rust);
-    background: transparent;
-    border-radius: 12px;
-    padding: 0.5rem 1rem;
-    font-size: 0.875rem;
-    transition: all 0.3s ease;
-    font-weight: 600;
-    font-family: 'Inter', sans-serif;
+  border: 1.5px solid var(--primary-orange);
+  color: var(--primary-orange);
+  background: transparent;
+  border-radius: var(--radius-md);
+  padding: 0.5rem 1rem;
+  font-size: 0.875rem;
+  transition: all var(--transition-base);
+  font-weight: 400;
+  font-family: 'Glacial Indifference', sans-serif;
+  cursor: pointer;
 }
 
 .remove-item:hover {
-    background: var(--toa-rust);
-    color: var(--toa-white);
-    transform: translateY(-2px);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.06);
+  background: var(--primary-orange);
+  color: var(--white);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow);
 }
 
 .cart-item h5 {
-    color: var(--toa-text);
-    font-weight: 600;
-    margin-bottom: 0.625rem;
-    font-size: 1.1rem;
-    font-family: 'Inter', sans-serif;
+  color: var(--text-primary);
+  font-weight: 700;
+  margin-bottom: var(--spacing-xs);
+  font-size: 1.125rem;
+  font-family: 'Glacial Indifference', sans-serif;
 }
 
 .cart-item .text-muted {
-    color: var(--toa-text-light);
-    font-size: 0.9rem;
-    font-weight: 400;
+  color: var(--text-muted);
+  font-size: 0.9rem;
+  font-weight: 400;
 }
 
 .cart-item .text-primary {
-    font-size: 1.25rem;
-    font-weight: 700;
-    color: var(--toa-forest);
-    font-family: 'Playfair Display', serif;
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--accent-teal);
+  font-family: 'Glacial Indifference', sans-serif;
+}
+
+/* Input Group Styling */
+.input-group {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+}
+
+.input-group .btn {
+  padding: 0.5rem;
+  min-width: auto;
 }
 
 /* Responsive */
 @media (max-width: 768px) {
-    .cart-item {
-        padding: 1.5rem 0;
-    }
-    
-    .product-image-cart {
-        width: 90px;
-        height: 90px;
-    }
-    
-    .cart-summary {
-        position: relative;
-        top: 0;
-        margin-top: 2rem;
-    }
-    
-    .quantity-input {
-        width: 60px;
-    }
+  .cart-item {
+    padding: var(--spacing-md) 0;
+  }
+  
+  .product-image-cart {
+    width: 90px;
+    height: 90px;
+  }
+  
+  .cart-summary {
+    position: relative;
+    top: 0;
+    margin-top: var(--spacing-xl);
+  }
+  
+  .quantity-input {
+    width: 60px;
+  }
 }

@@ -1,14 +1,27 @@
+/* ===========================================
+   CATEGORY MANAGEMENT STYLES
+   Modern, Sleek Design
+   =========================================== */
+
 .category-card {
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  transition: all var(--transition-base);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-xl);
+  background: var(--white);
+  box-shadow: var(--shadow);
 }
+
 .category-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+  transform: translateY(-5px);
+  box-shadow: var(--shadow-lg);
+  border-color: var(--primary-orange);
 }
+
 .action-buttons {
-    opacity: 0;
-    transition: opacity 0.3s ease;
+  opacity: 0;
+  transition: opacity var(--transition-base);
 }
+
 .category-card:hover .action-buttons {
-    opacity: 1;
+  opacity: 1;
 }
