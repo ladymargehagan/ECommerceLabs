@@ -371,12 +371,64 @@ $total_pages = $limit > 0 ? ceil($total_count / $limit) : 0;
             // Add to cart functionality
             $('.add-to-cart').click(function() {
                 const productId = $(this).data('product-id');
+                const button = $(this);
                 
-                Swal.fire({
-                    title: 'Add to Cart',
-                    text: 'This feature will be implemented soon!',
-                    icon: 'info',
-                    confirmButtonText: 'OK'
+                // Disable button and show loading
+                button.prop('disabled', true);
+                const originalHtml = button.html();
+                button.html('<i class="fa fa-spinner fa-spin me-1"></i>Adding...');
+                
+                $.ajax({
+                    url: 'actions/add_to_cart_action.php',
+                    method: 'POST',
+                    data: {
+                        product_id: productId,
+                        quantity: 1
+                    },
+                    dataType: 'json',
+                    success: function(response) {
+                        button.prop('disabled', false);
+                        button.html(originalHtml);
+                        
+                        if (response.success) {
+                            Swal.fire({
+                                title: 'Success!',
+                                text: response.message || 'Product added to cart successfully.',
+                                icon: 'success',
+                                confirmButtonText: 'OK',
+                                timer: 2000,
+                                showCancelButton: true,
+                                cancelButtonText: 'Continue Shopping',
+                                confirmButtonText: 'View Cart'
+                            }).then((result) => {
+                                if (result.isConfirmed) {
+                                    window.location.href = 'cart.php';
+                                }
+                            });
+                            
+                            // Update cart count if displayed
+                            if (response.cart_count !== undefined) {
+                                $('.cart-count').text(response.cart_count);
+                            }
+                        } else {
+                            Swal.fire({
+                                title: 'Error',
+                                text: response.message || 'Failed to add product to cart.',
+                                icon: 'error',
+                                confirmButtonText: 'OK'
+                            });
+                        }
+                    },
+                    error: function() {
+                        button.prop('disabled', false);
+                        button.html(originalHtml);
+                        Swal.fire({
+                            title: 'Error',
+                            text: 'An error occurred while adding the product to cart.',
+                            icon: 'error',
+                            confirmButtonText: 'OK'
+                        });
+                    }
                 });
             });
         });

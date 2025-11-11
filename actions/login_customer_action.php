@@ -56,10 +56,33 @@ if ($result['success']) {
     // Set session timeout (24 hours)
     $_SESSION['timeout'] = time() + (24 * 60 * 60);
     
+    // Merge guest cart into user cart (hybrid cart approach)
+    require_once '../controllers/cart_controller.php';
+    $cartController = new cart_controller();
+    
+    // Get IP address
+    $ip_address = null;
+    if (!empty($_SERVER['HTTP_CLIENT_IP'])) {
+        $ip_address = $_SERVER['HTTP_CLIENT_IP'];
+    } elseif (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {
+        $ip_address = $_SERVER['HTTP_X_FORWARDED_FOR'];
+    } else {
+        $ip_address = $_SERVER['REMOTE_ADDR'];
+    }
+    
+    // Merge guest cart
+    $merge_result = $cartController->merge_guest_cart_ctr($ip_address, $customerData['customer_id']);
+    $cart_merged = $merge_result['success'];
+    $merge_message = $merge_result['message'];
+    
     // Determine redirect based on user role
     $redirectUrl = '../index.php'; // Default redirect
     
-    if ($customerData['user_role'] == 1) {
+    // Check if there's a redirect after login (e.g., from checkout)
+    if (isset($_SESSION['redirect_after_login'])) {
+        $redirectUrl = '../' . $_SESSION['redirect_after_login'];
+        unset($_SESSION['redirect_after_login']);
+    } elseif ($customerData['user_role'] == 1) {
         // Admin user
         $redirectUrl = '../admin/dashboard.php';
     } elseif ($customerData['user_role'] == 2) {
@@ -67,10 +90,16 @@ if ($result['success']) {
         $redirectUrl = '../index.php';
     }
     
+    $login_message = 'Login successful! Welcome back, ' . $customerData['customer_name'] . '!';
+    if ($cart_merged && strpos($merge_message, 'merged') !== false) {
+        $login_message .= ' ' . $merge_message;
+    }
+    
     echo json_encode([
         'success' => true,
-        'message' => 'Login successful! Welcome back, ' . $customerData['customer_name'] . '!',
+        'message' => $login_message,
         'redirect' => $redirectUrl,
+        'cart_merged' => $cart_merged,
         'user_data' => [
             'id' => $customerData['customer_id'],
             'name' => $customerData['customer_name'],
