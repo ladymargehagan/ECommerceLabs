@@ -1,0 +1,110 @@
+/* ============================================
+   DASHBOARD STYLES (Admin & Customer)
+   ============================================ */
+
+.welcome-card {
+    background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+    color: white;
+    padding: var(--spacing-xl);
+    border-radius: 8px;
+    margin-bottom: var(--spacing-lg);
+}
+
+.welcome-card h3 {
+    color: white;
+    margin-bottom: var(--spacing-sm);
+}
+
+.welcome-card .lead {
+    color: rgba(255, 255, 255, 0.9);
+    margin: 0;
+}
+
+.card {
+    background-color: white;
+    border-radius: 8px;
+    border: 1px solid var(--border-light);
+    box-shadow: var(--shadow-sm);
+    transition: var(--transition);
+    height: 100%;
+}
+
+.card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-md);
+    border-color: var(--primary);
+}
+
+.card-body {
+    padding: var(--spacing-lg);
+    text-align: center;
+}
+
+.card-body i {
+    color: var(--primary);
+    margin-bottom: var(--spacing-md);
+}
+
+.card-title {
+    margin-bottom: var(--spacing-sm);
+    color: var(--text-primary);
+}
+
+.card-text {
+    color: var(--text-secondary);
+    margin-bottom: var(--spacing-md);
+}
+
+.text-primary {
+    color: var(--primary);
+}
+
+.text-warning {
+    color: var(--warning);
+}
+
+.text-success {
+    color: var(--secondary);
+}
+
+.text-info {
+    color: var(--secondary);
+}
+
+.text-danger {
+    color: var(--error);
+}
+
+.text-secondary {
+    color: var(--text-secondary);
+}
+
+.badge {
+    padding: var(--spacing-xs) var(--spacing-sm);
+    border-radius: 4px;
+    font-size: var(--font-size-sm);
+    font-weight: 500;
+}
+
+.bg-warning {
+    background-color: var(--warning);
+    color: white;
+}
+
+.bg-info {
+    background-color: var(--secondary);
+    color: white;
+}
+
+.d-grid {
+    display: grid;
+}
+
+.gap-2 {
+    gap: var(--spacing-sm);
+}
+
+.d-md-flex {
+    display: flex;
+}
+

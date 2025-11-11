@@ -4,6 +4,11 @@
 <head>
     <meta charset="UTF-8">
     <title>Register - Taste of Africa</title>
+
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="css/main.css" rel="stylesheet">
+    <link href="css/register.css" rel="stylesheet">
+
     
     
     

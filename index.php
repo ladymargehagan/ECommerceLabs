@@ -76,10 +76,10 @@ if (file_exists('settings/db_class.php') && file_exists('classes/product_class.p
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Taste of Africa - Authentic African Groceries</title>
-    
-    
-    
-    
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="css/main.css" rel="stylesheet">
+    <link href="css/index.css" rel="stylesheet">
+    <link href="css/homepage.css" rel="stylesheet">
 </head>
 <body>
     <!-- Top Header Bar -->
