@@ -1,6 +1,5 @@
 /* ===========================================
    LOGIN & REGISTER PAGE STYLES
-   Modern, Sleek Design
    =========================================== */
 
 body {
@@ -55,7 +54,7 @@ body {
 
 .highlight {
   color: var(--primary-orange);
-  transition: color var(--transition-base);
+  transition: color var(--transition);
   font-weight: 400;
 }
 
@@ -88,7 +87,7 @@ body {
   background-color: var(--white);
   border: 1.5px solid var(--border-color);
   border-radius: var(--radius-md);
-  transition: all var(--transition-base);
+  transition: all var(--transition);
 }
 
 .form-control:focus {
@@ -112,7 +111,7 @@ body {
   font-size: 1rem;
   font-weight: 400;
   cursor: pointer;
-  transition: all var(--transition-base);
+  transition: all var(--transition);
   box-shadow: var(--shadow);
 }
 
@@ -144,7 +143,6 @@ body {
   }
 }
 
-/* Alert Messages */
 .alert {
   border-radius: var(--radius-md);
   border: none;
@@ -179,7 +177,6 @@ body {
   color: #1E40AF;
 }
 
-/* Loading Animation Styles */
 .loading-overlay {
   position: fixed;
   top: 0;
@@ -216,7 +213,6 @@ body {
   100% { transform: rotate(360deg); }
 }
 
-/* Responsive Design */
 @media (max-width: 768px) {
   .login-container {
     margin-top: var(--spacing-lg);
@@ -235,3 +231,4 @@ body {
     padding: var(--spacing-lg);
   }
 }
+

@@ -1,6 +1,5 @@
 /* ===========================================
    REGISTER PAGE STYLES
-   Modern, Sleek Design
    =========================================== */
 
 body {
@@ -55,7 +54,7 @@ body {
 
 .highlight {
   color: var(--primary-orange);
-  transition: color var(--transition-base);
+  transition: color var(--transition);
   font-weight: 400;
 }
 
@@ -88,7 +87,7 @@ body {
   background-color: var(--white);
   border: 1.5px solid var(--border-color);
   border-radius: var(--radius-md);
-  transition: all var(--transition-base);
+  transition: all var(--transition);
 }
 
 .form-control:focus {
@@ -112,7 +111,7 @@ body {
   font-size: 1rem;
   font-weight: 400;
   cursor: pointer;
-  transition: all var(--transition-base);
+  transition: all var(--transition);
   box-shadow: var(--shadow);
 }
 
@@ -128,7 +127,6 @@ body {
   transform: none;
 }
 
-/* Custom Radio Buttons */
 .custom-radio .form-check-input:checked + .form-check-label::before {
   background-color: var(--primary-orange);
   border-color: var(--primary-orange);
@@ -154,7 +152,7 @@ body {
   border: 2px solid var(--primary-orange);
   border-radius: 50%;
   background-color: var(--white);
-  transition: all var(--transition-base);
+  transition: all var(--transition);
 }
 
 .form-check-input:focus + .form-check-label::before {
@@ -177,7 +175,6 @@ body {
   }
 }
 
-/* Alert Messages */
 .alert {
   border-radius: var(--radius-md);
   border: none;
@@ -212,7 +209,6 @@ body {
   color: #1E40AF;
 }
 
-/* Responsive Design */
 @media (max-width: 768px) {
   .register-container {
     margin-top: var(--spacing-lg);
@@ -231,3 +227,4 @@ body {
     padding: var(--spacing-lg);
   }
 }
+

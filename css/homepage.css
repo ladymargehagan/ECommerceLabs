@@ -1,9 +1,7 @@
 /* ===========================================
    HOMEPAGE STYLES
-   Modern, Sleek Design
    =========================================== */
 
-/* Top Header Bar */
 .top-header {
   background: var(--white);
   border-bottom: 1px solid var(--border-color);
@@ -14,7 +12,7 @@
 .top-header a {
   color: var(--text-secondary);
   text-decoration: none;
-  transition: color var(--transition-base);
+  transition: color var(--transition);
   margin-right: var(--spacing-lg);
   font-weight: 400;
 }
@@ -28,7 +26,6 @@
   font-weight: 400;
 }
 
-/* Main Navigation */
 .main-nav {
   background: var(--white);
   padding: var(--spacing-md) 0;
@@ -58,7 +55,7 @@
   font-weight: 700;
   color: var(--accent-teal);
   text-decoration: none;
-  transition: color var(--transition-base);
+  transition: color var(--transition);
 }
 
 .logo-section:hover {
@@ -88,7 +85,7 @@
   border-radius: var(--radius-full);
   font-size: 0.9375rem;
   font-family: 'Glacial Indifference', sans-serif;
-  transition: all var(--transition-base);
+  transition: all var(--transition);
   background: var(--gray-50);
 }
 
@@ -111,7 +108,7 @@
   border-radius: var(--radius-full);
   font-weight: 400;
   cursor: pointer;
-  transition: all var(--transition-base);
+  transition: all var(--transition);
   font-size: 0.875rem;
   font-family: 'Glacial Indifference', sans-serif;
 }
@@ -133,7 +130,7 @@
   align-items: center;
   text-decoration: none;
   color: var(--text-primary);
-  transition: all var(--transition-base);
+  transition: all var(--transition);
   padding: var(--spacing-xs);
   border-radius: var(--radius-md);
   min-width: 60px;
@@ -174,7 +171,6 @@
   font-weight: 700;
 }
 
-/* Hero Section */
 .hero-section {
   background: linear-gradient(135deg, var(--cream) 0%, var(--white) 100%);
   border-radius: var(--radius-xl);
@@ -229,7 +225,6 @@
   flex-wrap: wrap;
 }
 
-/* Featured Categories */
 .featured-categories {
   margin: var(--spacing-2xl) 0;
 }
@@ -259,7 +254,7 @@
   border-radius: var(--radius-full);
   font-weight: 400;
   cursor: pointer;
-  transition: all var(--transition-base);
+  transition: all var(--transition);
   font-family: 'Glacial Indifference', sans-serif;
   font-size: 0.9375rem;
 }
@@ -284,7 +279,7 @@
   padding: var(--spacing-lg);
   text-align: center;
   border: 1px solid var(--border-color);
-  transition: all var(--transition-base);
+  transition: all var(--transition);
   cursor: pointer;
   text-decoration: none;
   color: var(--text-primary);
@@ -316,7 +311,6 @@
   font-weight: 400;
 }
 
-/* Promotional Banners */
 .promo-banners {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
@@ -331,7 +325,7 @@
   position: relative;
   overflow: hidden;
   border: 1px solid var(--border-color);
-  transition: all var(--transition-base);
+  transition: all var(--transition);
   min-height: 200px;
   display: flex;
   flex-direction: column;
@@ -368,7 +362,6 @@
   opacity: 0.8;
 }
 
-/* Popular Products */
 .popular-products {
   margin: var(--spacing-2xl) 0;
 }
@@ -389,7 +382,7 @@
   border-radius: var(--radius-full);
   font-weight: 400;
   cursor: pointer;
-  transition: all var(--transition-base);
+  transition: all var(--transition);
   font-family: 'Glacial Indifference', sans-serif;
   font-size: 0.9375rem;
 }
@@ -412,7 +405,7 @@
   border-radius: var(--radius-xl);
   overflow: hidden;
   border: 1px solid var(--border-color);
-  transition: all var(--transition-base);
+  transition: all var(--transition);
   position: relative;
   box-shadow: var(--shadow);
   display: flex;
@@ -436,7 +429,7 @@
   width: 100%;
   height: 100%;
   object-fit: cover;
-  transition: transform var(--transition-slow);
+  transition: transform 300ms ease;
 }
 
 .product-card-modern:hover .product-image-modern {
@@ -524,7 +517,7 @@
   padding: 0.875rem;
   font-weight: 400;
   cursor: pointer;
-  transition: all var(--transition-base);
+  transition: all var(--transition);
   font-family: 'Glacial Indifference', sans-serif;
   display: flex;
   align-items: center;
@@ -577,7 +570,6 @@
   margin-bottom: var(--spacing-xl);
 }
 
-/* Responsive */
 @media (max-width: 992px) {
   .hero-section {
     flex-direction: column;
@@ -619,3 +611,4 @@
     gap: var(--spacing-md);
   }
 }
+

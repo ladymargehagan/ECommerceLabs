@@ -1,19 +1,16 @@
 /* ===========================================
-   Taste of Africa - Modern Design System
-   Using Glacial Indifference Font
+   Taste of Africa - Unified Design System
+   Glacial Indifference Font
    =========================================== */
 
-/* Import Glacial Indifference Font */
 @import url('https://fontlibrary.org/face/glacial-indifference');
 
-/* Design Tokens */
 :root {
-  /* Colors - Inspired by Taste of Africa theme */
+  /* Primary Colors */
   --primary-orange: #F47C20;
   --primary-orange-dark: #E06A0F;
   --accent-teal: #0F3433;
   --accent-teal-light: #164A41;
-  --accent-green: #2D5016;
   --accent-yellow: #F4B400;
   
   /* Neutrals */
@@ -30,7 +27,7 @@
   --gray-800: #262626;
   --gray-900: #171717;
   
-  /* Semantic Colors */
+  /* Semantic */
   --text-primary: #171717;
   --text-secondary: #525252;
   --text-muted: #737373;
@@ -53,7 +50,7 @@
   --spacing-xl: 2rem;
   --spacing-2xl: 3rem;
   
-  /* Border Radius */
+  /* Radius */
   --radius-sm: 0.5rem;
   --radius-md: 0.75rem;
   --radius-lg: 1rem;
@@ -61,12 +58,9 @@
   --radius-full: 9999px;
   
   /* Transitions */
-  --transition-fast: 150ms ease;
-  --transition-base: 200ms ease;
-  --transition-slow: 300ms ease;
+  --transition: 200ms ease;
 }
 
-/* Reset & Base Styles */
 *,
 *::before,
 *::after {
@@ -86,11 +80,8 @@ body {
   line-height: 1.6;
   color: var(--text-primary);
   background-color: var(--bg-secondary);
-  margin: 0;
-  padding: 0;
 }
 
-/* Typography */
 h1, h2, h3, h4, h5, h6 {
   font-family: 'Glacial Indifference', sans-serif;
   font-weight: 700;
@@ -114,14 +105,13 @@ p {
 a {
   color: var(--primary-orange);
   text-decoration: none;
-  transition: color var(--transition-base);
+  transition: color var(--transition);
 }
 
 a:hover {
   color: var(--primary-orange-dark);
 }
 
-/* Layout */
 .container {
   width: 100%;
   max-width: 1280px;
@@ -129,7 +119,6 @@ a:hover {
   padding: 0 var(--spacing-lg);
 }
 
-/* Buttons */
 .btn,
 .btn-custom {
   display: inline-flex;
@@ -146,7 +135,7 @@ a:hover {
   border: none;
   border-radius: var(--radius-full);
   cursor: pointer;
-  transition: all var(--transition-base);
+  transition: all var(--transition);
   background: var(--primary-orange);
   color: var(--white);
   box-shadow: var(--shadow);
@@ -205,14 +194,13 @@ a:hover {
   font-size: 0.875rem;
 }
 
-/* Cards */
 .card {
   background: var(--white);
   border-radius: var(--radius-xl);
   box-shadow: var(--shadow);
   border: 1px solid var(--border-color);
   overflow: hidden;
-  transition: all var(--transition-base);
+  transition: all var(--transition);
 }
 
 .card:hover {
@@ -236,7 +224,6 @@ a:hover {
   border-top: 1px solid var(--border-color);
 }
 
-/* Forms */
 .form-control {
   width: 100%;
   padding: 0.875rem 1rem;
@@ -247,7 +234,7 @@ a:hover {
   background-color: var(--white);
   border: 1.5px solid var(--border-color);
   border-radius: var(--radius-md);
-  transition: all var(--transition-base);
+  transition: all var(--transition);
 }
 
 .form-control:focus {
@@ -268,7 +255,6 @@ a:hover {
   font-size: 0.9375rem;
 }
 
-/* Alerts */
 .alert {
   padding: var(--spacing-md) var(--spacing-lg);
   border-radius: var(--radius-md);
@@ -296,7 +282,6 @@ a:hover {
   color: #92400E;
 }
 
-/* Badges */
 .badge {
   display: inline-flex;
   align-items: center;
@@ -313,7 +298,6 @@ a:hover {
   color: var(--white) !important;
 }
 
-/* Utility Classes */
 .text-center { text-align: center; }
 .text-muted { color: var(--text-muted); }
 .text-primary { color: var(--primary-orange); }
@@ -333,12 +317,11 @@ a:hover {
 .justify-content-between { justify-content: space-between; }
 .align-items-center { align-items: center; }
 
-/* Menu Tray (Legacy Support) */
 .menu-tray {
   position: fixed;
   top: var(--spacing-lg);
   right: var(--spacing-lg);
-  background: var(--white);
+  background: rgba(255, 255, 255, 0.95);
   border: 1px solid var(--border-color);
   border-radius: var(--radius-lg);
   padding: var(--spacing-md) var(--spacing-lg);
@@ -349,7 +332,6 @@ a:hover {
   gap: var(--spacing-md);
   flex-wrap: wrap;
   backdrop-filter: blur(10px);
-  background: rgba(255, 255, 255, 0.95);
 }
 
 .menu-tray span {
@@ -362,7 +344,7 @@ a:hover {
   color: var(--text-secondary);
   text-decoration: none;
   font-weight: 400;
-  transition: all var(--transition-base);
+  transition: all var(--transition);
   padding: var(--spacing-xs) var(--spacing-sm);
   border-radius: var(--radius-md);
   font-size: 0.875rem;
@@ -373,7 +355,6 @@ a:hover {
   background: var(--gray-50);
 }
 
-/* Responsive */
 @media (max-width: 768px) {
   .container {
     padding: 0 var(--spacing-md);
@@ -387,3 +368,4 @@ a:hover {
     width: calc(100% - 2rem);
   }
 }
+

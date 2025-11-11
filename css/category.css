@@ -1,10 +1,9 @@
 /* ===========================================
    CATEGORY MANAGEMENT STYLES
-   Modern, Sleek Design
    =========================================== */
 
 .category-card {
-  transition: all var(--transition-base);
+  transition: all var(--transition);
   border: 1px solid var(--border-color);
   border-radius: var(--radius-xl);
   background: var(--white);
@@ -19,9 +18,10 @@
 
 .action-buttons {
   opacity: 0;
-  transition: opacity var(--transition-base);
+  transition: opacity var(--transition);
 }
 
 .category-card:hover .action-buttons {
   opacity: 1;
 }
+
