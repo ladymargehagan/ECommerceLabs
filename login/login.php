@@ -21,33 +21,33 @@
 </head>
 
 <body>
-    <div>
-        <div>
-            <div>
-                <div>
-                    <div>
+    <div class="container login-container">
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header text-center highlight">
                         <h4>Login</h4>
                     </div>
-                    <div>
+                    <div class="card-body">
                         <!-- Alert Messages (To be handled by backend) -->
                         <!-- Example:
-                        <div>Login successful!</div>
+                        <div class="alert alert-info text-center">Login successful!</div>
                         -->
 
-                        <form method="POST" action="../actions/login_customer_action.php" id="login-form">
-                            <div>
-                                <label for="email">Email <i></i></label>
-                                <input type="email" id="email" name="email" required>
+                        <form method="POST" action="../actions/login_customer_action.php" class="mt-4" id="login-form">
+                            <div class="mb-3">
+                                <label for="email" class="form-label">Email <i class="fa fa-envelope"></i></label>
+                                <input type="email" class="form-control" id="email" name="email" required>
                             </div>
-                            <div>
-                                <label for="password">Password <i></i></label>
-                                <input type="password" id="password" name="password" required>
+                            <div class="mb-4">
+                                <label for="password" class="form-label">Password <i class="fa fa-lock"></i></label>
+                                <input type="password" class="form-control" id="password" name="password" required>
                             </div>
-                            <button type="submit">Login</button>
+                            <button type="submit" class="btn btn-custom w-100">Login</button>
                         </form>
                     </div>
-                    <div>
-                        Don't have an account? <a href="register.php">Register here</a>.
+                    <div class="card-footer text-center">
+                        Don't have an account? <a href="register.php" class="highlight">Register here</a>.
                     </div>
                 </div>
             </div>

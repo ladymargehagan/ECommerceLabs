@@ -87,11 +87,7 @@ if (file_exists('settings/db_class.php') && file_exists('classes/product_class.p
 </head>
 <body>
     <!-- Top Header Bar -->
-    <div>
-        <div>
-            <div>
-                <div>
-                    <div>
+    <div class="container"><div class="row align-items-center"><div class="col-md-4"><div class="d-flex gap-3">
                         <a href="#about">About Us</a>
                         <?php if (isset($_SESSION['user_id'])): ?>
                             <a href="customer/dashboard.php">My Account</a>
@@ -99,28 +95,22 @@ if (file_exists('settings/db_class.php') && file_exists('classes/product_class.p
                         <a href="#contact">Contact</a>
                     </div>
                 </div>
-                <div>
-                    <span>Super Value Deals - Save more with coupons</span>
+                <div class="col-md-4 text-center"><span class="promo-text">Super Value Deals - Save more with coupons</span>
                 </div>
-                <div>
-                    <span>Need help? Call Us: <strong>+1-800-900-122</strong></span>
+                <div class="col-md-4 text-end"><span>Need help? Call Us: <strong>+1-800-900-122</strong></span>
                 </div>
             </div>
         </div>
     </div>
 
     <!-- Main Navigation -->
-    <nav>
-        <div>
-            <div>
+    <nav class="main-nav"><div class="container"><div class="nav-container">
                 <!-- Logo -->
-                <a href="index.php">
-                    <i></i>
-                    <span>Taste of Africa</span>
+                <a href="index.php" class="logo-section"><i class="fas fa-seedling"></i><span>Taste of Africa</span>
                 </a>
 
                 <!-- Search Bar -->
-                <div>
+                <div class="search-section">
                     <form method="GET" action="all_product.php">
                         <input type="text" name="search" placeholder="Search for products..." 
                                value="<?php echo isset($_GET['search']) ? htmlspecialchars($_GET['search']) : ''; ?>">
@@ -129,28 +119,26 @@ if (file_exists('settings/db_class.php') && file_exists('classes/product_class.p
                 </div>
 
                 <!-- User Actions -->
-                <div>
+                <div class="nav-actions">
                     <?php if (isset($_SESSION['user_id'])): ?>
                         <?php if ($_SESSION['role'] == 1): ?>
-                            <a href="admin/dashboard.php" title="Admin Dashboard">
-                                <i></i>
+                                                        <a href="admin/dashboard.php" class="nav-action-item" title="Admin Dashboard">
+                                <i class="fas fa-tachometer-alt"></i>
                                 <span>Admin</span>
                             </a>
                         <?php endif; ?>
-                        <a href="customer/dashboard.php" title="My Account">
-                            <i></i>
+                                                <a href="customer/dashboard.php" class="nav-action-item" title="My Account">
+                            <i class="fas fa-user"></i>
                             <span>Account</span>
                         </a>
                     <?php else: ?>
-                        <a href="login/login.php" title="Login">
-                            <i></i>
+                                                <a href="login/login.php" class="nav-action-item" title="Login">
+                            <i class="fas fa-sign-in-alt"></i>
                             <span>Login</span>
                         </a>
                     <?php endif; ?>
                     
-                    <a href="cart.php" title="Shopping Cart">
-                        <i></i>
-                        <span>Cart</span>
+                    <a href="cart.php" class="nav-action-item cart-badge" title="Shopping Cart"><i class="fas fa-shopping-cart"></i><span>Cart</span>
                         <?php if ($cart_count > 0): ?>
                             <span><?php echo $cart_count; ?></span>
                         <?php endif; ?>
@@ -160,33 +148,34 @@ if (file_exists('settings/db_class.php') && file_exists('classes/product_class.p
         </div>
     </nav>
 
-    <div>
-        <!-- Hero Section -->
-        <section>
-            <div>
+    <div class="container"><!-- Hero Section -->
+                <section class="hero-section">
+            <div class="hero-content">
                 <h1>Fresh African Produce<br>Big Discount</h1>
-                <p>Save up to 50% off on your first order</p>
-                <div>
-                    <a href="all_product.php">
-                        <i></i>Shop Now
+                                <p class="subtitle">Save up to 50% off on your first order</p>
+                                <div class="hero-cta">
+                    <a href="all_product.php" class="btn btn-custom btn-lg">
+                        <i class="fas fa-shopping-bag me-2"></i>Shop Now
                     </a>
-                    <a href="#categories">
+                                        <a href="#categories" class="btn btn-outline-primary btn-lg">
                         Browse Categories
                     </a>
                 </div>
             </div>
-            <div>
-                <img src="uploads/placeholder.png" alt="Fresh African Produce" 
-                     onerror="this.src='uploads/placeholder.png'">
+                        <div class="hero-image">
+                                                    <img src="uploads/placeholder.png" 
+                                         class="product-image-modern" 
+                                         alt="Fresh African Produce"
+                                         onerror="this.src='uploads/placeholder.png'">
             </div>
         </section>
 
         <!-- Featured Categories -->
-        <section id="categories">
-            <h2>Featured Categories</h2>
+                <section class="featured-categories" id="categories">
+            <h2 class="section-title">Featured Categories</h2>
             
-            <div>
-                <button data-category="all">All</button>
+                        <div class="category-filters">
+                <button class="category-filter-btn active" data-category="all">All</button>
                 <?php 
                 $displayed_categories = array_slice($categories, 0, 6);
                 foreach ($displayed_categories as $category): 
@@ -263,8 +252,8 @@ if (file_exists('settings/db_class.php') && file_exists('classes/product_class.p
             </div>
         </section>
 
-        <!-- Popular Products -->
-        <section>
+                <!-- Popular Products -->
+        <section class="popular-products">
             <h2>Popular Products</h2>
             
             <div>
@@ -287,18 +276,18 @@ if (file_exists('settings/db_class.php') && file_exists('classes/product_class.p
                         <div>
                             <div>
                                 <?php if ($product['product_image']): ?>
-                                    <img src="<?php echo htmlspecialchars($product['product_image']); ?>" 
+                                                                        <img src="<?php echo htmlspecialchars($product['product_image']); ?>" 
+                                         class="product-image-modern" 
                                          alt="<?php echo htmlspecialchars($product['product_title']); ?>"
                                          onerror="this.src='uploads/placeholder.png'">
                                 <?php else: ?>
                                     <img src="uploads/placeholder.png" 
                                          alt="No image available">
                                 <?php endif; ?>
-                                <span>New</span>
-                            </div>
-                            <div>
-                                <h5><?php echo htmlspecialchars($product['product_title']); ?></h5>
-                                <div>
+                                                                <span class="product-badge">New                            </div>
+                            <div class="product-card-body">
+                                <h5 class="product-title-modern"><?php echo htmlspecialchars($product['product_title']); ?></h5>
+                                                                <div class="product-meta-modern">
                                     <span><?php echo htmlspecialchars($product['cat_name'] ?? 'Category'); ?></span>
                                     <?php if ($product['brand_name']): ?>
                                         <span> • By <?php echo htmlspecialchars($product['brand_name']); ?></span>
@@ -311,20 +300,19 @@ if (file_exists('settings/db_class.php') && file_exists('classes/product_class.p
                                     <i></i>
                                     <i></i>
                                 </div>
-                                <div>
-                                    <span>$<?php echo number_format($product['product_price'], 2); ?></span>
-                                </div>
-                                <button data-product-id="<?php echo $product['product_id']; ?>">
-                                    <i></i> Add
-                                </button>
+                                                                <div class="product-meta-modern">
+                                    <span>$<?php echo number_format($product['product_price'], 2); ?>                                </div>
+                                <button class="add-to-cart-btn" data-product-id="<?php echo $product['product_id']; ?>">
+                                                                        <i class="fas fa-shopping-cart"></i> Add
+                                                                </button>
                             </div>
                         </div>
                     <?php endforeach; ?>
                 </div>
                 
-                <div>
-                    <a href="all_product.php">
-                        View All Products <i></i>
+                                <div class="text-center mt-5">
+                    <a href="all_product.php" class="btn btn-custom btn-lg">
+                        View All Products <i class="fas fa-arrow-right ms-2"></i>
                     </a>
                 </div>
             <?php endif; ?>
@@ -333,13 +321,13 @@ if (file_exists('settings/db_class.php') && file_exists('classes/product_class.p
 
     <!-- Footer -->
     <footer>
-        <div>
-            <div>
-                <div>
-                    <h5Playfair Display', serif; color: var(--forest-green); margin-bottom: 16px;">Taste of Africa</h5>
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4 mb-4">
+                    <h5>Taste of Africa</h5>
                     <p>Bringing authentic African flavors to your doorstep. Fresh, organic, and locally sourced products.</p>
                 </div>
-                <div>
+                <div class="col-md-2 mb-4">
                     <h6>Quick Links</h6>
                     <ul>
                         <li><a href="index.php">Home</a></li>
@@ -348,7 +336,7 @@ if (file_exists('settings/db_class.php') && file_exists('classes/product_class.p
                         <li><a href="#contact">Contact</a></li>
                     </ul>
                 </div>
-                <div>
+                <div class="col-md-3 mb-4">
                     <h6>Customer Service</h6>
                     <ul>
                         <li><a href="cart.php">Shopping Cart</a></li>
@@ -360,17 +348,17 @@ if (file_exists('settings/db_class.php') && file_exists('classes/product_class.p
                         <?php endif; ?>
                     </ul>
                 </div>
-                <div>
+                <div class="col-md-3 mb-4">
                     <h6>Follow Us</h6>
                     <div>
-                        <a href="#"><i></i></a>
-                        <a href="#"><i></i></a>
-                        <a href="#"><i></i></a>
+                        <a href="#"><i class="fab fa-facebook"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
                     </div>
                 </div>
             </div>
             <hr>
-            <div>
+            <div class="text-center">
                 <p>&copy; <?php echo date('Y'); ?> Taste of Africa. All rights reserved.</p>
             </div>
         </div>
@@ -408,7 +396,7 @@ if (file_exists('settings/db_class.php') && file_exists('classes/product_class.p
                 
                 button.prop('disabled', true);
                 const originalHtml = button.html();
-                button.html('<i></i> Adding...');
+                button.html('                                    <i class="fas fa-shopping-cart"></i> Adding...');
                 
                 $.ajax({
                     url: 'actions/add_to_cart_action.php',

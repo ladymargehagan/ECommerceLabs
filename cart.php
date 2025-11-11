@@ -57,7 +57,7 @@ $total = $subtotal + $tax;
 </head>
 <body>
     <!-- Navigation -->
-    <div>
+    <div class="menu-tray">
         <?php if (isset($_SESSION['user_id'])): ?>
             <span>Welcome, <?php echo htmlspecialchars($_SESSION['name']); ?>!</span>
             <?php if (isset($_SESSION['role']) && $_SESSION['role'] == 1): ?>
@@ -91,9 +91,9 @@ $total = $subtotal + $tax;
         <?php endif; ?>
     </div>
 
-    <div>
-        <div>
-            <div>
+        <div class="container">
+        <div class="row mb-4">
+            <div class="col-12">
                 <h1><i></i>Shopping Cart</h1>
                 <p>Review your items before checkout</p>
             </div>
@@ -101,12 +101,12 @@ $total = $subtotal + $tax;
 
         <?php if (empty($cart_items)): ?>
             <!-- Empty Cart -->
-            <div>
-                <i></i>
+                        <div class="empty-cart">
+                <i class="fa fa-shopping-cart"></i>
                 <h3>Your cart is empty</h3>
                 <p>Looks like you haven't added any items to your cart yet.</p>
-                <a href="all_product.php">
-                    <i></i>Continue Shopping
+                                        <a href="all_product.php" class="btn btn-outline-secondary">
+                            <i class="fa fa-arrow-left me-2"></i>Continue Shopping
                 </a>
             </div>
         <?php else: ?>
@@ -116,30 +116,31 @@ $total = $subtotal + $tax;
                     <div>
                         <div>
                             <?php foreach ($cart_items as $item): ?>
-                                <div data-product-id="<?php echo $item['p_id']; ?>">
-                                    <div>
+                                                                <div class="cart-item row align-items-center" data-product-id="<?php echo $item['p_id']; ?>">
+                                    <div class="col-md-2">
                                         <img src="<?php echo htmlspecialchars($item['product_image'] ?: 'uploads/placeholder.png'); ?>" 
                                              alt="<?php echo htmlspecialchars($item['product_title']); ?>"
-                                             onerror="this.src='uploads/placeholder.png'">
+                                             class="product-image-cart"
+                                             onerror="this.src=\'uploads/placeholder.png\'">
                                     </div>
                                     <div>
                                         <h5><?php echo htmlspecialchars($item['product_title']); ?></h5>
-                                        <p>
-                                            <i></i><?php echo htmlspecialchars($item['cat_name'] ?? 'No Category'); ?>
+                                                                                <p class="text-muted small mb-0">
+                                            <i class="fa fa-tag me-1"></i><?php echo htmlspecialchars($item['cat_name'] ?? 'No Category'); ?>
                                             <?php if ($item['brand_name']): ?>
-                                                | <i></i><?php echo htmlspecialchars($item['brand_name']); ?>
+                                                 | <i class="fa fa-star me-1"></i><?php echo htmlspecialchars($item['brand_name']); ?>
                                             <?php endif; ?>
-                                        </p>
-                                        <p>
+                                                                                </p>
+                                        <p class="text-primary mb-0 mt-1">
                                             <strong>$<?php echo number_format($item['product_price'], 2); ?></strong>
-                                        </p>
+                                                                                </p>
                                     </div>
-                                    <div>
-                                        <div>
-                                            <button type="button">
-                                                <i></i>
-                                            </button>
-                                            <input type="number" 
+                                    <div class="col-md-3">
+                                        <div class="input-group">
+                                            <button class="btn btn-outline-secondary btn-sm quantity-decrease" type="button">
+                                                <i class="fa fa-minus"></i>
+                                                                                        <input type="number" 
+                                                   class="form-control quantity-input" 
                                                    value="<?php echo $item['qty']; ?>" 
                                                    min="1"
                                                    data-product-id="<?php echo $item['p_id']; ?>">
@@ -149,51 +150,51 @@ $total = $subtotal + $tax;
                                         </div>
                                     </div>
                                     <div>
-                                        <p><strong>$<?php echo number_format($item['qty'] * $item['product_price'], 2); ?></strong></p>
-                                        <button data-product-id="<?php echo $item['p_id']; ?>">
-                                            <i></i> Remove
+                                        <p><strong>$<?php echo number_format($item['qty'] * $item['product_price'], 2); ?></strong>                                        </p>
+                                        <button class="btn btn-sm btn-outline-danger remove-item" data-product-id="<?php echo $item['p_id']; ?>">
+                                            <i class="fa fa-trash"></i> Remove
                                         </button>
                                     </div>
                                 </div>
                             <?php endforeach; ?>
-                        </div>
+                                                </div>
                     </div>
 
-                    <div>
-                        <button id="emptyCartBtn">
-                            <i></i>Empty Cart
+                    <div class="mt-3">
+                        <button class="btn btn-outline-danger" id="emptyCartBtn">
+                                                        <i class="fa fa-trash me-2"></i>Empty Cart
                         </button>
-                        <a href="all_product.php">
-                            <i></i>Continue Shopping
-                        </a>
+                                                <a href="all_product.php" class="btn btn-outline-secondary">
+                            <i class="fa fa-arrow-left me-2"></i>Continue Shopping
+                                                </a>
                     </div>
                 </div>
 
                 <!-- Cart Summary -->
-                <div>
-                    <div>
-                        <h4>Order Summary</h4>
+                <div class="col-lg-4">
+                    <div class="cart-summary">
+                        <h4 class="mb-4">Order Summary</h4>
                         
-                        <div>
+                                                <div class="d-flex justify-content-between mb-2">
                             <span>Items (<?php echo $item_count; ?>):</span>
                             <span>$<?php echo number_format($subtotal, 2); ?></span>
                         </div>
                         
-                        <div>
+                                                <div class="d-flex justify-content-between mb-2">
                             <span>Tax (10%):</span>
                             <span>$<?php echo number_format($tax, 2); ?></span>
                         </div>
                         
                         <hr>
                         
-                        <div>
+                                                <div class="d-flex justify-content-between mb-4">
                             <strong>Total:</strong>
                             <strong>$<?php echo number_format($total, 2); ?></strong>
                         </div>
 
                         <?php if (!$customer_id): ?>
-                            <div>
-                                <i></i>
+                                                        <div class="alert alert-warning mb-3">
+                                <i class="fa fa-info-circle me-2"></i>
                                 Please <a href="login/login.php">login</a> or <a href="login/register.php">register</a> to proceed to checkout.
                             </div>
                         <?php endif; ?>

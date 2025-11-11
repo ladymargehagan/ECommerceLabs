@@ -21,64 +21,64 @@
 </head>
 
 <body>
-    <div>
-        <div>
-            <div>
-                <div>
-                    <div>
+    <div class="container register-container">
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header text-center highlight">
                         <h4>Register</h4>
                     </div>
-                    <div>
-                        <form method="POST" action="" id="register-form" enctype="multipart/form-data">
-                            <div>
-                                <label for="name">Name <i></i></label>
-                                <input type="text" id="name" name="name" required>
+                    <div class="card-body">
+                        <form method="POST" action="" class="mt-4" id="register-form" enctype="multipart/form-data">
+                            <div class="mb-3">
+                                <label for="name" class="form-label">Name <i class="fa fa-user"></i></label>
+                                <input type="text" class="form-control" id="name" name="name" required>
                             </div>
-                            <div>
-                                <label for="email">Email <i></i></label>
-                                <input type="email" id="email" name="email" required>
+                            <div class="mb-3">
+                                <label for="email" class="form-label">Email <i class="fa fa-envelope"></i></label>
+                                <input type="email" class="form-control" id="email" name="email" required>
                             </div>
-                            <div>
-                                <label for="password">Password <i></i></label>
-                                <input type="password" id="password" name="password" required>
+                            <div class="mb-3">
+                                <label for="password" class="form-label">Password <i class="fa fa-lock"></i></label>
+                                <input type="password" class="form-control" id="password" name="password" required>
                             </div>
-                            <div>
-                                <label for="phone_number">Phone Number <i></i></label>
-                                <input type="text" id="phone_number" name="phone_number" required>
+                            <div class="mb-3">
+                                <label for="phone_number" class="form-label">Phone Number <i class="fa fa-phone"></i></label>
+                                <input type="text" class="form-control" id="phone_number" name="phone_number" required>
                             </div>
                             <!-- Added Country -->
-                            <div>
-                                <label for="country">Country <i></i></label>
-                                <input type="text" id="country" name="country" required>
+                            <div class="mb-3">
+                                <label for="country" class="form-label">Country <i class="fa fa-flag"></i></label>
+                                <input type="text" class="form-control" id="country" name="country" required>
                             </div>
                             <!-- Added City -->
-                            <div>
-                                <label for="city">City <i></i></label>
-                                <input type="text" id="city" name="city" required>
+                            <div class="mb-3">
+                                <label for="city" class="form-label">City <i class="fa fa-city"></i></label>
+                                <input type="text" class="form-control" id="city" name="city" required>
                             </div>
                             <!-- Added Profile Image -->
-                            <div>
-                                <label for="image">Profile Image (optional) <i></i></label>
-                                <input type="file" id="image" name="image">
+                            <div class="mb-3">
+                                <label for="image" class="form-label">Profile Image (optional) <i class="fa fa-image"></i></label>
+                                <input type="file" class="form-control" id="image" name="image">
                             </div>
-                            <div>
-                                <label>Register As</label>
-                                <div>
-                                    <div>
-                                        <input type="radio" name="role" id="customer" value="2" checked>
-                                        <label for="customer">Customer</label>
+                            <div class="mb-4">
+                                <label class="form-label">Register As</label>
+                                <div class="d-flex justify-content-start">
+                                    <div class="form-check me-3">
+                                        <input class="form-check-input" type="radio" name="role" id="customer" value="2" checked>
+                                        <label class="form-check-label" for="customer">Customer</label>
                                     </div>
-                                    <div>
-                                        <input type="radio" name="role" id="admin" value="1">
-                                        <label for="admin">Admin</label>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="role" id="admin" value="1">
+                                        <label class="form-check-label" for="admin">Admin</label>
                                     </div>
                                 </div>
                             </div>
-                            <button type="submit">Register</button>
+                            <button type="submit" class="btn btn-custom w-100">Register</button>
                         </form>
                     </div>
-                    <div>
-                        Already have an account? <a href="login.php">Login here</a>.
+                    <div class="card-footer text-center">
+                        Already have an account? <a href="login.php" class="highlight">Login here</a>.
                     </div>
                 </div>
             </div>
