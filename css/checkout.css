@@ -1,12 +1,12 @@
 /* ===========================================
    CHECKOUT PAGE STYLES
-   Modern & Clean Checkout Interface
+   Clean & Modern Checkout Interface
    =========================================== */
 
 .checkout-item {
-    border-bottom: 1px solid rgba(139, 69, 19, 0.1);
+    border-bottom: 1px solid var(--border-light);
     padding: 20px 0;
-    transition: all 0.3s ease;
+    transition: background 0.2s ease;
 }
 
 .checkout-item:last-child {
@@ -14,8 +14,8 @@
 }
 
 .checkout-item:hover {
-    background: rgba(139, 69, 19, 0.02);
-    border-radius: 12px;
+    background: var(--bg-light);
+    border-radius: 8px;
     padding-left: 12px;
     padding-right: 12px;
 }
@@ -24,46 +24,50 @@
     width: 80px;
     height: 80px;
     object-fit: cover;
-    border-radius: 12px;
-    box-shadow: 0 2px 8px var(--shadow-sm);
+    border-radius: 8px;
+    box-shadow: var(--shadow-xs);
+    background: var(--bg-light);
 }
 
 .checkout-summary {
-    background: linear-gradient(135deg, var(--bg-light), var(--cream));
-    border-radius: 16px;
-    padding: 28px;
+    background: var(--white);
+    border-radius: 12px;
+    padding: 24px;
     position: sticky;
     top: 120px;
-    border: 2px solid rgba(139, 69, 19, 0.1);
-    box-shadow: 0 4px 16px var(--shadow-sm);
+    border: 1px solid var(--border-light);
+    box-shadow: var(--shadow-sm);
 }
 
 .checkout-summary h4 {
-    color: var(--primary);
-    margin-bottom: 24px;
+    color: var(--text-dark);
+    margin-bottom: 20px;
     padding-bottom: 16px;
-    border-bottom: 2px solid rgba(139, 69, 19, 0.1);
+    border-bottom: 1px solid var(--border-light);
+    font-size: 1.3rem;
 }
 
 .checkout-summary .d-flex {
-    padding: 8px 0;
-    font-size: 1rem;
+    padding: 10px 0;
+    font-size: 0.95rem;
+    color: var(--text-medium);
 }
 
 .checkout-summary hr {
-    border-color: rgba(139, 69, 19, 0.2);
+    border-color: var(--border-light);
     margin: 20px 0;
 }
 
 .checkout-summary .text-primary {
-    font-size: 1.75rem;
+    font-size: 1.8rem;
     font-weight: 700;
+    color: var(--primary);
 }
 
 .payment-section {
-    background: linear-gradient(135deg, var(--bg-secondary), var(--bg-light));
-    border: 2px dashed rgba(139, 69, 19, 0.3);
-    border-radius: 16px;
+    background: var(--white);
+    border: 2px dashed var(--border-light);
+    border-radius: 12px;
     padding: 40px 30px;
     text-align: center;
     margin: 40px 0;
@@ -72,8 +76,7 @@
 
 .payment-section:hover {
     border-color: var(--primary);
-    background: linear-gradient(135deg, var(--cream), var(--bg-secondary));
-    box-shadow: 0 4px 16px var(--shadow-sm);
+    background: var(--bg-light);
 }
 
 .payment-section i {
@@ -82,7 +85,7 @@
 }
 
 .payment-section h4 {
-    color: var(--primary);
+    color: var(--text-dark);
     margin-bottom: 12px;
 }
 
@@ -93,7 +96,7 @@
 
 /* Customer Information Section */
 .card-header h5 {
-    color: var(--bg-secondary);
+    color: var(--text-dark);
     margin: 0;
 }
 
@@ -105,7 +108,7 @@
 
 .card-body .form-control[readonly] {
     background: var(--bg-light);
-    border-color: #E0E0E0;
+    border-color: var(--border-light);
     color: var(--text-dark);
     cursor: default;
 }
@@ -131,4 +134,3 @@
         padding: 30px 20px;
     }
 }
-
