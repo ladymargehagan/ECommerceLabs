@@ -43,37 +43,7 @@ $total = $subtotal + $tax;
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <link href="css/main.css" rel="stylesheet">
-    <link href="css/index.css" rel="stylesheet">
-    <style>
-        .checkout-item {
-            border-bottom: 1px solid #e9ecef;
-            padding: 15px 0;
-        }
-        .checkout-item:last-child {
-            border-bottom: none;
-        }
-        .product-image-checkout {
-            width: 80px;
-            height: 80px;
-            object-fit: cover;
-            border-radius: 8px;
-        }
-        .checkout-summary {
-            background: #f8f9fa;
-            border-radius: 10px;
-            padding: 25px;
-            position: sticky;
-            top: 120px;
-        }
-        .payment-section {
-            background: #fff;
-            border: 2px dashed #dee2e6;
-            border-radius: 10px;
-            padding: 30px;
-            text-align: center;
-            margin: 30px 0;
-        }
-    </style>
+    <link href="css/checkout.css" rel="stylesheet">
 </head>
 <body>
     <!-- Navigation -->

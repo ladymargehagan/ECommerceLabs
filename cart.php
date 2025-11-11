@@ -44,42 +44,7 @@ $total = $subtotal + $tax;
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <link href="css/main.css" rel="stylesheet">
-    <link href="css/index.css" rel="stylesheet">
-    <style>
-        .cart-item {
-            border-bottom: 1px solid #e9ecef;
-            padding: 20px 0;
-        }
-        .cart-item:last-child {
-            border-bottom: none;
-        }
-        .product-image-cart {
-            width: 100px;
-            height: 100px;
-            object-fit: cover;
-            border-radius: 8px;
-        }
-        .quantity-input {
-            width: 80px;
-            text-align: center;
-        }
-        .cart-summary {
-            background: #f8f9fa;
-            border-radius: 10px;
-            padding: 25px;
-            position: sticky;
-            top: 120px;
-        }
-        .empty-cart {
-            text-align: center;
-            padding: 60px 20px;
-        }
-        .empty-cart i {
-            font-size: 5em;
-            color: #6c757d;
-            margin-bottom: 20px;
-        }
-    </style>
+    <link href="css/cart.css" rel="stylesheet">
 </head>
 <body>
     <!-- Navigation -->

@@ -75,47 +75,7 @@ $total_pages = $limit > 0 ? ceil($total_count / $limit) : 0;
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <link href="css/main.css" rel="stylesheet">
-    <link href="css/index.css" rel="stylesheet">
-    <style>
-        .product-card {
-            transition: transform 0.3s ease;
-            height: 100%;
-        }
-        .product-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
-        }
-        .product-image {
-            height: 200px;
-            object-fit: cover;
-            width: 100%;
-        }
-        .filter-section {
-            background: #f8f9fa;
-            border-radius: 10px;
-            padding: 20px;
-            margin-bottom: 30px;
-        }
-        .pagination-wrapper {
-            display: flex;
-            justify-content: center;
-            margin-top: 30px;
-        }
-        .no-products {
-            text-align: center;
-            padding: 60px 20px;
-            color: #6c757d;
-        }
-        .product-price {
-            font-size: 1.2em;
-            font-weight: bold;
-            color: #28a745;
-        }
-        .product-category, .product-brand {
-            font-size: 0.9em;
-            color: #6c757d;
-        }
-    </style>
+    <link href="css/product.css" rel="stylesheet">
 </head>
 <body>
     <!-- Navigation -->

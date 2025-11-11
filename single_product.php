@@ -41,55 +41,7 @@ if (!$product) {
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <link href="css/main.css" rel="stylesheet">
-    <link href="css/index.css" rel="stylesheet">
-    <style>
-        .product-image {
-            max-height: 500px;
-            object-fit: cover;
-            width: 100%;
-        }
-        .product-info {
-            background: #f8f9fa;
-            border-radius: 10px;
-            padding: 30px;
-        }
-        .product-price {
-            font-size: 2em;
-            font-weight: bold;
-            color: #28a745;
-        }
-        .product-meta {
-            background: #e9ecef;
-            border-radius: 8px;
-            padding: 15px;
-            margin: 15px 0;
-        }
-        .keywords {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 5px;
-        }
-        .keyword-badge {
-            background: #007bff;
-            color: white;
-            padding: 5px 10px;
-            border-radius: 15px;
-            font-size: 0.8em;
-        }
-        .breadcrumb {
-            background: transparent;
-            padding: 0;
-        }
-        .action-buttons {
-            display: flex;
-            gap: 15px;
-            flex-wrap: wrap;
-        }
-        .action-buttons .btn {
-            flex: 1;
-            min-width: 150px;
-        }
-    </style>
+    <link href="css/product.css" rel="stylesheet">
 </head>
 <body>
     <!-- Navigation -->
@@ -144,12 +96,12 @@ if (!$product) {
                     <div class="card-body p-0">
                         <?php if ($product['product_image']): ?>
                             <img src="<?php echo htmlspecialchars($product['product_image']); ?>" 
-                                 class="product-image" 
+                                 class="product-image-detail" 
                                  alt="<?php echo htmlspecialchars($product['product_title']); ?>"
                                  onerror="this.src='uploads/placeholder.png'">
                         <?php else: ?>
                             <img src="uploads/placeholder.png" 
-                                 class="product-image" 
+                                 class="product-image-detail" 
                                  alt="No image available">
                         <?php endif; ?>
                 </div>
