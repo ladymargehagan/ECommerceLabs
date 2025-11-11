@@ -17,24 +17,24 @@ if ($_SESSION['role'] != 1) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Brand Management - Taste of Africa</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-    <link href="../css/main.css" rel="stylesheet">
-    <link href="../css/brand.css" rel="stylesheet">
+    
+    
+    
+    
 </head>
 <body>
-    <div class="container-fluid">
+    <div>
         <!-- Header -->
-        <div class="row">
-            <div class="col-12">
-                <div class="d-flex justify-content-between align-items-center py-3">
-                    <h2><i class="fa fa-star me-2"></i>Brand Management</h2>
+        <div>
+            <div>
+                <div>
+                    <h2><i></i>Brand Management</h2>
                     <div>
-                        <a href="dashboard.php" class="btn btn-outline-secondary me-2">
-                            <i class="fa fa-tachometer-alt me-1"></i>Dashboard
+                        <a href="dashboard.php">
+                            <i></i>Dashboard
                         </a>
-                        <button class="btn btn-custom" data-bs-toggle="modal" data-bs-target="#addBrandModal">
-                            <i class="fa fa-plus me-1"></i>Add Brand
+                        <button data-bs-toggle="modal" data-bs-target="#addBrandModal">
+                            <i></i>Add Brand
                         </button>
                     </div>
                 </div>
@@ -42,50 +42,50 @@ if ($_SESSION['role'] != 1) {
         </div>
 
         <!-- Brands Display -->
-        <div class="row" id="brandsContainer">
+        <div id="brandsContainer">
             <!-- Brands will be loaded here via AJAX -->
-            <div class="col-12 text-center py-5">
-                <div class="spinner-border text-primary" role="status">
-                    <span class="visually-hidden">Loading...</span>
+            <div>
+                <div role="status">
+                    <span>Loading...</span>
                 </div>
-                <p class="mt-2">Loading brands...</p>
+                <p>Loading brands...</p>
             </div>
         </div>
 
         <!-- Add Brand Modal -->
-        <div class="modal fade" id="addBrandModal" tabindex="-1">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title"><i class="fa fa-plus me-2"></i>Add New Brand</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        <div id="addBrandModal" tabindex="-1">
+            <div>
+                <div>
+                    <div>
+                        <h5><i></i>Add New Brand</h5>
+                        <button type="button" data-bs-dismiss="modal"></button>
                     </div>
                     <form id="addBrandForm" enctype="multipart/form-data">
-                        <div class="modal-body">
-                            <div class="mb-3">
-                                <label for="brandName" class="form-label">Brand Name <span class="text-danger">*</span></label>
-                                <input type="text" class="form-control" id="brandName" name="brandName" required maxlength="100">
-                                <div class="invalid-feedback"></div>
+                        <div>
+                            <div>
+                                <label for="brandName">Brand Name <span>*</span></label>
+                                <input type="text" id="brandName" name="brandName" required maxlength="100">
+                                <div></div>
                             </div>
                             
-                            <div class="mb-3">
-                                <label for="brandImage" class="form-label">Brand Image</label>
-                                <input type="file" class="form-control" id="brandImage" name="brandImage" accept="image/*">
-                                <div class="form-text">Supported formats: JPG, PNG, GIF. Max size: 5MB</div>
-                                <div class="invalid-feedback"></div>
+                            <div>
+                                <label for="brandImage">Brand Image</label>
+                                <input type="file" id="brandImage" name="brandImage" accept="image/*">
+                                <div>Supported formats: JPG, PNG, GIF. Max size: 5MB</div>
+                                <div></div>
                             </div>
 
-                            <div id="brandImagePreview" class="mb-3" style="display: none;">
-                                <label class="form-label">Image Preview</label>
-                                <div class="text-center">
-                                    <img id="previewBrandImg" src="" alt="Preview" class="img-thumbnail" style="max-width: 200px; max-height: 200px;">
+                            <div id="brandImagePreview">
+                                <label>Image Preview</label>
+                                <div>
+                                    <img id="previewBrandImg" src="" alt="Preview">
                                 </div>
                             </div>
                         </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                            <button type="submit" class="btn btn-custom">
-                                <i class="fa fa-save me-1"></i>Add Brand
+                        <div>
+                            <button type="button" data-bs-dismiss="modal">Cancel</button>
+                            <button type="submit">
+                                <i></i>Add Brand
                             </button>
                         </div>
                     </form>
@@ -94,40 +94,40 @@ if ($_SESSION['role'] != 1) {
         </div>
 
         <!-- Edit Brand Modal -->
-        <div class="modal fade" id="editBrandModal" tabindex="-1">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title"><i class="fa fa-edit me-2"></i>Edit Brand</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        <div id="editBrandModal" tabindex="-1">
+            <div>
+                <div>
+                    <div>
+                        <h5><i></i>Edit Brand</h5>
+                        <button type="button" data-bs-dismiss="modal"></button>
                     </div>
                     <form id="editBrandForm" enctype="multipart/form-data">
-                        <div class="modal-body">
+                        <div>
                             <input type="hidden" id="editBrandId" name="brandId">
-                            <div class="mb-3">
-                                <label for="editBrandName" class="form-label">Brand Name <span class="text-danger">*</span></label>
-                                <input type="text" class="form-control" id="editBrandName" name="brandName" required maxlength="100">
-                                <div class="invalid-feedback"></div>
+                            <div>
+                                <label for="editBrandName">Brand Name <span>*</span></label>
+                                <input type="text" id="editBrandName" name="brandName" required maxlength="100">
+                                <div></div>
                             </div>
                             
-                            <div class="mb-3">
-                                <label for="editBrandImage" class="form-label">Brand Image</label>
-                                <input type="file" class="form-control" id="editBrandImage" name="brandImage" accept="image/*">
-                                <div class="form-text">Supported formats: JPG, PNG, GIF. Max size: 5MB</div>
-                                <div class="invalid-feedback"></div>
+                            <div>
+                                <label for="editBrandImage">Brand Image</label>
+                                <input type="file" id="editBrandImage" name="brandImage" accept="image/*">
+                                <div>Supported formats: JPG, PNG, GIF. Max size: 5MB</div>
+                                <div></div>
                             </div>
 
-                            <div id="editBrandImagePreview" class="mb-3">
-                                <label class="form-label">Current Image</label>
-                                <div class="text-center">
-                                    <img id="editPreviewBrandImg" src="" alt="Current Image" class="img-thumbnail" style="max-width: 200px; max-height: 200px;">
+                            <div id="editBrandImagePreview">
+                                <label>Current Image</label>
+                                <div>
+                                    <img id="editPreviewBrandImg" src="" alt="Current Image">
                                 </div>
                             </div>
                         </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                            <button type="submit" class="btn btn-custom">
-                                <i class="fa fa-save me-1"></i>Update Brand
+                        <div>
+                            <button type="button" data-bs-dismiss="modal">Cancel</button>
+                            <button type="submit">
+                                <i></i>Update Brand
                             </button>
                         </div>
                     </form>
@@ -136,22 +136,22 @@ if ($_SESSION['role'] != 1) {
         </div>
 
         <!-- Delete Confirmation Modal -->
-        <div class="modal fade" id="deleteBrandModal" tabindex="-1">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title"><i class="fa fa-trash me-2"></i>Delete Brand</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        <div id="deleteBrandModal" tabindex="-1">
+            <div>
+                <div>
+                    <div>
+                        <h5><i></i>Delete Brand</h5>
+                        <button type="button" data-bs-dismiss="modal"></button>
                     </div>
-                    <div class="modal-body">
+                    <div>
                         <p>Are you sure you want to delete this brand?</p>
-                        <p class="text-muted">This action cannot be undone.</p>
+                        <p>This action cannot be undone.</p>
                         <input type="hidden" id="deleteBrandId">
                     </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                        <button type="button" class="btn btn-danger" id="confirmDelete">
-                            <i class="fa fa-trash me-1"></i>Delete Brand
+                    <div>
+                        <button type="button" data-bs-dismiss="modal">Cancel</button>
+                        <button type="button" id="confirmDelete">
+                            <i></i>Delete Brand
                         </button>
                     </div>
                 </div>
@@ -160,9 +160,9 @@ if ($_SESSION['role'] != 1) {
     </div>
 
     <!-- Loading Overlay -->
-    <div class="loading-overlay" id="loadingOverlay">
-        <div class="loading-spinner">
-            <div class="spinner"></div>
+    <div id="loadingOverlay">
+        <div>
+            <div></div>
             <p>Processing...</p>
         </div>
     </div>

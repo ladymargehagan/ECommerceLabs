@@ -59,62 +59,62 @@ $total_pages = ceil($total_count / $limit);
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Search Results for "<?php echo htmlspecialchars($search_query); ?>" - Taste of Africa</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-    <link href="css/main.css" rel="stylesheet">
-    <link href="css/product.css" rel="stylesheet">
+    
+    
+    
+    
 </head>
 <body>
     <!-- Navigation -->
-    <div class="menu-tray">
+    <div>
         <?php if (isset($_SESSION['user_id'])): ?>
-            <span class="me-2">Welcome, <?php echo htmlspecialchars($_SESSION['name']); ?>!</span>
+            <span>Welcome, <?php echo htmlspecialchars($_SESSION['name']); ?>!</span>
             <?php if ($_SESSION['role'] == 1): // Admin users ?>
-                <a href="admin/dashboard.php" class="btn btn-sm btn-outline-primary me-2">
-                    <i class="fa fa-tachometer-alt me-1"></i>Dashboard
+                <a href="admin/dashboard.php">
+                    <i></i>Dashboard
                 </a>
-                <a href="admin/category.php" class="btn btn-sm btn-outline-primary me-2">
-                    <i class="fa fa-tags me-1"></i>Category
+                <a href="admin/category.php">
+                    <i></i>Category
                 </a>
-                <a href="admin/brand.php" class="btn btn-sm btn-outline-warning me-2">
-                    <i class="fa fa-star me-1"></i>Brand
+                <a href="admin/brand.php">
+                    <i></i>Brand
                 </a>
-                <a href="admin/product.php" class="btn btn-sm btn-outline-success me-2">
-                    <i class="fa fa-plus me-1"></i>Add Product
+                <a href="admin/product.php">
+                    <i></i>Add Product
                 </a>
             <?php endif; ?>
-            <a href="customer/dashboard.php" class="btn btn-sm btn-outline-info me-2">
-                <i class="fa fa-user me-1"></i>My Account
+            <a href="customer/dashboard.php">
+                <i></i>My Account
             </a>
-            <a href="login/logout.php" class="btn btn-sm btn-outline-danger">
-                <i class="fa fa-sign-out-alt me-1"></i>Logout
+            <a href="login/logout.php">
+                <i></i>Logout
             </a>
         <?php else: ?>
-            <span class="me-2">Menu:</span>
-            <a href="login/register.php" class="btn btn-sm btn-outline-primary me-2">
-                <i class="fa fa-user-plus me-1"></i>Register
+            <span>Menu:</span>
+            <a href="login/register.php">
+                <i></i>Register
             </a>
-            <a href="login/login.php" class="btn btn-sm btn-outline-secondary">
-                <i class="fa fa-sign-in-alt me-1"></i>Login
+            <a href="login/login.php">
+                <i></i>Login
             </a>
         <?php endif; ?>
     </div>
 
-    <div class="container" style="padding-top: 120px;">
+    <div>
         <!-- Breadcrumb -->
-        <nav aria-label="breadcrumb" class="mb-4">
-            <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="index.php">Home</a></li>
-                <li class="breadcrumb-item"><a href="all_product.php">All Products</a></li>
-                <li class="breadcrumb-item active" aria-current="page">Search Results</li>
+        <nav aria-label="breadcrumb">
+            <ol>
+                <li><a href="index.php">Home</a></li>
+                <li><a href="all_product.php">All Products</a></li>
+                <li aria-current="page">Search Results</li>
             </ol>
         </nav>
 
         <!-- Header -->
-        <div class="row mb-4">
-            <div class="col-12">
-                <h1><i class="fa fa-search me-2"></i>Search Results</h1>
-                <p class="text-muted">
+        <div>
+            <div>
+                <h1><i></i>Search Results</h1>
+                <p>
                     Results for "<strong><?php echo htmlspecialchars($search_query); ?></strong>"
                     <?php if ($category_id): ?>
                         in category "<strong><?php echo htmlspecialchars(array_column($categories, 'cat_name', 'cat_id')[$category_id] ?? 'Unknown'); ?></strong>"
@@ -127,14 +127,14 @@ $total_pages = ceil($total_count / $limit);
         </div>
 
         <!-- Refine Search Section -->
-        <div class="filter-section">
-            <h5><i class="fa fa-filter me-2"></i>Refine Your Search</h5>
+        <div>
+            <h5><i></i>Refine Your Search</h5>
             <form method="GET" id="refineForm">
                 <input type="hidden" name="q" value="<?php echo htmlspecialchars($search_query); ?>">
-                <div class="row">
-                    <div class="col-md-4">
-                        <label for="category" class="form-label">Category</label>
-                        <select class="form-control" id="category" name="category">
+                <div>
+                    <div>
+                        <label for="category">Category</label>
+                        <select id="category" name="category">
                             <option value="">All Categories</option>
                             <?php foreach ($categories as $category): ?>
                                 <option value="<?php echo $category['cat_id']; ?>" 
@@ -144,9 +144,9 @@ $total_pages = ceil($total_count / $limit);
                             <?php endforeach; ?>
                         </select>
                     </div>
-                    <div class="col-md-4">
-                        <label for="brand" class="form-label">Brand</label>
-                        <select class="form-control" id="brand" name="brand">
+                    <div>
+                        <label for="brand">Brand</label>
+                        <select id="brand" name="brand">
                             <option value="">All Brands</option>
                             <?php foreach ($brands as $brand): ?>
                                 <option value="<?php echo $brand['brand_id']; ?>" 
@@ -156,21 +156,20 @@ $total_pages = ceil($total_count / $limit);
                             <?php endforeach; ?>
                         </select>
                     </div>
-                    <div class="col-md-4">
-                        <label class="form-label">&nbsp;</label>
-                        <div class="d-grid">
-                            <button type="submit" class="btn btn-custom">
-                                <i class="fa fa-search me-1"></i>Refine Search
+                    <div>
+                        <label>&nbsp;</label>
+                        <div>
+                            <button type="submit">
+                                <i></i>Refine Search
                             </button>
                         </div>
                     </div>
                 </div>
                 <?php if ($category_id || $brand_id): ?>
-                    <div class="row mt-2">
-                        <div class="col-12">
-                            <a href="product_search_result.php?q=<?php echo urlencode($search_query); ?>" 
-                               class="btn btn-sm btn-outline-secondary">
-                                <i class="fa fa-times me-1"></i>Clear Filters
+                    <div>
+                        <div>
+                            <a href="product_search_result.php?q=<?php echo urlencode($search_query); ?>">
+                                <i></i>Clear Filters
                             </a>
                         </div>
                     </div>
@@ -179,9 +178,9 @@ $total_pages = ceil($total_count / $limit);
         </div>
 
         <!-- Results Summary -->
-        <div class="row mb-3">
-            <div class="col-12">
-                <p class="text-muted">
+        <div>
+            <div>
+                <p>
                     Showing <?php echo count($products); ?> of <?php echo $total_count; ?> results
                     <?php if ($total_count > 0): ?>
                         (Page <?php echo $page; ?> of <?php echo $total_pages; ?>)
@@ -192,67 +191,64 @@ $total_pages = ceil($total_count / $limit);
 
         <!-- Search Results -->
         <?php if (empty($products)): ?>
-            <div class="no-products">
-                <i class="fa fa-search fa-3x mb-3"></i>
+            <div>
+                <i></i>
                 <h3>No Results Found</h3>
                 <p>We couldn't find any products matching your search criteria.</p>
-                <div class="mt-3">
-                    <a href="all_product.php" class="btn btn-custom me-2">Browse All Products</a>
-                    <button class="btn btn-outline-primary" onclick="history.back()">Go Back</button>
+                <div>
+                    <a href="all_product.php">Browse All Products</a>
+                    <button onclick="history.back()">Go Back</button>
                 </div>
             </div>
         <?php else: ?>
-            <div class="row" id="productsContainer">
+            <div id="productsContainer">
                 <?php foreach ($products as $product): ?>
-                    <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
-                        <div class="card product-card h-100">
-                            <div class="position-relative">
+                    <div>
+                        <div>
+                            <div>
                                 <?php if ($product['product_image']): ?>
                                     <img src="<?php echo htmlspecialchars($product['product_image']); ?>" 
-                                         class="card-img-top product-image" 
                                          alt="<?php echo htmlspecialchars($product['product_title']); ?>"
                                          onerror="this.src='uploads/placeholder.png'">
                                 <?php else: ?>
                                     <img src="uploads/placeholder.png" 
-                                         class="card-img-top product-image" 
                                          alt="No image available">
                                 <?php endif; ?>
-                                <div class="position-absolute top-0 end-0 m-2">
-                                    <span class="badge bg-primary">ID: <?php echo $product['product_id']; ?></span>
+                                <div>
+                                    <span>ID: <?php echo $product['product_id']; ?></span>
                                 </div>
                             </div>
-                            <div class="card-body d-flex flex-column">
-                                <h5 class="card-title">
+                            <div>
+                                <h5>
                                     <?php 
                                     $title = htmlspecialchars($product['product_title']);
-                                    echo str_ireplace($search_query, '<span class="search-highlight">' . htmlspecialchars($search_query) . '</span>', $title);
+                                    echo str_ireplace($search_query, '<span>' . htmlspecialchars($search_query) . '</span>', $title);
                                     ?>
                                 </h5>
-                                <div class="product-price mb-2">$<?php echo number_format($product['product_price'], 2); ?></div>
-                                <div class="product-category mb-1">
-                                    <i class="fa fa-tag me-1"></i><?php echo htmlspecialchars($product['cat_name'] ?? 'No Category'); ?>
+                                <div>$<?php echo number_format($product['product_price'], 2); ?></div>
+                                <div>
+                                    <i></i><?php echo htmlspecialchars($product['cat_name'] ?? 'No Category'); ?>
                                 </div>
-                                <div class="product-brand mb-3">
-                                    <i class="fa fa-star me-1"></i><?php echo htmlspecialchars($product['brand_name'] ?? 'No Brand'); ?>
+                                <div>
+                                    <i></i><?php echo htmlspecialchars($product['brand_name'] ?? 'No Brand'); ?>
                                 </div>
                                 <?php if ($product['product_desc']): ?>
-                                    <p class="card-text text-muted small flex-grow-1">
+                                    <p>
                                         <?php 
                                         $desc = htmlspecialchars(substr($product['product_desc'], 0, 100));
                                         if (strlen($product['product_desc']) > 100) $desc .= '...';
-                                        echo str_ireplace($search_query, '<span class="search-highlight">' . htmlspecialchars($search_query) . '</span>', $desc);
+                                        echo str_ireplace($search_query, '<span>' . htmlspecialchars($search_query) . '</span>', $desc);
                                         ?>
                                     </p>
                                 <?php endif; ?>
-                                <div class="mt-auto">
-                                    <div class="d-grid gap-2">
-                                        <a href="single_product.php?id=<?php echo $product['product_id']; ?>" 
-                                           class="btn btn-outline-primary">
-                                            <i class="fa fa-eye me-1"></i>View Details
+                                <div>
+                                    <div>
+                                        <a href="single_product.php?id=<?php echo $product['product_id']; ?>">
+                                            <i></i>View Details
                                         </a>
-                                        <button class="btn btn-custom add-to-cart" 
+                                        <button 
                                                 data-product-id="<?php echo $product['product_id']; ?>">
-                                            <i class="fa fa-cart-plus me-1"></i>Add to Cart
+                                            <i></i>Add to Cart
                                         </button>
                                     </div>
                                 </div>
@@ -264,29 +260,29 @@ $total_pages = ceil($total_count / $limit);
 
             <!-- Pagination -->
             <?php if ($total_pages > 1): ?>
-                <div class="pagination-wrapper">
+                <div>
                     <nav aria-label="Search results pagination">
-                        <ul class="pagination">
+                        <ul>
                             <?php if ($page > 1): ?>
-                                <li class="page-item">
-                                    <a class="page-link" href="?<?php echo http_build_query(array_merge($_GET, ['page' => $page - 1])); ?>">
-                                        <i class="fa fa-chevron-left"></i> Previous
+                                <li>
+                                    <a href="?<?php echo http_build_query(array_merge($_GET, ['page' => $page - 1])); ?>">
+                                        <i></i> Previous
                                     </a>
                                 </li>
                             <?php endif; ?>
 
                             <?php for ($i = max(1, $page - 2); $i <= min($total_pages, $page + 2); $i++): ?>
-                                <li class="page-item <?php echo ($i == $page) ? 'active' : ''; ?>">
-                                    <a class="page-link" href="?<?php echo http_build_query(array_merge($_GET, ['page' => $i])); ?>">
+                                <liactive' : ''; ?>">
+                                    <a href="?<?php echo http_build_query(array_merge($_GET, ['page' => $i])); ?>">
                                         <?php echo $i; ?>
                                     </a>
                                 </li>
                             <?php endfor; ?>
 
                             <?php if ($page < $total_pages): ?>
-                                <li class="page-item">
-                                    <a class="page-link" href="?<?php echo http_build_query(array_merge($_GET, ['page' => $page + 1])); ?>">
-                                        Next <i class="fa fa-chevron-right"></i>
+                                <li>
+                                    <a href="?<?php echo http_build_query(array_merge($_GET, ['page' => $page + 1])); ?>">
+                                        Next <i></i>
                                     </a>
                                 </li>
                             <?php endif; ?>
@@ -297,22 +293,22 @@ $total_pages = ceil($total_count / $limit);
         <?php endif; ?>
 
         <!-- Search Suggestions -->
-        <div class="row mt-5">
-            <div class="col-12">
-                <h4><i class="fa fa-lightbulb me-2"></i>Search Tips</h4>
-                <div class="row">
-                    <div class="col-md-6">
-                        <ul class="list-unstyled">
-                            <li><i class="fa fa-check text-success me-2"></i>Try different keywords</li>
-                            <li><i class="fa fa-check text-success me-2"></i>Check your spelling</li>
-                            <li><i class="fa fa-check text-success me-2"></i>Use more general terms</li>
+        <div>
+            <div>
+                <h4><i></i>Search Tips</h4>
+                <div>
+                    <div>
+                        <ul>
+                            <li><i></i>Try different keywords</li>
+                            <li><i></i>Check your spelling</li>
+                            <li><i></i>Use more general terms</li>
                         </ul>
                     </div>
-                    <div class="col-md-6">
-                        <ul class="list-unstyled">
-                            <li><i class="fa fa-check text-success me-2"></i>Browse by category</li>
-                            <li><i class="fa fa-check text-success me-2"></i>Filter by brand</li>
-                            <li><i class="fa fa-check text-success me-2"></i>View all products</li>
+                    <div>
+                        <ul>
+                            <li><i></i>Browse by category</li>
+                            <li><i></i>Filter by brand</li>
+                            <li><i></i>View all products</li>
                         </ul>
                     </div>
                 </div>
