@@ -15,7 +15,7 @@ body {
 /* ===== LOGIN CONTAINER ===== */
 .login-container {
     width: 100%;
-    max-width: 450px;
+    max-width: 550px;
     padding: 20px;
 }
 
@@ -42,7 +42,7 @@ body {
 }
 
 .card-body {
-    padding: 32px 24px;
+    padding: 40px 48px;
 }
 
 /* ===== FORM ELEMENTS ===== */

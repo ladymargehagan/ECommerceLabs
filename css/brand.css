@@ -76,14 +76,16 @@
 }
 
 .action-buttons .btn {
-    width: 40px;
-    height: 40px;
+    min-width: 44px;
+    height: 44px;
+    padding: 10px 14px;
     display: inline-flex;
     align-items: center;
     justify-content: center;
     border-radius: 8px;
     font-size: 16px;
     transition: all 0.3s ease;
+    border: 2px solid;
 }
 
 /* ===== BRAND HEADER ===== */

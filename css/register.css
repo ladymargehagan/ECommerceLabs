@@ -15,7 +15,7 @@ body {
 /* ===== REGISTER CONTAINER ===== */
 .register-container {
     width: 100%;
-    max-width: 500px;
+    max-width: 600px;
     padding: 20px;
 }
 
@@ -42,7 +42,7 @@ body {
 }
 
 .card-body {
-    padding: 32px 24px;
+    padding: 40px 48px;
 }
 
 /* ===== FORM ELEMENTS ===== */

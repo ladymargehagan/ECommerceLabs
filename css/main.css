@@ -383,6 +383,35 @@ p {
     padding: 0 20px;
 }
 
+/* ===== BREADCRUMB ===== */
+.breadcrumb {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 16px 20px;
+    background: white;
+    border-radius: 8px;
+    margin-bottom: 24px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    font-size: 0.95rem;
+}
+
+.breadcrumb a {
+    color: var(--primary);
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.3s ease;
+}
+
+.breadcrumb a:hover {
+    color: var(--primary-dark);
+    text-decoration: underline;
+}
+
+.breadcrumb span {
+    color: var(--gray);
+}
+
 /* ===== RESPONSIVE ===== */
 @media (max-width: 768px) {
     h1 { font-size: 2rem; }
