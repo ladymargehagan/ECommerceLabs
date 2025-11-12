@@ -17,9 +17,10 @@ class order_class extends db_connection {
         
         $customer_id = $db->real_escape_string($customer_id);
         $order_status = $db->real_escape_string($order_status);
-        
-        // Generate unique invoice number (using timestamp + random)
-        $invoice_no = time() . rand(1000, 9999);
+
+        // Generate unique invoice number (smaller format to fit database column)
+        // Format: YYYYMMDDXXXX where XXXX is random 4 digits
+        $invoice_no = (int)(date('Ymd') . rand(1000, 9999));
         $order_date = date('Y-m-d');
         
         $sql = "INSERT INTO orders (customer_id, invoice_no, order_date, order_status) 
