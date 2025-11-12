@@ -19,23 +19,8 @@ if ($_SESSION['role'] != 1) {
     <title>Category Management - Taste of Africa</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-    <link href="../css/main.css" rel="stylesheet">
-    <style>
-        .category-card {
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-        }
-        .category-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
-        }
-        .action-buttons {
-            opacity: 0;
-            transition: opacity 0.3s ease;
-        }
-        .category-card:hover .action-buttons {
-            opacity: 1;
-        }
-    </style>
+    <link href="../css/main.css?v=2.0" rel="stylesheet">
+    <link href="../css/category.css?v=2.0" rel="stylesheet">
 </head>
 <body>
     <div class="container-fluid">

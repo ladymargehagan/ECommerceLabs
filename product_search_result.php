@@ -61,7 +61,7 @@ $total_pages = ceil($total_count / $limit);
     <title>Search Results for "<?php echo htmlspecialchars($search_query); ?>" - Taste of Africa</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-    <link href="css/main.css" rel="stylesheet">
+    <link href="css/main.css?v=2.0" rel="stylesheet">
     <link href="css/index.css" rel="stylesheet">
     <style>
         .product-card {
