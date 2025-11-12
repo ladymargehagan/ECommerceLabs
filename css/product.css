@@ -199,6 +199,25 @@ textarea.form-control {
     border-radius: 12px;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
     margin-bottom: 32px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 48px;
+    align-items: start;
+}
+
+.product-image-wrapper {
+    width: 100%;
+}
+
+.product-image-wrapper img {
+    width: 100%;
+    height: auto;
+    border-radius: 8px;
+    object-fit: cover;
+}
+
+.product-details-wrapper {
+    width: 100%;
 }
 
 .product-meta {
@@ -404,6 +423,8 @@ textarea.form-control {
 
     .product-info-section {
         padding: 24px 20px;
+        grid-template-columns: 1fr;
+        gap: 24px;
     }
 
     .product-actions {
