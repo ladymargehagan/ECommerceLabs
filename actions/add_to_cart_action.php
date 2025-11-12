@@ -37,17 +37,14 @@ if ($quantity <= 0) {
 
 // Get user information (guest or logged-in)
 $customer_id = isset($_SESSION['user_id']) ? (int)$_SESSION['user_id'] : null;
-$ip_address = null;
 
-// Get IP address for guest users
-if (!$customer_id) {
-    if (!empty($_SERVER['HTTP_CLIENT_IP'])) {
-        $ip_address = $_SERVER['HTTP_CLIENT_IP'];
-    } elseif (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {
-        $ip_address = $_SERVER['HTTP_X_FORWARDED_FOR'];
-    } else {
-        $ip_address = $_SERVER['REMOTE_ADDR'];
-    }
+// Get IP address for all users (required by database)
+if (!empty($_SERVER['HTTP_CLIENT_IP'])) {
+    $ip_address = $_SERVER['HTTP_CLIENT_IP'];
+} elseif (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {
+    $ip_address = $_SERVER['HTTP_X_FORWARDED_FOR'];
+} else {
+    $ip_address = $_SERVER['REMOTE_ADDR'];
 }
 
 // Initialize cart controller
