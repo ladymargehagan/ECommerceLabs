@@ -1,14 +1,62 @@
+/* ===== Taste of Africa - Category Management Styles ===== */
+
 .category-card {
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    border: 1px solid rgba(212, 119, 60, 0.12);
+    border-radius: 16px;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    background: var(--white);
+    box-shadow: 0 2px 12px rgba(212, 119, 60, 0.06);
+    overflow: hidden;
 }
+
 .category-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+    transform: translateY(-6px);
+    box-shadow: 0 8px 30px rgba(212, 119, 60, 0.18);
+    border-color: rgba(212, 119, 60, 0.3);
 }
+
+.category-card .card-title {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 600;
+    color: var(--text-dark);
+    letter-spacing: -0.01em;
+}
+
+.category-card .card-text {
+    font-family: 'Poppins', sans-serif;
+    color: var(--text-muted);
+}
+
 .action-buttons {
     opacity: 0;
     transition: opacity 0.3s ease;
+    display: flex;
+    gap: 8px;
 }
+
 .category-card:hover .action-buttons {
     opacity: 1;
+}
+
+.action-buttons .btn {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 600;
+    border-radius: 10px;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.action-buttons .btn-outline-primary {
+    border-color: #D4773C;
+    color: #D4773C;
+}
+
+.action-buttons .btn-outline-primary:hover {
+    background: linear-gradient(135deg, #D4773C 0%, #E8A565 100%);
+    border-color: #D4773C;
+    color: white;
+    transform: translateY(-2px);
+}
+
+.action-buttons .btn-outline-danger:hover {
+    transform: translateY(-2px);
 }

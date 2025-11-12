@@ -1,35 +1,125 @@
+/* ===== Taste of Africa - Home Page Enhancements ===== */
+
+/* Menu Tray Enhancement */
 .menu-tray {
-	position: fixed;
-	top: 16px;
-	right: 16px;
-	background: rgba(255,255,255,0.95);
-	border: 1px solid #e6e6e6;
-	border-radius: 8px;
-	padding: 6px 10px;
-	box-shadow: 0 4px 10px rgba(0,0,0,0.06);
-	z-index: 1000;
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background: rgba(255, 255, 255, 0.98);
+    border: 1px solid rgba(212, 119, 60, 0.15);
+    border-radius: 16px;
+    padding: 12px 20px;
+    box-shadow: 0 4px 24px rgba(212, 119, 60, 0.12);
+    z-index: 1000;
+    backdrop-filter: blur(12px);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
-.menu-tray a { margin-left: 8px; }
+
+.menu-tray:hover {
+    box-shadow: 0 6px 32px rgba(212, 119, 60, 0.18);
+}
+
+.menu-tray a {
+    margin-left: 16px;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: var(--primary-color);
+    transition: all 0.3s ease;
+}
+
+.menu-tray a:hover {
+    color: var(--primary-hover);
+}
+
+/* Welcome Card Enhancement */
 .welcome-card {
-	background: linear-gradient(135deg, #D19C97, #b77a7a);
-	color: white;
-	border-radius: 15px;
-	padding: 40px;
-	margin: 20px 0;
-	box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+    background: linear-gradient(135deg, #D4773C 0%, #E8A565 100%);
+    color: white;
+    border-radius: 24px;
+    padding: 48px;
+    margin: 24px 0;
+    box-shadow: 0 12px 40px rgba(212, 119, 60, 0.25);
+    position: relative;
+    overflow: hidden;
 }
+
+.welcome-card::after {
+    content: '';
+    position: absolute;
+    bottom: -100px;
+    right: -100px;
+    width: 300px;
+    height: 300px;
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.1), transparent);
+    pointer-events: none;
+}
+
+.welcome-card h1,
+.welcome-card h2 {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 700;
+    position: relative;
+    z-index: 1;
+}
+
+/* User Info Enhancement */
 .user-info {
-	background: rgba(255,255,255,0.1);
-	border-radius: 10px;
-	padding: 20px;
-	margin: 20px 0;
+    background: rgba(255, 255, 255, 0.18);
+    border-radius: 16px;
+    padding: 28px;
+    margin: 24px 0;
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    position: relative;
+    z-index: 1;
 }
+
+.user-info p {
+    font-family: 'Poppins', sans-serif;
+    margin-bottom: 8px;
+}
+
+/* Button Enhancement */
 .btn-custom {
-	background-color: #D19C97;
-	border-color: #D19C97;
-	color: #fff;
+    background: linear-gradient(135deg, #D4773C 0%, #E8A565 100%);
+    border: none;
+    color: #fff;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 600;
+    border-radius: 12px;
+    padding: 12px 28px;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 2px 8px rgba(212, 119, 60, 0.2);
 }
+
 .btn-custom:hover {
-	background-color: #b77a7a;
-	border-color: #b77a7a;
+    background: linear-gradient(135deg, #B85C28 0%, #D4773C 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(212, 119, 60, 0.35);
+    color: #fff;
+}
+
+/* Product Grid Enhancement */
+.product-grid {
+    display: grid;
+    gap: 24px;
+    margin-top: 32px;
+}
+
+/* Filter Section Enhancement */
+.filter-section {
+    background: var(--white);
+    border-radius: 16px;
+    padding: 24px;
+    margin-bottom: 32px;
+    box-shadow: 0 2px 12px rgba(212, 119, 60, 0.08);
+    border: 1px solid rgba(212, 119, 60, 0.08);
+}
+
+.filter-section h3 {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 600;
+    color: var(--text-dark);
+    margin-bottom: 16px;
 }

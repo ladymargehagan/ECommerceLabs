@@ -1,18 +1,24 @@
-/* Brand Management Styles */
+/* ===== Taste of Africa - Brand Management Styles ===== */
+
 .brand-card {
-    border: 1px solid #e9ecef;
-    border-radius: 10px;
-    transition: all 0.3s ease;
+    border: 1px solid rgba(212, 119, 60, 0.12);
+    border-radius: 16px;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    background: var(--white);
+    box-shadow: 0 2px 12px rgba(212, 119, 60, 0.06);
 }
 
 .brand-card:hover {
-    border-color: #007bff;
-    box-shadow: 0 4px 15px rgba(0, 123, 255, 0.1);
+    border-color: rgba(212, 119, 60, 0.3);
+    box-shadow: 0 8px 30px rgba(212, 119, 60, 0.18);
+    transform: translateY(-6px);
 }
 
 .brand-card .card-title {
-    color: #2c3e50;
+    color: var(--text-dark);
+    font-family: 'Montserrat', sans-serif;
     font-weight: 600;
+    letter-spacing: -0.01em;
 }
 
 .brand-card .action-buttons {
@@ -47,43 +53,54 @@
 
 /* Brand Modal Styles */
 .modal-header {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(135deg, #D4773C 0%, #E8A565 100%);
     color: white;
-    border-radius: 10px 10px 0 0;
+    border-radius: 16px 16px 0 0;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 700;
 }
 
 .modal-header .btn-close {
-    filter: invert(1);
+    filter: brightness(0) invert(1);
+    opacity: 0.9;
 }
 
 .modal-content {
-    border-radius: 10px;
+    border-radius: 16px;
     border: none;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 12px 48px rgba(212, 119, 60, 0.2);
 }
 
 .modal-footer .btn {
-    border-radius: 25px;
-    padding: 8px 20px;
+    border-radius: 12px;
+    padding: 10px 24px;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 600;
 }
 
 /* Brand Form Styles */
 .form-label {
+    font-family: 'Montserrat', sans-serif;
     font-weight: 600;
-    color: #2c3e50;
-    margin-bottom: 8px;
+    font-size: 0.9rem;
+    color: var(--text-dark);
+    margin-bottom: 10px;
+    letter-spacing: 0.01em;
 }
 
 .form-control {
-    border-radius: 8px;
-    border: 2px solid #e9ecef;
-    padding: 12px 15px;
-    transition: all 0.3s ease;
+    border-radius: 10px;
+    border: 2px solid rgba(212, 119, 60, 0.15);
+    padding: 14px 18px;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    font-family: 'Poppins', sans-serif;
+    font-size: 0.95rem;
 }
 
 .form-control:focus {
-    border-color: #007bff;
-    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+    border-color: #D4773C;
+    box-shadow: 0 0 0 4px rgba(212, 119, 60, 0.12);
+    outline: none;
 }
 
 .form-control.is-invalid {
@@ -98,16 +115,19 @@
 
 /* Brand Header Styles */
 .brand-header {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(135deg, #D4773C 0%, #E8A565 100%);
     color: white;
-    padding: 20px 0;
-    margin-bottom: 30px;
-    border-radius: 10px;
+    padding: 28px 0;
+    margin-bottom: 36px;
+    border-radius: 16px;
+    box-shadow: 0 4px 20px rgba(212, 119, 60, 0.2);
 }
 
 .brand-header h2 {
     margin: 0;
+    font-family: 'Montserrat', sans-serif;
     font-weight: 700;
+    letter-spacing: -0.01em;
 }
 
 /* Brand Loading States */
@@ -192,29 +212,36 @@
 
 /* Brand Button Styles */
 .btn-custom {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(135deg, #D4773C 0%, #E8A565 100%);
     border: none;
     color: white;
+    font-family: 'Montserrat', sans-serif;
     font-weight: 600;
-    border-radius: 25px;
-    padding: 10px 25px;
-    transition: all 0.3s ease;
+    font-size: 0.95rem;
+    border-radius: 12px;
+    padding: 12px 28px;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 2px 8px rgba(212, 119, 60, 0.2);
 }
 
 .btn-custom:hover {
+    background: linear-gradient(135deg, #B85C28 0%, #D4773C 100%);
     transform: translateY(-2px);
-    box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+    box-shadow: 0 6px 20px rgba(212, 119, 60, 0.35);
     color: white;
 }
 
 .btn-outline-secondary {
-    border-radius: 25px;
-    padding: 8px 20px;
+    border-radius: 12px;
+    padding: 10px 24px;
+    font-family: 'Montserrat', sans-serif;
     font-weight: 500;
+    border-width: 2px;
 }
 
 .btn-outline-secondary:hover {
-    transform: translateY(-1px);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
 /* Brand Image Container Styles */

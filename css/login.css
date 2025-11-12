@@ -1,70 +1,95 @@
+/* ===== Taste of Africa - Login Page Enhancements ===== */
+
+/* Button Styles */
 .btn-custom {
-    background-color: #D19C97;
-    border-color: #D19C97;
+    background: linear-gradient(135deg, #D4773C 0%, #E8A565 100%);
+    border: none;
     color: #fff;
-    transition: background-color 0.3s, border-color 0.3s;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 600;
+    font-size: 0.95rem;
+    letter-spacing: 0.02em;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    border-radius: 12px;
+    padding: 12px 28px;
+    box-shadow: 0 2px 8px rgba(212, 119, 60, 0.2);
 }
 
 .btn-custom:hover {
-    background-color: #b77a7a;
-    border-color: #b77a7a;
+    background: linear-gradient(135deg, #B85C28 0%, #D4773C 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(212, 119, 60, 0.35);
+    color: #fff;
 }
 
+/* Highlight Text */
 .highlight {
-    color: #D19C97;
-    transition: color 0.3s;
+    color: #D4773C;
+    transition: all 0.3s ease;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 700;
+    text-decoration: none;
 }
 
 .highlight:hover {
-    color: #b77a7a;
+    color: #B85C28;
+    text-decoration: none;
 }
 
+/* Body Background */
 body {
-    /* Base background color */
-    background-color: #f8f9fa;
-
-    /* Gradient-like grid using repeating-linear-gradients */
+    background-color: #FFF8F3;
     background-image:
         repeating-linear-gradient(0deg,
-            #b77a7a,
-            #b77a7a 1px,
+            rgba(212, 119, 60, 0.03),
+            rgba(212, 119, 60, 0.03) 1px,
             transparent 1px,
-            transparent 20px),
+            transparent 30px),
         repeating-linear-gradient(90deg,
-            #b77a7a,
-            #b77a7a 1px,
+            rgba(212, 119, 60, 0.03),
+            rgba(212, 119, 60, 0.03) 1px,
             transparent 1px,
-            transparent 20px),
-        linear-gradient(rgba(183, 122, 122, 0.1),
-            rgba(183, 122, 122, 0.1));
-
-    /* Blend the gradients for a subtle overlay effect */
-    background-blend-mode: overlay;
-
-    /* Define the size of the grid */
-    background-size: 20px 20px;
-
-    /* Ensure the background covers the entire viewport */
+            transparent 30px);
     min-height: 100vh;
     margin: 0;
     padding: 0;
-    font-family: Arial, sans-serif;
+    font-family: 'Poppins', -apple-system, BlinkMacSystemFont, sans-serif;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
+/* Login Container */
 .login-container {
-    margin-top: 50px;
+    margin-top: 0;
+    padding: 20px;
+    width: 100%;
+    max-width: 480px;
 }
 
+/* Card Styles */
 .card {
     border: none;
-    border-radius: 15px;
+    border-radius: 20px;
     overflow: hidden;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 8px 32px rgba(212, 119, 60, 0.15);
+    border: 1px solid rgba(212, 119, 60, 0.1);
+    background: var(--white);
 }
 
 .card-header {
-    background-color: #D19C97;
+    background: linear-gradient(135deg, #D4773C 0%, #E8A565 100%);
     color: #fff;
+    padding: 32px 28px;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 700;
+    font-size: 1.5rem;
+    text-align: center;
+    letter-spacing: -0.02em;
+}
+
+.card-body {
+    padding: 36px 32px;
 }
 
 .animate-pulse-custom {
@@ -143,9 +168,27 @@ body {
 }
 
 /* Form Enhancement Styles */
+.form-control {
+    border: 2px solid rgba(212, 119, 60, 0.15);
+    border-radius: 10px;
+    padding: 14px 18px;
+    font-family: 'Poppins', sans-serif;
+    font-size: 0.95rem;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
 .form-control:focus {
-    border-color: #D19C97;
-    box-shadow: 0 0 0 0.2rem rgba(209, 156, 151, 0.25);
+    border-color: #D4773C;
+    box-shadow: 0 0 0 4px rgba(212, 119, 60, 0.12);
+    outline: none;
+}
+
+.form-label {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: var(--text-dark);
+    margin-bottom: 10px;
 }
 
 .btn-custom:disabled {

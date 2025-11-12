@@ -1,81 +1,131 @@
+/* ===== Taste of Africa - Registration Page Enhancements ===== */
+
+/* Button Styles */
 .btn-custom {
-    background-color: #D19C97;
-    border-color: #D19C97;
+    background: linear-gradient(135deg, #D4773C 0%, #E8A565 100%);
+    border: none;
     color: #fff;
-    transition: background-color 0.3s, border-color 0.3s;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 600;
+    font-size: 0.95rem;
+    letter-spacing: 0.02em;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    border-radius: 12px;
+    padding: 12px 28px;
+    box-shadow: 0 2px 8px rgba(212, 119, 60, 0.2);
 }
 
 .btn-custom:hover {
-    background-color: #b77a7a;
-    border-color: #b77a7a;
-}
-
-.highlight {
-    color: #D19C97;
-    transition: color 0.3s;
-}
-
-.highlight:hover {
-    color: #b77a7a;
-}
-
-body {
-    /* Base background color */
-    background-color: #f8f9fa;
-
-    /* Gradient-like grid using repeating-linear-gradients */
-    background-image:
-        repeating-linear-gradient(0deg,
-            #b77a7a,
-            #b77a7a 1px,
-            transparent 1px,
-            transparent 20px),
-        repeating-linear-gradient(90deg,
-            #b77a7a,
-            #b77a7a 1px,
-            transparent 1px,
-            transparent 20px),
-        linear-gradient(rgba(183, 122, 122, 0.1),
-            rgba(183, 122, 122, 0.1));
-
-    /* Blend the gradients for a subtle overlay effect */
-    background-blend-mode: overlay;
-
-    /* Define the size of the grid */
-    background-size: 20px 20px;
-
-    /* Ensure the background covers the entire viewport */
-    min-height: 100vh;
-    margin: 0;
-    padding: 0;
-    font-family: Arial, sans-serif;
-}
-
-.register-container {
-    margin-top: 50px;
-}
-
-.card {
-    border: none;
-    border-radius: 15px;
-    overflow: hidden;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-}
-
-.card-header {
-    background-color: #D19C97;
+    background: linear-gradient(135deg, #B85C28 0%, #D4773C 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(212, 119, 60, 0.35);
     color: #fff;
 }
 
+/* Highlight Text */
+.highlight {
+    color: #D4773C;
+    transition: all 0.3s ease;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 700;
+    text-decoration: none;
+}
+
+.highlight:hover {
+    color: #B85C28;
+    text-decoration: none;
+}
+
+/* Body Background */
+body {
+    background-color: #FFF8F3;
+    background-image:
+        repeating-linear-gradient(0deg,
+            rgba(212, 119, 60, 0.03),
+            rgba(212, 119, 60, 0.03) 1px,
+            transparent 1px,
+            transparent 30px),
+        repeating-linear-gradient(90deg,
+            rgba(212, 119, 60, 0.03),
+            rgba(212, 119, 60, 0.03) 1px,
+            transparent 1px,
+            transparent 30px);
+    min-height: 100vh;
+    margin: 0;
+    padding: 0;
+    font-family: 'Poppins', -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+/* Register Container */
+.register-container {
+    margin-top: 50px;
+    padding: 20px;
+    max-width: 540px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* Card Styles */
+.card {
+    border: none;
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 8px 32px rgba(212, 119, 60, 0.15);
+    border: 1px solid rgba(212, 119, 60, 0.1);
+    background: var(--white);
+}
+
+.card-header {
+    background: linear-gradient(135deg, #D4773C 0%, #E8A565 100%);
+    color: #fff;
+    padding: 32px 28px;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 700;
+    font-size: 1.5rem;
+    text-align: center;
+    letter-spacing: -0.02em;
+}
+
+.card-body {
+    padding: 36px 32px;
+}
+
+/* Form Controls */
+.form-control {
+    border: 2px solid rgba(212, 119, 60, 0.15);
+    border-radius: 10px;
+    padding: 14px 18px;
+    font-family: 'Poppins', sans-serif;
+    font-size: 0.95rem;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.form-control:focus {
+    border-color: #D4773C;
+    box-shadow: 0 0 0 4px rgba(212, 119, 60, 0.12);
+    outline: none;
+}
+
+.form-label {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: var(--text-dark);
+    margin-bottom: 10px;
+}
+
+/* Custom Radio Buttons */
 .custom-radio .form-check-input:checked+.form-check-label::before {
-    background-color: #D19C97;
-    border-color: #D19C97;
+    background-color: #D4773C;
+    border-color: #D4773C;
 }
 
 .form-check-label {
     position: relative;
     padding-left: 2rem;
     cursor: pointer;
+    font-family: 'Poppins', sans-serif;
+    font-weight: 500;
 }
 
 .form-check-label::before {
@@ -84,16 +134,16 @@ body {
     left: 0;
     top: 50%;
     transform: translateY(-50%);
-    width: 1rem;
-    height: 1rem;
-    border: 2px solid #D19C97;
+    width: 1.1rem;
+    height: 1.1rem;
+    border: 2px solid #D4773C;
     border-radius: 50%;
     background-color: #fff;
-    transition: background-color 0.3s, border-color 0.3s;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .form-check-input:focus+.form-check-label::before {
-    box-shadow: 0 0 0 0.2rem rgba(209, 156, 151, 0.5);
+    box-shadow: 0 0 0 4px rgba(212, 119, 60, 0.12);
 }
 
 .animate-pulse-custom {
