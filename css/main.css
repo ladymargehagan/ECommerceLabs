@@ -6,41 +6,41 @@
 /* ===== FONT IMPORTS ===== */
 /* Poppins font - imported via link tag in HTML head */
 
-/* ===== CSS VARIABLES - MINIMALIST COLOR PALETTE ===== */
+/* ===== CSS VARIABLES - AFRICAN-INSPIRED PALETTE ===== */
 :root {
-    /* Primary Colors - Fresh & Vibrant */
-    --primary: #2563eb;
-    --primary-dark: #1d4ed8;
-    --primary-light: #3b82f6;
-    
-    /* Secondary Colors - Natural Green */
-    --secondary: #10b981;
-    --secondary-dark: #059669;
-    --secondary-light: #34d399;
-    
-    /* Accent Colors */
-    --accent: #f59e0b;
-    --accent-dark: #d97706;
-    --accent-light: #fbbf24;
-    
-    /* Neutral Colors - Clean Whites & Grays */
-    --bg-primary: #ffffff;
-    --bg-secondary: #f9fafb;
-    --bg-tertiary: #f3f4f6;
-    
+    /* Primary Colors - Earthy Terracotta & Clay */
+    --primary: #C85C3F;
+    --primary-dark: #A54530;
+    --primary-light: #D97B5F;
+
+    /* Secondary Colors - Deep Forest Green */
+    --secondary: #2A5744;
+    --secondary-dark: #1E3F32;
+    --secondary-light: #3D7A5C;
+
+    /* Accent Colors - Warm Ochre & Sunset */
+    --accent: #D9962B;
+    --accent-dark: #B67D1F;
+    --accent-light: #E5B04F;
+
+    /* Neutral Colors - Warm Whites & Taupes */
+    --bg-primary: #FDFBF7;
+    --bg-secondary: #F8F4EE;
+    --bg-tertiary: #F1EBE1;
+
     /* Text Colors */
-    --text-primary: #111827;
-    --text-secondary: #6b7280;
-    --text-light: #9ca3af;
-    
+    --text-primary: #2C1810;
+    --text-secondary: #6B5E54;
+    --text-light: #9B8B7E;
+
     /* Border Colors */
-    --border-light: #e5e7eb;
-    --border-medium: #d1d5db;
-    
+    --border-light: #E5DDD2;
+    --border-medium: #D4C4B5;
+
     /* Status Colors */
-    --success: #10b981;
-    --error: #ef4444;
-    --warning: #f59e0b;
+    --success: #3D7A5C;
+    --error: #C84430;
+    --warning: #D9962B;
     
     /* Spacing */
     --spacing-xs: 0.5rem;
@@ -61,15 +61,15 @@
     --font-size-3xl: 2rem;
     --font-size-4xl: 2.5rem;
     
-    /* Shadows - Minimal & Subtle */
-    --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-    
-    /* Border Radius */
-    --radius-sm: 0.375rem;
-    --radius-md: 0.5rem;
-    --radius-lg: 0.75rem;
+    /* Shadows - Warm & Subtle */
+    --shadow-sm: 0 1px 3px 0 rgba(44, 24, 16, 0.08);
+    --shadow-md: 0 4px 8px -2px rgba(44, 24, 16, 0.12), 0 2px 4px -1px rgba(44, 24, 16, 0.06);
+    --shadow-lg: 0 12px 20px -4px rgba(44, 24, 16, 0.15), 0 4px 8px -2px rgba(44, 24, 16, 0.08);
+
+    /* Border Radius - Softer, More Organic */
+    --radius-sm: 0.5rem;
+    --radius-md: 0.75rem;
+    --radius-lg: 1rem;
     
     /* Transitions */
     --transition: all 0.2s ease;
@@ -263,7 +263,7 @@ textarea:focus,
 select:focus {
     outline: none;
     border-color: var(--primary);
-    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+    box-shadow: 0 0 0 3px rgba(200, 92, 63, 0.15);
 }
 
 input::placeholder,
@@ -293,7 +293,7 @@ label {
 .form-control:focus {
     outline: none;
     border-color: var(--primary);
-    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+    box-shadow: 0 0 0 3px rgba(200, 92, 63, 0.15);
 }
 
 /* ===== CARDS ===== */
