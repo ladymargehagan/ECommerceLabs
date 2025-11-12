@@ -42,54 +42,7 @@ if (!$product) {
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <link href="css/main.css?v=2.0" rel="stylesheet">
     <link href="css/index.css" rel="stylesheet">
-    <style>
-        .product-image {
-            max-height: 500px;
-            object-fit: cover;
-            width: 100%;
-        }
-        .product-info {
-            background: #f8f9fa;
-            border-radius: 10px;
-            padding: 30px;
-        }
-        .product-price {
-            font-size: 2em;
-            font-weight: bold;
-            color: #28a745;
-        }
-        .product-meta {
-            background: #e9ecef;
-            border-radius: 8px;
-            padding: 15px;
-            margin: 15px 0;
-        }
-        .keywords {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 5px;
-        }
-        .keyword-badge {
-            background: #007bff;
-            color: white;
-            padding: 5px 10px;
-            border-radius: 15px;
-            font-size: 0.8em;
-        }
-        .breadcrumb {
-            background: transparent;
-            padding: 0;
-        }
-        .action-buttons {
-            display: flex;
-            gap: 15px;
-            flex-wrap: wrap;
-        }
-        .action-buttons .btn {
-            flex: 1;
-            min-width: 150px;
-        }
-    </style>
+    <link href="css/product.css" rel="stylesheet">
 </head>
 <body>
     <!-- Navigation -->
@@ -127,141 +80,115 @@ if (!$product) {
         <?php endif; ?>
     </div>
 
-    <div class="container" style="padding-top: 120px;">
+    <div class="product-detail-container" style="padding-top: 120px;">
         <!-- Breadcrumb -->
-        <nav aria-label="breadcrumb" class="mb-4">
-            <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="index.php">Home</a></li>
-                <li class="breadcrumb-item"><a href="all_product.php">All Products</a></li>
-                <li class="breadcrumb-item active" aria-current="page"><?php echo htmlspecialchars($product['product_title']); ?></li>
-            </ol>
-        </nav>
+        <div class="breadcrumb">
+            <a href="index.php"><i class="fa fa-home"></i> Home</a>
+            <span>/</span>
+            <a href="all_product.php">All Products</a>
+            <span>/</span>
+            <span><?php echo htmlspecialchars($product['product_title']); ?></span>
+        </div>
 
-        <div class="row">
+        <div class="product-info-section">
             <!-- Product Image -->
-            <div class="col-lg-6 mb-4">
-                <div class="card">
-                    <div class="card-body p-0">
-                        <?php if ($product['product_image']): ?>
-                            <img src="<?php echo htmlspecialchars($product['product_image']); ?>" 
-                                 class="product-image" 
-                                 alt="<?php echo htmlspecialchars($product['product_title']); ?>"
-                                 onerror="this.src='uploads/placeholder.png'">
-                        <?php else: ?>
-                            <img src="uploads/placeholder.png" 
-                                 class="product-image" 
-                                 alt="No image available">
-                        <?php endif; ?>
-                </div>
+            <div class="product-image-wrapper">
+                <?php if ($product['product_image']): ?>
+                    <img src="<?php echo htmlspecialchars($product['product_image']); ?>"
+                         alt="<?php echo htmlspecialchars($product['product_title']); ?>"
+                         onerror="this.src='uploads/placeholder.png'">
+                <?php else: ?>
+                    <img src="uploads/placeholder.png"
+                         alt="No image available">
+                <?php endif; ?>
             </div>
 
             <!-- Product Information -->
-            <div class="col-lg-6">
-                <div class="product-info">
+            <div class="product-details-wrapper">
                     <!-- Product ID (hidden but available for cart) -->
                     <input type="hidden" id="productId" value="<?php echo $product['product_id']; ?>">
                     
                     <!-- Product Title -->
-                    <h1 class="mb-3"><?php echo htmlspecialchars($product['product_title']); ?></h1>
-                    
+                    <h1><?php echo htmlspecialchars($product['product_title']); ?></h1>
+
                     <!-- Product Price -->
-                    <div class="product-price mb-4">$<?php echo number_format($product['product_price'], 2); ?></div>
+                    <div class="product-price">$<?php echo number_format($product['product_price'], 2); ?></div>
                     
                     <!-- Product Meta Information -->
                     <div class="product-meta">
-                        <div class="row">
-                            <div class="col-md-6">
-                                <p class="mb-2">
-                                    <strong><i class="fa fa-tag me-2"></i>Category:</strong><br>
-                                    <span class="text-primary"><?php echo htmlspecialchars($product['cat_name'] ?? 'No Category'); ?></span>
-                                </p>
-                            </div>
-                            <div class="col-md-6">
-                                <p class="mb-2">
-                                    <strong><i class="fa fa-star me-2"></i>Brand:</strong><br>
-                                    <span class="text-warning"><?php echo htmlspecialchars($product['brand_name'] ?? 'No Brand'); ?></span>
-                                </p>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-12">
-                                <p class="mb-0">
-                                    <strong><i class="fa fa-barcode me-2"></i>Product ID:</strong>
-                                    <span class="badge bg-secondary"><?php echo $product['product_id']; ?></span>
-                                </p>
-                            </div>
-                        </div>
+                        <p>
+                            <strong><i class="fa fa-tag"></i> Category:</strong>
+                            <?php echo htmlspecialchars($product['cat_name'] ?? 'No Category'); ?>
+                        </p>
+                        <p>
+                            <strong><i class="fa fa-star"></i> Brand:</strong>
+                            <?php echo htmlspecialchars($product['brand_name'] ?? 'No Brand'); ?>
+                        </p>
+                        <p>
+                            <strong><i class="fa fa-barcode"></i> Product ID:</strong>
+                            <?php echo $product['product_id']; ?>
+                        </p>
                     </div>
 
                     <!-- Product Description -->
                     <?php if ($product['product_desc']): ?>
-                        <div class="mb-4">
-                            <h4><i class="fa fa-info-circle me-2"></i>Description</h4>
-                            <p class="text-muted"><?php echo nl2br(htmlspecialchars($product['product_desc'])); ?></p>
+                        <div class="description-section">
+                            <h3><i class="fa fa-info-circle"></i> Description</h3>
+                            <p><?php echo nl2br(htmlspecialchars($product['product_desc'])); ?></p>
                         </div>
                     <?php endif; ?>
 
                     <!-- Product Keywords -->
                     <?php if ($product['product_keywords']): ?>
-                        <div class="mb-4">
-                            <h5><i class="fa fa-tags me-2"></i>Keywords</h5>
-                            <div class="keywords">
-                                <?php 
+                        <div class="keywords-section">
+                            <h3><i class="fa fa-tags"></i> Keywords</h3>
+                            <div>
+                                <?php
                                 $keywords = explode(',', $product['product_keywords']);
-                                foreach ($keywords as $keyword): 
+                                foreach ($keywords as $keyword):
                                     $keyword = trim($keyword);
                                     if ($keyword):
                                 ?>
-                                    <span class="keyword-badge"><?php echo htmlspecialchars($keyword); ?></span>
-                                <?php 
+                                    <span class="keyword-tag"><?php echo htmlspecialchars($keyword); ?></span>
+                                <?php
                                     endif;
-                                endforeach; 
+                                endforeach;
                                 ?>
                             </div>
                         </div>
                     <?php endif; ?>
 
                     <!-- Action Buttons -->
-                    <div class="action-buttons">
-                        <button class="btn btn-custom btn-lg add-to-cart" 
+                    <div class="product-actions">
+                        <button class="btn-add-cart add-to-cart"
                                 data-product-id="<?php echo $product['product_id']; ?>">
-                            <i class="fa fa-cart-plus me-2"></i>Add to Cart
+                            <i class="fa fa-cart-plus"></i> Add to Cart
                         </button>
-                        <a href="all_product.php" class="btn btn-outline-secondary btn-lg">
-                            <i class="fa fa-arrow-left me-2"></i>Back to Products
+                        <a href="all_product.php" class="btn-back">
+                            <i class="fa fa-arrow-left"></i> Back to Products
                         </a>
                     </div>
-
-                    <!-- Additional Actions -->
-                    <div class="mt-4">
-                        <div class="row">
-                            <div class="col-md-6">
-                                <a href="all_product.php?category=<?php echo $product['product_cat']; ?>" 
-                                   class="btn btn-outline-primary btn-sm">
-                                    <i class="fa fa-tag me-1"></i>More from <?php echo htmlspecialchars($product['cat_name'] ?? 'this category'); ?>
-                                </a>
-                            </div>
-                            <div class="col-md-6">
-                                <a href="all_product.php?brand=<?php echo $product['product_brand']; ?>" 
-                                   class="btn btn-outline-warning btn-sm">
-                                    <i class="fa fa-star me-1"></i>More from <?php echo htmlspecialchars($product['brand_name'] ?? 'this brand'); ?>
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
             </div>
         </div>
 
-        <!-- Related Products Section (Placeholder) -->
-        <div class="row mt-5">
-            <div class="col-12">
-                <h3><i class="fa fa-th-large me-2"></i>You Might Also Like</h3>
-                <p class="text-muted">Related products will be displayed here in future updates.</p>
-                <a href="all_product.php" class="btn btn-outline-primary">
-                    <i class="fa fa-search me-1"></i>Browse All Products
+        <!-- Related Products Section -->
+        <div class="related-section">
+            <h2><i class="fa fa-th-large"></i> You Might Also Like</h2>
+
+            <div class="related-buttons">
+                <a href="all_product.php?brand=<?php echo $product['product_brand']; ?>"
+                   class="related-btn related-btn-brand">
+                    <i class="fa fa-star"></i> More from <?php echo htmlspecialchars($product['brand_name'] ?? 'this brand'); ?>
+                </a>
+                <a href="all_product.php?category=<?php echo $product['product_cat']; ?>"
+                   class="related-btn related-btn-category">
+                    <i class="fa fa-tag"></i> More from <?php echo htmlspecialchars($product['cat_name'] ?? 'this category'); ?>
                 </a>
             </div>
+
+            <a href="all_product.php" class="browse-all-btn">
+                <i class="fa fa-search"></i> Browse All Products
+            </a>
         </div>
     </div>
 
