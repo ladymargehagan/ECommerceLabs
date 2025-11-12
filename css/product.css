@@ -186,6 +186,206 @@ textarea.form-control {
     margin-bottom: 12px;
 }
 
+/* ===== SINGLE PRODUCT PAGE ===== */
+.product-detail-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 40px 20px;
+}
+
+.product-info-section {
+    background: white;
+    padding: 40px;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    margin-bottom: 32px;
+}
+
+.product-meta {
+    background: var(--light-gray);
+    padding: 24px;
+    border-radius: 8px;
+    margin-bottom: 32px;
+}
+
+.product-meta p {
+    margin-bottom: 12px;
+    font-size: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.product-meta strong {
+    font-weight: 600;
+    color: var(--black);
+    min-width: 120px;
+}
+
+/* Description Section */
+.description-section {
+    margin-bottom: 32px;
+}
+
+.description-section h3 {
+    font-size: 1.5rem;
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.description-section p {
+    font-size: 1.1rem;
+    line-height: 1.8;
+    color: var(--dark-gray);
+}
+
+/* Keywords Section */
+.keywords-section {
+    margin-bottom: 32px;
+}
+
+.keywords-section h3 {
+    font-size: 1.5rem;
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.keyword-tag {
+    display: inline-block;
+    padding: 10px 20px;
+    background: #2196F3;
+    color: white;
+    border-radius: 50px;
+    margin-right: 12px;
+    margin-bottom: 12px;
+    font-size: 0.95rem;
+    font-weight: 500;
+}
+
+/* Action Buttons Section */
+.product-actions {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+    margin-bottom: 32px;
+}
+
+.product-actions .btn {
+    flex: 1;
+    min-width: 200px;
+    padding: 16px 32px;
+    font-size: 1.1rem;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+}
+
+.btn-add-cart {
+    background: var(--primary);
+    color: white;
+    border: none;
+    transition: all 0.3s ease;
+}
+
+.btn-add-cart:hover {
+    background: var(--primary-dark);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(212, 119, 60, 0.3);
+}
+
+.btn-back {
+    background: white;
+    color: var(--dark-gray);
+    border: 2px solid var(--gray);
+    transition: all 0.3s ease;
+}
+
+.btn-back:hover {
+    background: var(--dark-gray);
+    color: white;
+    border-color: var(--dark-gray);
+}
+
+/* Related Products Section */
+.related-section {
+    margin-top: 48px;
+}
+
+.related-section h2 {
+    font-size: 2rem;
+    margin-bottom: 24px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.related-buttons {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+    margin-bottom: 32px;
+}
+
+.related-btn {
+    padding: 20px;
+    border: 2px solid;
+    border-radius: 12px;
+    font-size: 1rem;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+}
+
+.related-btn-brand {
+    border-color: var(--primary);
+    color: var(--primary);
+    background: white;
+}
+
+.related-btn-brand:hover {
+    background: var(--primary);
+    color: white;
+}
+
+.related-btn-category {
+    border-color: #FDB813;
+    color: #FDB813;
+    background: white;
+}
+
+.related-btn-category:hover {
+    background: #FDB813;
+    color: white;
+}
+
+.browse-all-btn {
+    background: white;
+    border: 2px solid var(--primary);
+    color: var(--primary);
+    padding: 16px 32px;
+    border-radius: 8px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.browse-all-btn:hover {
+    background: var(--primary);
+    color: white;
+}
+
 /* ===== RESPONSIVE ===== */
 @media (max-width: 768px) {
     .product-overlay {
@@ -200,5 +400,21 @@ textarea.form-control {
     .product-header {
         text-align: center;
         padding: 24px 16px;
+    }
+
+    .product-info-section {
+        padding: 24px 20px;
+    }
+
+    .product-actions {
+        flex-direction: column;
+    }
+
+    .product-actions .btn {
+        min-width: 100%;
+    }
+
+    .related-buttons {
+        grid-template-columns: 1fr;
     }
 }

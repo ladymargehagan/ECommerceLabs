@@ -40,7 +40,12 @@
 }
 
 .action-buttons .btn {
+    min-width: 44px;
+    height: 44px;
     padding: 10px 18px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
     border-radius: 8px;
     font-family: 'Montserrat', sans-serif;
     font-weight: 500;
