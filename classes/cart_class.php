@@ -85,16 +85,18 @@ class cart_class extends db_connection {
         }
         
         // Product doesn't exist, add new item
+        // Get IP address if not provided
+        if (!$ip_address) {
+            $ip_address = $this->get_ip_address();
+        }
+        $ip_address = $db->real_escape_string($ip_address);
+
         if ($customer_id) {
             // Logged-in user
             $customer_id = $db->real_escape_string($customer_id);
-            $sql = "INSERT INTO cart (p_id, c_id, qty, ip_add) VALUES ('$product_id', '$customer_id', '$quantity', NULL)";
+            $sql = "INSERT INTO cart (p_id, c_id, qty, ip_add) VALUES ('$product_id', '$customer_id', '$quantity', '$ip_address')";
         } else {
             // Guest user
-            if (!$ip_address) {
-                $ip_address = $this->get_ip_address();
-            }
-            $ip_address = $db->real_escape_string($ip_address);
             $sql = "INSERT INTO cart (p_id, ip_add, qty, c_id) VALUES ('$product_id', '$ip_address', '$quantity', NULL)";
         }
         
