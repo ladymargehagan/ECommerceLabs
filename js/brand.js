@@ -1,36 +1,7 @@
-// Modal functions
-function openAddModal() {
-    $('#addBrandModal').addClass('show');
-}
-
-function closeAddModal() {
-    $('#addBrandModal').removeClass('show');
-    $('#addBrandForm')[0].reset();
-    clearFieldErrors();
-    $('#brandImagePreview').hide();
-}
-
-function closeEditModal() {
-    $('#editBrandModal').removeClass('show');
-    $('#editBrandForm')[0].reset();
-    clearFieldErrors();
-}
-
-function closeDeleteModal() {
-    $('#deleteBrandModal').removeClass('show');
-}
-
 $(document).ready(function() {
     // Load brands and categories on page load
     loadBrands();
     loadCategories();
-
-    // Close modals when clicking outside
-    $('.modal').on('click', function(e) {
-        if ($(e.target).hasClass('modal')) {
-            $(this).removeClass('show');
-        }
-    });
 
     // Image preview for add form
     $('#brandImage').on('change', function() {
@@ -71,7 +42,7 @@ $(document).ready(function() {
                         timer: 2000,
                         showConfirmButton: false
                     });
-                    closeAddModal();
+                    $('#addBrandModal').modal('hide');
                     $('#addBrandForm')[0].reset();
                     $('#brandImagePreview').hide();
                     clearFieldErrors();
@@ -124,7 +95,7 @@ $(document).ready(function() {
                         timer: 2000,
                         showConfirmButton: false
                     });
-                    closeEditModal();
+                    $('#editBrandModal').modal('hide');
                     clearFieldErrors();
                     loadBrands();
                 } else {
@@ -167,7 +138,7 @@ $(document).ready(function() {
                         timer: 2000,
                         showConfirmButton: false
                     });
-                    closeDeleteModal();
+                    $('#deleteBrandModal').modal('hide');
                     loadBrands();
                 } else {
                     Swal.fire({
@@ -402,13 +373,13 @@ function editBrand(brandId, brandName, brandImage = '') {
     $('#editPreviewBrandImg').attr('src', imageSrc);
     $('#editBrandImagePreview').show();
     
-    $('#editBrandModal').addClass('show');
+    $('#editBrandModal').modal('show');
 }
 
 // Delete brand function
 function deleteBrand(brandId) {
     $('#deleteBrandId').val(brandId);
-    $('#deleteBrandModal').addClass('show');
+    $('#deleteBrandModal').modal('show');
 }
 
 // Utility functions
