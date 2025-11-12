@@ -34,15 +34,15 @@ $user_email = $_SESSION['email'];
     
 </head>
 <body>
-    <div>
+    <div class="container-fluid py-3">
         <!-- Header -->
-        <div>
-            <div>
-                <div>
-                    <h2><i></i>Admin Dashboard</h2>
+        <div class="admin-header">
+            <div class="container">
+                <div class="d-flex justify-content-between align-items-center">
+                    <h2><i class="fas fa-tachometer-alt me-2"></i>Admin Dashboard</h2>
                     <div>
-                        <a href="../login/logout.php">
-                            <i></i>Logout
+                        <a href="../login/logout.php" class="btn btn-outline-secondary">
+                            <i class="fas fa-sign-out-alt me-1"></i>Logout
                         </a>
                     </div>
                 </div>
@@ -50,130 +50,129 @@ $user_email = $_SESSION['email'];
         </div>
 
         <!-- Welcome Section -->
-        <div>
-            <div>
-                <div>
-                    <h3><i></i>Welcome, <?php echo htmlspecialchars($user_name); ?>!</h3>
-                    <p>Manage your e-commerce platform from this admin dashboard.</p>
-                </div>
+        <div class="container py-3">
+            <div class="welcome-card">
+                <h3><i class="fas fa-user-circle me-2"></i>Welcome, <?php echo htmlspecialchars($user_name); ?>!</h3>
+                <p class="lead">Manage your e-commerce platform from this admin dashboard.</p>
             </div>
         </div>
 
         <!-- Dashboard Cards -->
-        <div>
-            <!-- Categories Management -->
-            <div>
-                <div>
-                    <div>
-                        <div>
-                            <i></i>
+        <div class="container">
+            <div class="row">
+                <!-- Categories Management -->
+                <div class="col-md-4 col-lg-3 mb-4">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="mb-3">
+                                <i class="fas fa-tags fa-3x text-primary"></i>
+                            </div>
+                            <h5 class="card-title">Categories</h5>
+                            <p class="card-text">Manage product categories, add new ones, edit existing categories, and organize your product catalog.</p>
+                            <a href="category.php" class="btn w-100">
+                                <i class="fas fa-cog me-1"></i>Manage Categories
+                            </a>
                         </div>
-                        <h5>Categories</h5>
-                        <p>Manage product categories, add new ones, edit existing categories, and organize your product catalog.</p>
-                        <a href="category.php">
-                            <i></i>Manage Categories
-                        </a>
                     </div>
                 </div>
-            </div>
 
-            <!-- Brands Management -->
-            <div>
-                <div>
-                    <div>
-                        <div>
-                            <i></i>
+                <!-- Brands Management -->
+                <div class="col-md-4 col-lg-3 mb-4">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="mb-3">
+                                <i class="fas fa-tag fa-3x text-primary"></i>
+                            </div>
+                            <h5 class="card-title">Brands</h5>
+                            <p class="card-text">Manage product brands, add new ones, edit existing brands, and organize your brand catalog.</p>
+                            <a href="brand.php" class="btn w-100">
+                                <i class="fas fa-cog me-1"></i>Manage Brands
+                            </a>
                         </div>
-                        <h5>Brands</h5>
-                        <p>Manage product brands, add new ones, edit existing brands, and organize your brand catalog.</p>
-                        <a href="brand.php">
-                            <i></i>Manage Brands
-                        </a>
                     </div>
                 </div>
-            </div>
 
-            <!-- Products Management -->
-            <div>
-                <div>
-                    <div>
-                        <div>
-                            <i></i>
+                <!-- Products Management -->
+                <div class="col-md-4 col-lg-3 mb-4">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="mb-3">
+                                <i class="fas fa-box fa-3x text-primary"></i>
+                            </div>
+                            <h5 class="card-title">Products</h5>
+                            <p class="card-text">Add, edit, and manage your product inventory. Control pricing, descriptions, and availability.</p>
+                            <a href="product.php" class="btn w-100">
+                                <i class="fas fa-cog me-1"></i>Manage Products
+                            </a>
                         </div>
-                        <h5>Products</h5>
-                        <p>Add, edit, and manage your product inventory. Control pricing, descriptions, and availability.</p>
-                        <a href="product.php">
-                            <i></i>Manage Products
-                        </a>
                     </div>
                 </div>
-            </div>
 
-            <!-- Orders Management -->
-            <div>
-                <div>
-                    <div>
-                        <div>
-                            <i></i>
+                <!-- Orders Management -->
+                <div class="col-md-4 col-lg-3 mb-4">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="mb-3">
+                                <i class="fas fa-shopping-cart fa-3x text-secondary"></i>
+                            </div>
+                            <h5 class="card-title">Orders</h5>
+                            <p class="card-text">View and manage customer orders, track order status, and handle fulfillment.</p>
+                            <button class="btn w-100" disabled>
+                                <i class="fas fa-clock me-1"></i>Coming Soon
+                            </button>
                         </div>
-                        <h5>Orders</h5>
-                        <p>View and manage customer orders, track order status, and handle fulfillment.</p>
-                        <button disabled>
-                            <i></i>Coming Soon
-                        </button>
                     </div>
                 </div>
-            </div>
 
-            <!-- Users Management -->
-            <div>
-                <div>
-                    <div>
-                        <div>
-                            <i></i>
+                <!-- Users Management -->
+                <div class="col-md-4 col-lg-3 mb-4">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="mb-3">
+                                <i class="fas fa-users fa-3x text-secondary"></i>
+                            </div>
+                            <h5 class="card-title">Users</h5>
+                            <p class="card-text">Manage user accounts, view customer information, and handle user permissions.</p>
+                            <button class="btn w-100" disabled>
+                                <i class="fas fa-clock me-1"></i>Coming Soon
+                            </button>
                         </div>
-                        <h5>Users</h5>
-                        <p>Manage user accounts, view customer information, and handle user permissions.</p>
-                        <button disabled>
-                            <i></i>Coming Soon
-                        </button>
                     </div>
                 </div>
-            </div>
 
-            <!-- Analytics -->
-            <div>
-                <div>
-                    <div>
-                        <div>
-                            <i></i>
+                <!-- Analytics -->
+                <div class="col-md-4 col-lg-3 mb-4">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="mb-3">
+                                <i class="fas fa-chart-line fa-3x text-secondary"></i>
+                            </div>
+                            <h5 class="card-title">Analytics</h5>
+                            <p class="card-text">View sales reports, customer analytics, and business insights to make data-driven decisions.</p>
+                            <button class="btn w-100" disabled>
+                                <i class="fas fa-clock me-1"></i>Coming Soon
+                            </button>
                         </div>
-                        <h5>Analytics</h5>
-                        <p>View sales reports, customer analytics, and business insights to make data-driven decisions.</p>
-                        <button disabled>
-                            <i></i>Coming Soon
-                        </button>
                     </div>
                 </div>
-            </div>
 
-            <!-- Settings -->
-            <div>
-                <div>
-                    <div>
-                        <div>
-                            <i></i>
+                <!-- Settings -->
+                <div class="col-md-4 col-lg-3 mb-4">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="mb-3">
+                                <i class="fas fa-cog fa-3x text-secondary"></i>
+                            </div>
+                            <h5 class="card-title">Settings</h5>
+                            <p class="card-text">Configure system settings, manage site preferences, and customize your e-commerce platform.</p>
+                            <button class="btn w-100" disabled>
+                                <i class="fas fa-clock me-1"></i>Coming Soon
+                            </button>
                         </div>
-                        <h5>Settings</h5>
-                        <p>Configure system settings, manage site preferences, and customize your e-commerce platform.</p>
-                        <button disabled>
-                            <i></i>Coming Soon
-                        </button>
                     </div>
                 </div>
             </div>
         </div>
-
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>

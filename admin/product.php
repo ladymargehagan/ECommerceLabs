@@ -33,18 +33,18 @@ if ($_SESSION['role'] != 1) {
     
 </head>
 <body>
-    <div>
+    <div class="container-fluid py-3">
         <!-- Header -->
-        <div>
-            <div>
-                <div>
-                    <h2><i></i>Product Management</h2>
-                    <div>
-                        <a href="dashboard.php">
-                            <i></i>Dashboard
+        <div class="admin-header">
+            <div class="container">
+                <div class="d-flex justify-content-between align-items-center">
+                    <h2><i class="fas fa-box me-2"></i>Product Management</h2>
+                    <div class="d-flex gap-3">
+                        <a href="dashboard.php" class="btn btn-outline-secondary">
+                            <i class="fas fa-arrow-left me-1"></i>Dashboard
                         </a>
-                        <button data-bs-toggle="modal" data-bs-target="#addProductModal">
-                            <i></i>Add Product
+                        <button class="btn" onclick="openAddModal()">
+                            <i class="fas fa-plus me-1"></i>Add Product
                         </button>
                     </div>
                 </div>
@@ -52,94 +52,88 @@ if ($_SESSION['role'] != 1) {
         </div>
 
         <!-- Products Display -->
-        <div id="productsContainer">
-            <!-- Products will be loaded here via AJAX -->
-            <div>
-                <div role="status">
-                    <span>Loading...</span>
+        <div class="container py-3">
+            <div id="productsContainer">
+                <!-- Products will be loaded here via AJAX -->
+                <div class="text-center py-5">
+                    <div class="spinner-border" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                    <p class="mt-3">Loading products...</p>
                 </div>
-                <p>Loading products...</p>
             </div>
         </div>
 
         <!-- Add/Edit Product Modal -->
-        <div id="addProductModal" tabindex="-1">
-            <div>
-                <div>
-                    <div>
-                        <h5><i></i>Add New Product</h5>
-                        <button type="button" data-bs-dismiss="modal"></button>
+        <div id="addProductModal" class="modal" tabindex="-1">
+            <div class="modal-dialog" style="max-width: 700px;">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title"><i class="fas fa-plus-circle me-2"></i>Add New Product</h5>
+                        <button type="button" class="btn-close" onclick="closeAddModal()" aria-label="Close">×</button>
                     </div>
                     <form id="addProductForm" enctype="multipart/form-data">
-                        <div>
-                            <div>
-                                <div>
-                                    <div>
-                                        <label for="productTitle">Product Title <span>*</span></label>
-                                        <input type="text" id="productTitle" name="productTitle" required maxlength="200">
-                                        <div></div>
-                                    </div>
+                        <div class="modal-body">
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="productTitle">Product Title <span class="text-danger">*</span></label>
+                                    <input type="text" id="productTitle" name="productTitle" class="form-control" required maxlength="200">
+                                    <div class="invalid-feedback"></div>
                                 </div>
-                                <div>
-                                    <div>
-                                        <label for="productPrice">Product Price <span>*</span></label>
-                                        <input type="number" id="productPrice" name="productPrice" step="0.01" min="0" required>
-                                        <div></div>
-                                    </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="productPrice">Product Price <span class="text-danger">*</span></label>
+                                    <input type="number" id="productPrice" name="productPrice" class="form-control" step="0.01" min="0" required>
+                                    <div class="invalid-feedback"></div>
                                 </div>
                             </div>
                             
-                            <div>
-                                <div>
-                                    <div>
-                                        <label for="productCategory">Category <span>*</span></label>
-                                        <select id="productCategory" name="productCategory" required>
-                                            <option value="">Select a category...</option>
-                                        </select>
-                                        <div></div>
-                                    </div>
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="productCategory">Category <span class="text-danger">*</span></label>
+                                    <select id="productCategory" name="productCategory" class="form-control" required>
+                                        <option value="">Select a category...</option>
+                                    </select>
+                                    <div class="invalid-feedback"></div>
                                 </div>
-                                <div>
-                                    <div>
-                                        <label for="productBrand">Brand <span>*</span></label>
-                                        <select id="productBrand" name="productBrand" required>
-                                            <option value="">Select a brand...</option>
-                                        </select>
-                                        <div></div>
-                                    </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="productBrand">Brand <span class="text-danger">*</span></label>
+                                    <select id="productBrand" name="productBrand" class="form-control" required>
+                                        <option value="">Select a brand...</option>
+                                    </select>
+                                    <div class="invalid-feedback"></div>
                                 </div>
                             </div>
 
-                            <div>
+                            <div class="mb-3">
                                 <label for="productDescription">Product Description</label>
-                                <textarea id="productDescription" name="productDescription" rows="3" maxlength="500"></textarea>
-                                <div></div>
+                                <textarea id="productDescription" name="productDescription" class="form-control" rows="3" maxlength="500"></textarea>
+                                <div class="invalid-feedback"></div>
                             </div>
 
-                            <div>
+                            <div class="mb-3">
                                 <label for="productKeywords">Product Keywords</label>
-                                <input type="text" id="productKeywords" name="productKeywords" maxlength="100" placeholder="Separate keywords with commas">
-                                <div></div>
+                                <input type="text" id="productKeywords" name="productKeywords" class="form-control" maxlength="100" placeholder="Separate keywords with commas">
+                                <div class="invalid-feedback"></div>
                             </div>
 
-                            <div>
+                            <div class="mb-3">
                                 <label for="productImage">Product Image</label>
-                                <input type="file" id="productImage" name="productImage" accept="image/*">
-                                <div>Supported formats: JPG, PNG, GIF. Max size: 5MB</div>
-                                <div></div>
+                                <input type="file" id="productImage" name="productImage" accept="image/*" class="form-control">
+                                <div class="form-text">Supported formats: JPG, PNG, GIF. Max size: 5MB</div>
+                                <div class="invalid-feedback"></div>
                             </div>
 
-                            <div id="imagePreview">
+                            <div id="imagePreview" class="mb-3" style="display: none;">
                                 <label>Image Preview</label>
-                                <div>
-                                    <img id="previewImg" src="" alt="Preview">
+                                <div class="mt-2">
+                                    <img id="previewImg" src="" alt="Preview" class="img-thumbnail">
                                 </div>
                             </div>
                         </div>
-                        <div>
-                            <button type="button" data-bs-dismiss="modal">Cancel</button>
-                            <button type="submit">
-                                <i></i>Add Product
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" onclick="closeAddModal()">Cancel</button>
+                            <button type="submit" class="btn">
+                                <i class="fas fa-save me-1"></i>Add Product
                             </button>
                         </div>
                     </form>
@@ -148,85 +142,77 @@ if ($_SESSION['role'] != 1) {
         </div>
 
         <!-- Edit Product Modal -->
-        <div id="editProductModal" tabindex="-1">
-            <div>
-                <div>
-                    <div>
-                        <h5><i></i>Edit Product</h5>
-                        <button type="button" data-bs-dismiss="modal"></button>
+        <div id="editProductModal" class="modal" tabindex="-1">
+            <div class="modal-dialog" style="max-width: 700px;">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title"><i class="fas fa-edit me-2"></i>Edit Product</h5>
+                        <button type="button" class="btn-close" onclick="closeEditModal()" aria-label="Close">×</button>
                     </div>
                     <form id="editProductForm" enctype="multipart/form-data">
-                        <div>
+                        <div class="modal-body">
                             <input type="hidden" id="editProductId" name="productId">
                             
-                            <div>
-                                <div>
-                                    <div>
-                                        <label for="editProductTitle">Product Title <span>*</span></label>
-                                        <input type="text" id="editProductTitle" name="productTitle" required maxlength="200">
-                                        <div></div>
-                                    </div>
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="editProductTitle">Product Title <span class="text-danger">*</span></label>
+                                    <input type="text" id="editProductTitle" name="productTitle" class="form-control" required maxlength="200">
+                                    <div class="invalid-feedback"></div>
                                 </div>
-                                <div>
-                                    <div>
-                                        <label for="editProductPrice">Product Price <span>*</span></label>
-                                        <input type="number" id="editProductPrice" name="productPrice" step="0.01" min="0" required>
-                                        <div></div>
-                                    </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="editProductPrice">Product Price <span class="text-danger">*</span></label>
+                                    <input type="number" id="editProductPrice" name="productPrice" class="form-control" step="0.01" min="0" required>
+                                    <div class="invalid-feedback"></div>
                                 </div>
                             </div>
                             
-                            <div>
-                                <div>
-                                    <div>
-                                        <label for="editProductCategory">Category <span>*</span></label>
-                                        <select id="editProductCategory" name="productCategory" required>
-                                            <option value="">Select a category...</option>
-                                        </select>
-                                        <div></div>
-                                    </div>
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="editProductCategory">Category <span class="text-danger">*</span></label>
+                                    <select id="editProductCategory" name="productCategory" class="form-control" required>
+                                        <option value="">Select a category...</option>
+                                    </select>
+                                    <div class="invalid-feedback"></div>
                                 </div>
-                                <div>
-                                    <div>
-                                        <label for="editProductBrand">Brand <span>*</span></label>
-                                        <select id="editProductBrand" name="productBrand" required>
-                                            <option value="">Select a brand...</option>
-                                        </select>
-                                        <div></div>
-                                    </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="editProductBrand">Brand <span class="text-danger">*</span></label>
+                                    <select id="editProductBrand" name="productBrand" class="form-control" required>
+                                        <option value="">Select a brand...</option>
+                                    </select>
+                                    <div class="invalid-feedback"></div>
                                 </div>
                             </div>
 
-                            <div>
+                            <div class="mb-3">
                                 <label for="editProductDescription">Product Description</label>
-                                <textarea id="editProductDescription" name="productDescription" rows="3" maxlength="500"></textarea>
-                                <div></div>
+                                <textarea id="editProductDescription" name="productDescription" class="form-control" rows="3" maxlength="500"></textarea>
+                                <div class="invalid-feedback"></div>
                             </div>
 
-                            <div>
+                            <div class="mb-3">
                                 <label for="editProductKeywords">Product Keywords</label>
-                                <input type="text" id="editProductKeywords" name="productKeywords" maxlength="100" placeholder="Separate keywords with commas">
-                                <div></div>
+                                <input type="text" id="editProductKeywords" name="productKeywords" class="form-control" maxlength="100" placeholder="Separate keywords with commas">
+                                <div class="invalid-feedback"></div>
                             </div>
 
-                            <div>
+                            <div class="mb-3">
                                 <label for="editProductImage">Product Image</label>
-                                <input type="file" id="editProductImage" name="productImage" accept="image/*">
-                                <div>Supported formats: JPG, PNG, GIF. Max size: 5MB</div>
-                                <div></div>
+                                <input type="file" id="editProductImage" name="productImage" accept="image/*" class="form-control">
+                                <div class="form-text">Supported formats: JPG, PNG, GIF. Max size: 5MB</div>
+                                <div class="invalid-feedback"></div>
                             </div>
 
-                            <div id="editImagePreview">
+                            <div id="editImagePreview" class="mb-3">
                                 <label>Current Image</label>
-                                <div>
-                                    <img id="editPreviewImg" src="" alt="Current Image">
+                                <div class="mt-2">
+                                    <img id="editPreviewImg" src="" alt="Current Image" class="img-thumbnail">
                                 </div>
                             </div>
                         </div>
-                        <div>
-                            <button type="button" data-bs-dismiss="modal">Cancel</button>
-                            <button type="submit">
-                                <i></i>Update Product
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" onclick="closeEditModal()">Cancel</button>
+                            <button type="submit" class="btn">
+                                <i class="fas fa-save me-1"></i>Update Product
                             </button>
                         </div>
                     </form>
@@ -235,22 +221,22 @@ if ($_SESSION['role'] != 1) {
         </div>
 
         <!-- Delete Confirmation Modal -->
-        <div id="deleteProductModal" tabindex="-1">
-            <div>
-                <div>
-                    <div>
-                        <h5><i></i>Delete Product</h5>
-                        <button type="button" data-bs-dismiss="modal"></button>
+        <div id="deleteProductModal" class="modal" tabindex="-1">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title"><i class="fas fa-exclamation-triangle me-2 text-danger"></i>Delete Product</h5>
+                        <button type="button" class="btn-close" onclick="closeDeleteModal()" aria-label="Close">×</button>
                     </div>
-                    <div>
+                    <div class="modal-body">
                         <p>Are you sure you want to delete this product?</p>
-                        <p>This action cannot be undone.</p>
+                        <p class="text-danger"><strong>This action cannot be undone.</strong></p>
                         <input type="hidden" id="deleteProductId">
                     </div>
-                    <div>
-                        <button type="button" data-bs-dismiss="modal">Cancel</button>
-                        <button type="button" id="confirmDelete">
-                            <i></i>Delete Product
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" onclick="closeDeleteModal()">Cancel</button>
+                        <button type="button" class="btn btn-danger" id="confirmDelete">
+                            <i class="fas fa-trash me-1"></i>Delete Product
                         </button>
                     </div>
                 </div>
@@ -259,9 +245,9 @@ if ($_SESSION['role'] != 1) {
     </div>
 
     <!-- Loading Overlay -->
-    <div id="loadingOverlay">
-        <div>
-            <div></div>
+    <div id="loadingOverlay" class="loading-overlay">
+        <div class="loading-spinner">
+            <div class="spinner"></div>
             <p>Processing...</p>
         </div>
     </div>

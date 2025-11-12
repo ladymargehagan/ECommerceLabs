@@ -1,5 +1,34 @@
+// Modal functions
+function openAddModal() {
+    $('#addCategoryModal').addClass('show');
+}
+
+function closeAddModal() {
+    $('#addCategoryModal').removeClass('show');
+    $('#addCategoryForm')[0].reset();
+    clearValidationErrors('#addCategoryForm');
+    $('#categoryImagePreview').hide();
+}
+
+function closeEditModal() {
+    $('#editCategoryModal').removeClass('show');
+    $('#editCategoryForm')[0].reset();
+    clearValidationErrors('#editCategoryForm');
+}
+
+function closeDeleteModal() {
+    $('#deleteCategoryModal').removeClass('show');
+}
+
 $(document).ready(function() {
     loadCategories();
+
+    // Close modals when clicking outside
+    $('.modal').on('click', function(e) {
+        if ($(e.target).hasClass('modal')) {
+            $(this).removeClass('show');
+        }
+    });
 
     // Image preview for add form
     $('#categoryImage').on('change', function() {
@@ -23,17 +52,6 @@ $(document).ready(function() {
 
     $('#confirmDelete').on('click', function() {
         deleteCategory();
-    });
-
-    $('#addCategoryModal').on('hidden.bs.modal', function() {
-        $('#addCategoryForm')[0].reset();
-        clearValidationErrors('#addCategoryForm');
-        $('#categoryImagePreview').hide();
-    });
-
-    $('#editCategoryModal').on('hidden.bs.modal', function() {
-        $('#editCategoryForm')[0].reset();
-        clearValidationErrors('#editCategoryForm');
     });
 });
 
@@ -137,7 +155,7 @@ function addCategory() {
             hideLoading();
             if (response.success) {
                 showAlert('success', 'Success', response.message);
-                $('#addCategoryModal').modal('hide');
+                closeAddModal();
                 loadCategories();
             } else {
                 showAlert('error', 'Error', response.message);
@@ -171,7 +189,7 @@ function updateCategory() {
             hideLoading();
             if (response.success) {
                 showAlert('success', 'Success', response.message);
-                $('#editCategoryModal').modal('hide');
+                closeEditModal();
                 loadCategories();
             } else {
                 showAlert('error', 'Error', response.message);
@@ -203,7 +221,7 @@ function deleteCategory() {
             hideLoading();
             if (response.success) {
                 showAlert('success', 'Success', response.message);
-                $('#deleteCategoryModal').modal('hide');
+                closeDeleteModal();
                 loadCategories();
             } else {
                 showAlert('error', 'Error', response.message);
@@ -226,13 +244,13 @@ function editCategory(categoryId, categoryName, categoryImage = '') {
     $('#editPreviewCategoryImg').attr('src', imageSrc);
     $('#editCategoryImagePreview').show();
     
-    $('#editCategoryModal').modal('show');
+    $('#editCategoryModal').addClass('show');
 }
 
 function confirmDelete(categoryId, categoryName) {
     $('#deleteCategoryId').val(categoryId);
-    $('#deleteCategoryModal .modal-body p').html(`Are you sure you want to delete the category "<strong>${escapeHtml(categoryName)}</strong>"?`);
-    $('#deleteCategoryModal').modal('show');
+    $('#deleteCategoryModal .modal-body p:first').html(`Are you sure you want to delete the category "<strong>${escapeHtml(categoryName)}</strong>"?`);
+    $('#deleteCategoryModal').addClass('show');
 }
 
 function validateCategoryForm(form) {

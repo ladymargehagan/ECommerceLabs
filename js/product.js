@@ -1,7 +1,36 @@
+// Modal functions
+function openAddModal() {
+    $('#addProductModal').addClass('show');
+}
+
+function closeAddModal() {
+    $('#addProductModal').removeClass('show');
+    $('#addProductForm')[0].reset();
+    clearFieldErrors();
+    $('#imagePreview').hide();
+}
+
+function closeEditModal() {
+    $('#editProductModal').removeClass('show');
+    $('#editProductForm')[0].reset();
+    clearFieldErrors();
+}
+
+function closeDeleteModal() {
+    $('#deleteProductModal').removeClass('show');
+}
+
 $(document).ready(function() {
     // Load products and form data on page load
     loadProducts();
     loadFormData();
+
+    // Close modals when clicking outside
+    $('.modal').on('click', function(e) {
+        if ($(e.target).hasClass('modal')) {
+            $(this).removeClass('show');
+        }
+    });
 
     // Image preview for add form
     $('#productImage').on('change', function() {
@@ -42,7 +71,7 @@ $(document).ready(function() {
                         timer: 2000,
                         showConfirmButton: false
                     });
-                    $('#addProductModal').modal('hide');
+                    closeAddModal();
                     $('#addProductForm')[0].reset();
                     clearFieldErrors();
                     $('#imagePreview').hide();
@@ -95,7 +124,7 @@ $(document).ready(function() {
                         timer: 2000,
                         showConfirmButton: false
                     });
-                    $('#editProductModal').modal('hide');
+                    closeEditModal();
                     clearFieldErrors();
                     loadProducts();
                 } else {
@@ -138,7 +167,7 @@ $(document).ready(function() {
                         timer: 2000,
                         showConfirmButton: false
                     });
-                    $('#deleteProductModal').modal('hide');
+                    closeDeleteModal();
                     loadProducts();
                 } else {
                     Swal.fire({
@@ -339,7 +368,7 @@ function editProduct(productId) {
                     const imageSrc = product.product_image ? `../${product.product_image}` : '../uploads/placeholder.png';
                     $('#editPreviewImg').attr('src', imageSrc);
                     
-                    $('#editProductModal').modal('show');
+                    $('#editProductModal').addClass('show');
                 }
             }
         },
@@ -356,7 +385,7 @@ function editProduct(productId) {
 // Delete product function
 function deleteProduct(productId) {
     $('#deleteProductId').val(productId);
-    $('#deleteProductModal').modal('show');
+    $('#deleteProductModal').addClass('show');
 }
 
 // Image preview function
