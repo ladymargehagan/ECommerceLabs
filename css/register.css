@@ -1,34 +1,39 @@
 /* ============================================
-   REGISTER PAGE STYLES
+   REGISTER PAGE STYLES - Minimalist & Clean
    ============================================ */
 
 body {
-    background-color: var(--bg-secondary);
+    background: linear-gradient(135deg, var(--bg-secondary) 0%, var(--bg-tertiary) 100%);
     min-height: 100vh;
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: var(--spacing-lg) 0;
+    padding: var(--spacing-lg);
 }
 
 .register-container {
     width: 100%;
-    max-width: 500px;
+    max-width: 600px;
     padding: var(--spacing-xl);
 }
 
 .card {
     background-color: white;
-    border-radius: 8px;
+    border-radius: var(--radius-lg);
     box-shadow: var(--shadow-lg);
     border: 1px solid var(--border-light);
     overflow: hidden;
+    transition: var(--transition);
+}
+
+.card:hover {
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
 }
 
 .card-header {
-    background-color: var(--primary);
+    background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
     color: white;
-    padding: var(--spacing-lg);
+    padding: var(--spacing-xl);
     text-align: center;
 }
 
@@ -53,11 +58,14 @@ body {
 
 .card-footer a {
     color: var(--primary);
-    font-weight: 500;
+    font-weight: 600;
+    text-decoration: none;
+    transition: var(--transition);
 }
 
 .card-footer a:hover {
     color: var(--primary-dark);
+    text-decoration: underline;
 }
 
 form {
@@ -69,22 +77,29 @@ form {
     margin-bottom: var(--spacing-xs);
     font-weight: 500;
     color: var(--text-primary);
+    font-size: var(--font-size-sm);
 }
 
 .form-control {
     width: 100%;
-    padding: var(--spacing-sm);
-    border: 1px solid var(--border-light);
-    border-radius: 4px;
+    padding: 0.75rem 1rem;
+    border: 2px solid var(--border-light);
+    border-radius: var(--radius-md);
     font-size: var(--font-size-base);
     transition: var(--transition);
     margin-bottom: var(--spacing-md);
+    font-family: var(--font-family);
 }
 
 .form-control:focus {
     outline: none;
     border-color: var(--primary);
-    box-shadow: 0 0 0 3px rgba(201, 125, 96, 0.1);
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+.form-label i {
+    margin-right: 0.5rem;
+    color: var(--text-light);
 }
 
 .form-check {
@@ -97,11 +112,14 @@ form {
 .form-check-input {
     width: auto;
     margin: 0;
+    cursor: pointer;
 }
 
 .form-check-label {
     margin: 0;
     font-weight: 400;
+    cursor: pointer;
+    color: var(--text-primary);
 }
 
 .d-flex {
@@ -118,25 +136,29 @@ form {
 
 .btn-custom {
     width: 100%;
-    padding: var(--spacing-sm) var(--spacing-lg);
-    background-color: var(--primary);
+    padding: 0.875rem 1.5rem;
+    background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
     color: white;
     border: none;
-    border-radius: 4px;
-    font-weight: 500;
+    border-radius: var(--radius-md);
+    font-weight: 600;
     font-size: var(--font-size-base);
     cursor: pointer;
     transition: var(--transition);
     margin-top: var(--spacing-md);
+    font-family: var(--font-family);
 }
 
 .btn-custom:hover {
-    background-color: var(--primary-dark);
-    transform: translateY(-1px);
     box-shadow: var(--shadow-md);
+    transform: translateY(-1px);
+}
+
+.btn-custom:active {
+    transform: translateY(0);
 }
 
 .highlight {
     color: var(--primary);
+    font-weight: 600;
 }
-

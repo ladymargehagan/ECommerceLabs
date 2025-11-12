@@ -78,7 +78,7 @@ if (file_exists('settings/db_class.php') && file_exists('classes/product_class.p
     <title>Taste of Africa - Authentic African Groceries</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Teachers:ital,wght@0,400..800;1,400..800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <link href="css/main.css" rel="stylesheet">
@@ -87,7 +87,7 @@ if (file_exists('settings/db_class.php') && file_exists('classes/product_class.p
 </head>
 <body>
     <!-- Top Header Bar -->
-    <div class="container"><div class="row align-items-center"><div class="col-md-4"><div class="d-flex gap-3">
+    <div class="top-header"><div class="container"><div class="row align-items-center"><div class="col-md-4"><div class="d-flex gap-3">
                         <a href="#about">About Us</a>
                         <?php if (isset($_SESSION['user_id'])): ?>
                             <a href="customer/dashboard.php">My Account</a>
@@ -180,7 +180,7 @@ if (file_exists('settings/db_class.php') && file_exists('classes/product_class.p
                 $displayed_categories = array_slice($categories, 0, 6);
                 foreach ($displayed_categories as $category): 
                 ?>
-                    <button data-category="<?php echo $category['cat_id']; ?>">
+                    <button class="category-filter-btn" data-category="<?php echo $category['cat_id']; ?>">
                         <?php echo htmlspecialchars($category['cat_name']); ?>
                     </button>
                 <?php endforeach; ?>
@@ -217,7 +217,7 @@ if (file_exists('settings/db_class.php') && file_exists('classes/product_class.p
                     }
                 ?>
                     <a href="all_product.php?category=<?php echo $category['cat_id']; ?>">
-                        <i></i>
+                        <i class="fas <?php echo $icon; ?>"></i>
                         <h5><?php echo htmlspecialchars($cat_name); ?></h5>
                         <span><?php echo $item_count; ?> items</span>
                     </a>
@@ -226,30 +226,30 @@ if (file_exists('settings/db_class.php') && file_exists('classes/product_class.p
         </section>
 
         <!-- Promotional Banners -->
-        <section>
-            <div>
+        <section class="promo-banners">
+            <a href="all_product.php" class="promo-banner">
                 <div>
                     <h4>Everyday Fresh & Clean with Our Products</h4>
-                    <a href="all_product.php">Shop Now <i></i></a>
+                    <span>Shop Now <i class="fas fa-arrow-right"></i></span>
                 </div>
-                <img src="uploads/placeholder.png" alt="Fresh Products">
-            </div>
+                <img src="uploads/placeholder.png" alt="Fresh Products" class="promo-banner-image">
+            </a>
             
-            <div>
+            <a href="all_product.php" class="promo-banner">
                 <div>
                     <h4>Make your Breakfast Healthy and Easy</h4>
-                    <a href="all_product.php">Shop Now <i></i></a>
+                    <span>Shop Now <i class="fas fa-arrow-right"></i></span>
                 </div>
-                <img src="uploads/placeholder.png" alt="Healthy Breakfast">
-            </div>
+                <img src="uploads/placeholder.png" alt="Healthy Breakfast" class="promo-banner-image">
+            </a>
             
-            <div>
+            <a href="all_product.php" class="promo-banner">
                 <div>
                     <h4>The best Organic Products Online</h4>
-                    <a href="all_product.php">Shop Now <i></i></a>
+                    <span>Shop Now <i class="fas fa-arrow-right"></i></span>
                 </div>
-                <img src="uploads/placeholder.png" alt="Organic Products">
-            </div>
+                <img src="uploads/placeholder.png" alt="Organic Products" class="promo-banner-image">
+            </a>
         </section>
 
                 <!-- Popular Products -->
@@ -257,54 +257,50 @@ if (file_exists('settings/db_class.php') && file_exists('classes/product_class.p
             <h2>Popular Products</h2>
             
             <div>
-                <button data-filter="all">All</button>
-                <button data-filter="fruits">Fresh Fruits</button>
-                <button data-filter="vegetables">Vegetables</button>
-                <button data-filter="grains">Grains</button>
-                <button data-filter="spices">Spices</button>
+                <button class="product-filter-btn" data-filter="all">All</button>
+                <button class="product-filter-btn" data-filter="fruits">Fresh Fruits</button>
+                <button class="product-filter-btn" data-filter="vegetables">Vegetables</button>
+                <button class="product-filter-btn" data-filter="grains">Grains</button>
+                <button class="product-filter-btn" data-filter="spices">Spices</button>
             </div>
 
             <?php if (empty($products)): ?>
-                <div>
-                    <i></i>
+                <div class="no-products">
+                    <i class="fas fa-box-open"></i>
                     <h3>No Products Available</h3>
                     <p>Products will be displayed here once added to the system.</p>
                 </div>
             <?php else: ?>
-                <div>
+                <div class="products-grid">
                     <?php foreach ($products as $product): ?>
-                        <div>
-                            <div>
+                        <div class="product-card-modern">
+                            <div class="product-image-wrapper">
                                 <?php if ($product['product_image']): ?>
-                                                                        <img src="<?php echo htmlspecialchars($product['product_image']); ?>" 
+                                    <img src="<?php echo htmlspecialchars($product['product_image']); ?>" 
                                          class="product-image-modern" 
                                          alt="<?php echo htmlspecialchars($product['product_title']); ?>"
                                          onerror="this.src='uploads/placeholder.png'">
                                 <?php else: ?>
                                     <img src="uploads/placeholder.png" 
+                                         class="product-image-modern"
                                          alt="No image available">
                                 <?php endif; ?>
-                                                                <span class="product-badge">New                            </div>
+                                <span class="product-badge">New</span>
+                            </div>
                             <div class="product-card-body">
                                 <h5 class="product-title-modern"><?php echo htmlspecialchars($product['product_title']); ?></h5>
-                                                                <div class="product-meta-modern">
+                                <div class="product-meta-modern">
                                     <span><?php echo htmlspecialchars($product['cat_name'] ?? 'Category'); ?></span>
                                     <?php if ($product['brand_name']): ?>
                                         <span> • By <?php echo htmlspecialchars($product['brand_name']); ?></span>
                                     <?php endif; ?>
                                 </div>
-                                <div>
-                                    <i></i>
-                                    <i></i>
-                                    <i></i>
-                                    <i></i>
-                                    <i></i>
+                                <div class="product-price-modern">
+                                    <span class="current-price">$<?php echo number_format($product['product_price'], 2); ?></span>
                                 </div>
-                                                                <div class="product-meta-modern">
-                                    <span>$<?php echo number_format($product['product_price'], 2); ?>                                </div>
                                 <button class="add-to-cart-btn" data-product-id="<?php echo $product['product_id']; ?>">
-                                                                        <i class="fas fa-shopping-cart"></i> Add
-                                                                </button>
+                                    <i class="fas fa-shopping-cart"></i> Add to Cart
+                                </button>
                             </div>
                         </div>
                     <?php endforeach; ?>
